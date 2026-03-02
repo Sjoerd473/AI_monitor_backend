@@ -1,0 +1,451 @@
+        /* ==========================================
+           RESET & VARIABILI GLOBALI (Palette Eco-Tech)
+           ========================================== */
+        :root {
+            /* Tema Chiaro - Toni caldi e naturali */
+            --bg-color: #f7fbf9; /* Bianco con una leggerissima punta di verde */
+            --text-color: #1a2b22; /* Grigio molto scuro, quasi verde bosco */
+            --text-muted: #4a6355; /* Verde/grigio desaturato */
+            --border-color: #d1e3d8;
+            --header-bg: rgba(247, 251, 249, 0.85); /* Semitrasparente per glassmorphism */
+            --accent-color: #10b981; /* Verde smeraldo vibrante (Tech/Green) */
+            --accent-hover: #059669;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(16, 185, 129, 0.08);
+            --header-height: 80px;
+        }
+
+        /* Tema Scuro - Toni profondi per risparmio energetico schermi OLED */
+        [data-theme="dark"] {
+            --bg-color: #0b110e; /* Quasi nero con punta di verde scuro */
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #1e2f25;
+            --header-bg: rgba(11, 17, 14, 0.85);
+            --accent-color: #34d399; /* Verde più luminoso per contrasto su scuro */
+            --accent-hover: #10b981;
+            --card-bg: #131e18;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            scroll-behavior: smooth;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* ==========================================
+           TIPOGRAFIA & ELEMENTI BASE
+           ========================================== */
+        h1, h2, h3 {
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        h1 { font-size: clamp(2.5rem, 6vw, 3.5rem); }
+        h2 { 
+            font-size: clamp(1.8rem, 4vw, 2.5rem); 
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* Dettaglio di design: linea sotto i titoli H2 */
+        h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 60px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+
+        .text-center h2::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        p { 
+            margin-bottom: 1.2rem; 
+            color: var(--text-muted); 
+            font-size: clamp(1.05rem, 2vw, 1.15rem); 
+            transition: color 0.3s ease;
+        }
+
+        strong {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        a { 
+            color: var(--accent-color); 
+            text-decoration: none; 
+            transition: color 0.2s ease; 
+        }
+        a:hover { color: var(--accent-hover); }
+
+        .text-center { text-align: center; }
+        .text-center .text-content { margin: 0 auto; }
+
+        /* ==========================================
+           COMPONENTI UI (Pulsanti, Immagini, Cards)
+           ========================================== */
+        .btn, .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            color: #ffffff !important; /* Forza il bianco sul pulsante accent */
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px; /* Forma a pillola moderna */
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px var(--shadow-color);
+            text-decoration: none;
+        }
+
+        .btn:hover, .nav-cta:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }
+
+        /* Stile per le immagini (Moderno e con ombre) */
+        .hero-image {
+            width: 100%;
+            height: auto;
+            border-radius: 16px; /* Angoli più morbidi */
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            transition: all 0.4s ease;
+        }
+
+        .hero-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* Badge ecologico */
+        .eco-badge {
+            display: inline-block;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--accent-color);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        /* ==========================================
+           HEADER & NAVIGAZIONE (Glassmorphism)
+           ========================================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background-color: var(--header-bg);
+            /* Effetto Glassmorphism */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: auto; /* Spinge la navigazione e i controlli a destra */
+        }
+        
+        /* Pallino verde nel logo */
+        .logo::before {
+            content: '';
+            display: block;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        nav {
+            /* Margini rimossi perché gestiti dal margin-right: auto del logo */
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        /* Classe per raggruppare CTA e Theme Toggle */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        /* Sottolineatura animata sui link della navbar */
+        nav a:not(.nav-cta)::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        nav a:not(.nav-cta):hover::after {
+            width: 100%;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1001;
+        }
+
+        .theme-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            color: var(--text-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .theme-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .menu-toggle span {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-color);
+            border-radius: 2px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+        /* ==========================================
+           LAYOUT SEZIONI & ANIMAZIONI
+           ========================================== */
+        main {
+            padding-top: calc(var(--header-height) + 40px); 
+        }
+
+        section {
+            padding: 6rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            /* Preparazione per l'animazione di scroll */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Classe aggiunta da JS quando l'elemento entra nello schermo */
+        section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .grid-2-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .text-content {
+            max-width: 800px;
+        }
+
+        /* Contenitore Video Ottimizzato */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 900px;
+            margin: 3rem auto 0;
+            border-radius: 16px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            transition: all 0.4s ease;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 16px;
+        }
+
+        .video-fallback {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* ==========================================
+           FOOTER
+           ========================================== */
+        footer {
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 5% 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-content p {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ==========================================
+           RESPONSIVE (Mobile & Tablet)
+           ========================================== */
+        @media (max-width: 1024px) {
+            .grid-2-cols { gap: 3rem; }
+            section { padding: 4rem 5%; }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            nav {
+                margin: 0;
+                position: absolute;
+                top: var(--header-height);
+                left: 0;
+                width: 100%;
+                background-color: var(--header-bg);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                transform: translateY(-150%);
+                opacity: 0;
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+                z-index: 999;
+                padding: 2rem 5%;
+            }
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: stretch;
+            }
+            nav a {
+                display: block;
+                font-size: 1.2rem;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid var(--border-color);
+            }
+            nav a:not(.nav-cta)::after { display: none; }
+            
+            /* Stile per le azioni (Tema) nel menu mobile */
+            .nav-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 1.5rem;
+                margin-top: 1rem;
+                padding-top: 1.5rem;
+                border-top: 1px solid var(--border-color);
+            }
+            
+            /* Nascondi il pulsante Scarica plugin dall'header su mobile */
+            .nav-cta {
+                display: none;
+            }
+
+            .theme-btn {
+                margin: 0 auto; /* Centra il pulsante nel menu */
+                width: 50px; /* Leggermente più grande per il touch */
+                height: 50px;
+            }
+
+            .grid-2-cols {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            /* Inverti ordine su mobile per la sezione 2: Testo prima, immagine poi */
+            #sezione-2 .column-text { order: -1; }
+        }

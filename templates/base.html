@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Monitor</title>
+    <link rel="icon" href="https://logo-icons.com/cdn/shop/files/370-logo-1712247273.814color-6A994E.svg?v=1712759881&width=416" type="image/svg+xml">
+<link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="logo">AI Monitor</div>
+        
+        <nav id="main-nav">
+            <ul>
+                <li><a href="#sezione-1">Analisi Dati</a></li>
+                <li><a href="#sezione-2">Impatto Reale</a></li>
+                <li><a href="#sezione-3">Trasparenza</a></li>
+                <li class="nav-actions">
+                    <a href="approfondisci.html" class="nav-cta">Scarica plugin</a>
+                    <!-- Pulsante Cambio Tema -->
+                    <button id="theme-toggle" class="theme-btn" aria-label="Cambia Tema Giorno/Notte">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="header-controls">
+            <!-- Solo Pulsante Menu Hamburger (visibile su mobile) -->
+            <button class="menu-toggle" aria-label="Apri menu di navigazione">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- SEZIONE 1 -->
+        <section id="sezione-1">
+            <div class="grid-2-cols">
+                <div class="column-text">
+                    <span class="eco-badge">Monitoraggio Globale</span>
+                    <h1>L'Ecosistema Invisibile dell'AI</h1>
+                    <p>L'adozione dei sistemi di Intelligenza Artificiale sta trasformando rapidamente i processi su scala globale, rappresentando oggi un'infrastruttura fondamentale per l'innovazione tecnologica.</p>
+                    <p>Tuttavia, per comprendere a pieno questa rivoluzione, è necessario monitorare non solo i benefici tangibili, ma anche le dinamiche strutturali, il consumo di risorse e il reale utilizzo degli strumenti generativi.</p>
+                    <a href="#" class="btn">Scarica plugin</a>
+                </div>
+                <div class="column-image">
+                    <!-- Aggiunto loading="lazy" per il green web design -->
+                    <img src="https://miro.medium.com/v2/resize:fit:1400/1*VplI9Cu1FSjhbfa-Wr6NOA.png" alt="Grafico sull'adozione e l'impatto dell'AI" class="hero-image" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE 2 -->
+        <section id="sezione-2">
+            <div class="grid-2-cols">
+                <div class="column-image">
+                    <img src="https://whatisai.sirv.com/WP_whatisai.co.uk/2025/11/is_ai_bad_for_the_environment.webp" alt="L'impatto ambientale dell'Intelligenza Artificiale" class="hero-image" loading="lazy">
+                </div>
+                <div class="column-text">
+                    <h2>Il Costo Nascosto del Calcolo</h2>
+                    <p>La crescita esponenziale dell'Intelligenza Artificiale porta con sé sfide infrastrutturali e ambientali urgenti. L'addestramento dei grandi modelli (LLM) richiede risorse computazionali senza precedenti.</p>
+                    <p>Questo si traduce in un <strong>impatto climatico diretto</strong>. I moderni data center consumano quantità massicce di energia elettrica e richiedono milioni di litri d'acqua per il raffreddamento. A ciò si aggiunge la pressione sull'estrazione di terre rare per i semiconduttori.</p>
+                    <p>Mentre i vantaggi sono evidenti, i costi ecologici nascosti chiamano policy maker e industria a sviluppare modelli di efficienza radicalmente nuovi e sostenibili.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE 3 -->
+        <section id="sezione-3">
+            <div class="grid-2-cols">
+                <div class="column-text">
+                    <h2>L'Urgenza della Trasparenza</h2>
+                    <p>Il nodo centrale di questa sfida è la <strong>mancanza di dati aperti</strong>. Attualmente, l'industria opera con un elevato grado di opacità riguardo al dispendio reale associato alle singole operazioni AI.</p>
+                    <p>Quanta energia richiede la generazione di un'immagine? Qual è il bilancio idrico per l'addestramento di un nuovo modello? Le aziende raramente condividono metriche dettagliate e standardizzate.</p>
+                    <p>Senza queste misurazioni, è impossibile regolamentare il settore, ottimizzare i consumi e permettere agli utenti finali di fare scelte digitali etiche e consapevoli.</p>
+                </div>
+                <div class="column-image">
+                    <img src="https://aiwhisper.co.uk/wp-content/uploads/2025/08/how-is-ai-bad-for-the-environment.jpeg" alt="Il problema ecologico dell'AI" class="hero-image" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE 4: VIDEO -->
+        <section id="sezione-video" class="text-center">
+            <h2>Dati alla Mano</h2>
+            <div class="text-content">
+                <p>Per comprendere meglio le dinamiche strutturali, i consumi energetici e le sfide aperte in questo settore, guarda l'intervento completo:</p>
+            </div>
+            <div class="video-container">
+                <!-- Aggiunto loading="lazy" per ritardare il caricamento dell'iframe pesante -->
+                <iframe src="https://www.youtube-nocookie.com/embed/b0C56yqIkbk?start=64" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <div class="video-fallback">
+                <p>Preferisci non caricare il player per risparmiare dati? <a href="https://www.youtube.com/watch?v=b0C56yqIkbk&t=64s" target="_blank" rel="noopener noreferrer">Apri il link su YouTube</a>.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 AI Monitor. Progetto di analisi strutturale e sensibilizzazione tecnologica.</p>
+            <p><small>🌿 Questo sito utilizza il Lazy Loading e il tema scuro automatico per ridurre l'impronta di carbonio della navigazione.</small></p>
+        </div>
+    </footer>
+
+  
+</body>
+<script src="{{ url_for('static', path='/scripts.js') }}"></script>
+</html>
