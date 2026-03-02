@@ -28,14 +28,14 @@ async def home(request: Request):
     
     return templates.TemplateResponse("base.html", {"request": request, "data": data})
 
-@app.get('/dati', response_class=HTMLResponse)
-async def boop():
-    return """
-    <html>
-    <p>This is a HTML response</p>
-    </html>
+# @app.get('/dati', response_class=HTMLResponse)
+# async def boop():
+#     return """
+#     <html>
+#     <p>This is a HTML response</p>
+#     </html>
 
 
-"""
+# """
 
 
