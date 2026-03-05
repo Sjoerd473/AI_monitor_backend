@@ -1,8 +1,7 @@
-from db.promptdb import PromptDB
+from services.base_service import BaseService
 
-class Ingestion:
-    def __init__(self):
-        self.db = PromptDB()
+class Ingestion(BaseService):
+    
 
     def batch_insert(self, batch):
         self.db.insert_prompts(batch) ## all these functions should be called in a try except block, to handle the original error
