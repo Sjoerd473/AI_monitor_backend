@@ -1,0 +1,11 @@
+Use connection pooling, maybe add pgBouncer as a middleman
+Make everything async
+Do micro batching
+Keep ingestion writes cheap?
+Avoid heavy indexing on ingestion table
+Use background workers to manage the DB??
+
+
+so I would have to write a seperate python file that executes these queries and writes the output to a json file in the backend folder, attach a cronjob to this python file, then instruct the endpoints to read their data from the json file?
+
+0 * * * * /usr/bin/python3 /home/sjoerd/yourproject/precompute_cache.py hourly run for file
