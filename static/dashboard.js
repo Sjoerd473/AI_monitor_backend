@@ -1,3 +1,6 @@
+// all of this is just to show us how to create a graph, they are non-functional examples.
+// I will add explanation once there is some real content
+
 // Reusable function to fetch JSON
 async function fetchData(endpoint) {
   const response = await fetch(endpoint);
@@ -98,6 +101,8 @@ fetch('/api/prompts/summary')
 
   });
 
+
+  // this is the best example to follow I think
   Promise.all([
     fetchData('summary'),
     fetchData('date'),

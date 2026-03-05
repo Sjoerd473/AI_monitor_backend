@@ -1,5 +1,5 @@
 # the constants are in a different file to keep this one more organized
-from energy_calc_constants import *
+from scripts.energy_calc_constants import *
 
 # should this all be a class too?
 
