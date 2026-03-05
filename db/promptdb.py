@@ -45,5 +45,8 @@ class PromptDB:
 
     def get_users(self):
         return self._read("SELECT * FROM users")
+
+    def get_prompts(self):
+        return self._read("SELECT * FROM prompts")
   
 
