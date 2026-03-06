@@ -23,28 +23,34 @@ app = FastAPI()
 
 # This is your server-side secret (never expose this to the client)
 # equal to the one in the plugin
-SECRET_KEY = b"super_secret_key_here"
-# has to be a byte string for hmac and hashlib
+SECRET_KEY = b"super_secret_key_here"  # ✅ Bytes (matches JS TextEncoder)
 
-@app.post("/events")
+@app.post("/events") 
 async def receive_event(request: Request, x_signature: str = Header(...)):
-    # 1️⃣ Get the raw payload
+    # 1️⃣ Get raw payload (unchanged)
     raw_body = await request.body()
-
-    # 2️⃣ Compute HMAC of the payload using the server secret
-    computed_hmac = hmac.new(SECRET_KEY, raw_body, hashlib.sha256).hexdigest()
-
-    # 3️⃣ Compare with the signature sent by the plugin
+    
+    # 2️⃣ ✅ CRITICAL: Convert to STRING first, THEN encode (matches JS)
+    payload_string = raw_body.decode('utf-8')  # b'{"tokens_in":100}' → '{"tokens_in":100}'
+    computed_hmac = hmac.new(
+        SECRET_KEY, 
+        payload_string.encode('utf-8'),  # String → bytes (matches TextEncoder)
+        hashlib.sha256
+    ).hexdigest()
+    
+    # 3️⃣ Verify (unchanged)
     if not hmac.compare_digest(computed_hmac, x_signature):
-        # Reject request if signatures don't match
         raise HTTPException(status_code=403, detail="Invalid signature")
-
-    # 4️⃣ Parse JSON and handle data
+    
+    # 4️⃣ Parse JSON (unchanged)  
     data = await request.json()
-    print("Received valid event:", data)
+    
+    # 5️⃣ Process your energy calculation
+    impact = compute_environmental_impact(data)
+    print(f"Energy: {impact['energy_wh']:.4f} Wh, CO2: {impact['co2_g']:.1f}g")
+    
+    return {"status": "received", "impact": impact}
 
-    # 5️⃣ Respond to plugin
-    return {"status": "received"}
 
 
 # @app.post("/events")

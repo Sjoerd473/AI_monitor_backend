@@ -52,6 +52,13 @@ class PromptDB:
 
     def _write_many(self, query, seq_of_params):
         self._execute(query, seq_of_params, many=True)
+    
+    def _get_timerange(self,time_unit, time_range, func):
+        return f"""SELECT date_trunc('{time_unit}', timestamp) AS date, {func}
+        FROM prompts
+        GROUP BY 1
+        ORDER BY 1
+        LIMIT {time_range}"""
 
 # Public Methods #
 # this will be a list of all the queries we use, too messy?
@@ -66,5 +73,25 @@ class PromptDB:
 
     def get_prompts(self):
         return self._read("SELECT * FROM prompts")
+    
+    def get_CO2_by_day(self):
+        return self._read(self._get_timerange("day",7,"SUM(co2_output)"))
   
 
+
+# date_trunc(interval, timestamp) cuts off the smaller time units of a timestamp so everything aligns to a clean boundary.
+
+
+# This selects all the sessions per day/week/month/year, one row for each timeunit
+#     SELECT date_trunc('month', session_start), count(*)
+# FROM sessions
+# GROUP BY 1
+# ORDER BY 1
+# LIMIT X > 7 for days, 4 for weeks, or whatever
+# this only works if there is data for these dates, otherwise skips over
+
+# SELECT date_trunc('day', timestamp), sum(co2_output)
+# FROM prompts
+# GROUP BY 1
+# ORDER BY 1
+# LIMIT 7

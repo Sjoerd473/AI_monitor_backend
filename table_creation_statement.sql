@@ -10,7 +10,7 @@ CREATE TABLE models (
 
 CREATE TABLE sessions (
   session_id TEXT PRIMARY KEY,
-  session_start TIMESTAMP NOT NULL,
+  session_start TIMESTAMPTZ NOT NULL,
   session_prompt_count INTEGER NOT NULL,
   session_duration INTEGER NOT NULL
 );
