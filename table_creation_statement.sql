@@ -22,6 +22,7 @@ CREATE TABLE prompts (
   model_id INTEGER NOT NULL REFERENCES models(model_id),
   character_in INTEGER NOT NULL,
   tokens_in INTEGER NOT NULL,
+  timestamp TIMESTAMPTZ NOT NULL
   domain TEXT NOT NULL,
   type TEXT NOT NULL,
   safety_cat TEXT,
