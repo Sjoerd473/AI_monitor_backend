@@ -4,6 +4,8 @@
 # we import our connection pool here
 from db.pool import pool
 
+from psycopg.rows import dict_row
+
 # PromptDB is a class so we can encapsulate all the database logic in one place
 # This gives a cleaner API, centralized connection management, separation of concerns
 # and also easier testing/mocking, if we actually did any...
@@ -28,7 +30,7 @@ class PromptDB:
         with self.pool.connection() as conn:
             # open a connection
             try:
-                with conn.cursor() as cur:
+                with conn.cursor(row_factory=dict_row) as cur:
                     # open a cursor to perform database interactions
                     if many:
                         cur.executemany(query, params)
@@ -36,8 +38,7 @@ class PromptDB:
                         cur.execute(query, params)
 
                     if fetch:
-                        columns = [desc[0] for desc in cur.description]
-                        return [dict(zip(columns, row)) for row in cur.fetchall()]
+                        return cur.fetchall()
                     # execute a command based on the parameters passed into the method
 
                 conn.commit()
@@ -105,13 +106,13 @@ class PromptDB:
             
     def insert_prompts(self, batch):
             # --- Step 0: Prepare model lookup ---
-            existing_models = { (m["model_name"], m["model_mode"]): m["model_id"] for m in self.get_models() }
+            existing_models = { (m["model_name"], m["model_mode"]): m["model_id"] for m in self.get_models() } # type: ignore
             new_models = set((b["model"]["model_name"], b["model"]["model_mode"]) for b in batch if (b["model"]["model_name"], b["model"]["model_mode"]) not in existing_models)
             # Insert new models if missing
             if new_models:
                 self._write_many(self.INSERT_QUERIES["models"], [tuple(m) for m in new_models])
                 # Re-fetch models to update mapping
-                existing_models.update({ (m["model_name"], m["model_mode"]): m["model_id"] for m in self.get_models() })
+                existing_models.update({ (m["model_name"], m["model_mode"]): m["model_id"] for m in self.get_models() }) # type: ignore
 
             # --- Step 1: Build parent rows ---
             users_rows = [ (b["user"]["user_id"],) for b in batch ]
