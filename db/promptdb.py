@@ -74,7 +74,9 @@ class PromptDB:
 
             row = result[0]  # This is a dict
         # Get the first column's value (usually the returning id)
-            returned_ids.append(next(iter(row.values())))
+            first_column_name = list(row.keys())[0]
+            returned_ids.append(row[first_column_name])
+            
         return returned_ids
 
     
