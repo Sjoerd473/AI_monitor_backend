@@ -10,7 +10,9 @@ class Retrieval(BaseService):
     @db_logging
     def get_users(self):
         return self.db.get_users() ## all these functions should be called in a try except block, to handle the original error
+    
+   
 
 if __name__ == "__main__":
     r = Retrieval()
-    print(r.get_users())
+

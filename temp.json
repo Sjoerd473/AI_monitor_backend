@@ -1,0 +1,53 @@
+{
+    "schema_version": 1,
+    "timestamp": "2026-03-07T07:05:48.685Z",
+    "user": {
+        "user_id": "32612bd63857f07f135f5a6656f5352d664054bfedb758e6f6e974db309fecf4"
+    },
+    "session": {
+        "session_id": "e2ad615f6bf73b2c943ca48e8c1ef827",
+        "session_start": "2026-03-06T17:54:15.834Z",
+        "session_prompt_count": 28,
+        "session_duration_ms": 47489171,
+        "time_since_last_prompt_ms": 42910200
+    },
+    "prompt": {
+        "text_length": 85,
+        "tokens_in": 23,
+        "prompt_type": "general",
+        "domain": "general",
+        "language": "en",
+        "is_followup": false,
+        "message_index": 17,
+        "conversation_length": 34,
+        "safety_category": "safe",
+        "timestamp": "2026-03-07T07:05:48.685Z"
+    },
+    "response": {
+        "tokens_out": 251,
+        "characters_out": 952,
+        "latency_ms": 3680,
+        "streaming_duration_ms": 3679.699999988079
+    },
+    "model": {
+        "model_name": "unknown",
+        "model_mode": "standard"
+    },
+    "ui_interaction": {
+        "regenerate_used": false,
+        "suggested_prompt_used": false,
+        "image_attached": false,
+        "file_attached": false,
+        "voice_input": false,
+        "tool_active": false
+    },
+    "environment": {
+        "hostname": "chatgpt.com",
+        "pathname": "/",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+        "language": "en-US",
+        "screen": "1646x1029"
+    },
+    "source": "chatgpt",
+    "conversation_id": "unknown"
+}
