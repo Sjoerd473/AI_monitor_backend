@@ -23,3 +23,7 @@ To Do:
 
 -Minimize plugin, figure out how to serve it to users
 -Write a github action to automatically update code on the server
+
+array with objects arrives
+we loop over the array
+each object needs to be split up into objects, because each of them has its own query

@@ -3,9 +3,10 @@ CREATE TABLE users (
 );
 
 CREATE TABLE models (
-  model_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  model_name TEXT NOT NULL,
-  model_mode TEXT NOT NULL
+    model_id SERIAL PRIMARY KEY,
+    model_name TEXT NOT NULL,
+    model_mode TEXT NOT NULL,
+    UNIQUE(model_name, model_mode)
 );
 
 CREATE TABLE sessions (
@@ -20,7 +21,7 @@ CREATE TABLE prompts (
   user_id TEXT NOT NULL REFERENCES users(user_id),
   session_id TEXT NOT NULL REFERENCES sessions(session_id),
   model_id INTEGER NOT NULL REFERENCES models(model_id),
-  character_in INTEGER NOT NULL,
+  characters_in INTEGER NOT NULL,
   tokens_in INTEGER NOT NULL,
   timestamp TIMESTAMPTZ NOT NULL
   domain TEXT NOT NULL,
