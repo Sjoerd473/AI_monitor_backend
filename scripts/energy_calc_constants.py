@@ -1,12 +1,24 @@
 # Updated to match ChatGPTDetector event structure EXACTLY
 
 MODEL_REGISTRY = {
-    # Updated with exact model names from getChatGPTModel()
+    # Updated with 2026 models and accurate energy benchmarks
+    ("gpt-5", "standard"): {
+        "energy_per_input_token": 0.000018,   # ~18.35 Wh / 1000 tokens avg
+        "energy_per_output_token": 0.000036,  # 2x output vs input
+        "power_watts": 400,                   # Advanced reasoning load
+        "latency_factor": 0.50                # Longer inference time
+    },
+    ("gpt-5", "chat"): {
+        "energy_per_input_token": 0.000019,
+        "energy_per_output_token": 0.000038,
+        "power_watts": 410,
+        "latency_factor": 0.52
+    },
     ("gpt-4o", "standard"): {
-        "energy_per_input_token": 0.000002,   # Wh/token
-        "energy_per_output_token": 0.000004,  # Wh/token  
-        "power_watts": 180,                   # W during generation
-        "latency_factor": 0.3                 # fraction of latency considered compute
+        "energy_per_input_token": 0.000002,
+        "energy_per_output_token": 0.000004,
+        "power_watts": 180,
+        "latency_factor": 0.3
     },
     ("gpt-4o", "chat"): {
         "energy_per_input_token": 0.0000021,
@@ -44,13 +56,20 @@ MODEL_REGISTRY = {
         "power_watts": 200,
         "latency_factor": 0.38
     },
-    ("unknown", "standard"): {  # Fallback
+    ("chatgpt", "standard"): {
+        "energy_per_input_token": 0.00000034, # 0.34 Wh avg query / 1000 tokens
+        "energy_per_output_token": 0.00000068,
+        "power_watts": 180,
+        "latency_factor": 0.3
+    },
+    ("unknown", "standard"): {
         "energy_per_input_token": 0.000002,
         "energy_per_output_token": 0.000004,
         "power_watts": 180,
         "latency_factor": 0.3
     }
 }
+
 
 REGION_REGISTRY = {
     "EU": {
