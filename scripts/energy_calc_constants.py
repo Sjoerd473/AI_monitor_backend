@@ -84,6 +84,7 @@ REGION_REGISTRY = {
         "carbon_g_per_kwh": 600,
         "water_l_per_kwh": 10
     },
+    # does this ever get called?
     "RENEWABLE": {
         "carbon_g_per_kwh": 50,
         "water_l_per_kwh": 1

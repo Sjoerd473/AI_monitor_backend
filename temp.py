@@ -113,3 +113,117 @@ for obj in arr:
         self._write_many(self.INSERT_QUERIES["env"], seq_of_params_env)
         self._write_many(self.INSERT_QUERIES["ui"], seq_of_params_ui)
     
+def insert_prompts(self, batch):
+    """Insert a batch of prompts and all related tables (users, sessions, responses, environment, UI)."""
+
+    # --- Step 0: Prepare model lookup ---
+    existing_models = {
+        (m["model_name"], m["model_mode"]): m["model_id"]
+        for m in self.get_models()
+    }
+
+    # Identify new models not yet in DB
+    new_models = set()
+    for b in batch:
+        model = b["model"]
+        key = (model["model_name"], model["model_mode"])
+        if key not in existing_models:
+            new_models.add(key)
+
+    # Insert missing models
+    if new_models:
+        self._write_many(self.INSERT_QUERIES["models"], [tuple(m) for m in new_models])
+        # Re-fetch models to update mapping
+        existing_models.update({
+            (m["model_name"], m["model_mode"]): m["model_id"]
+            for m in self.get_models()
+        })
+
+    # --- Step 1: Build parent rows ---
+    users_rows = [(b["user"]["user_id"],) for b in batch]
+    sessions_rows = [
+        (
+            b["session"]["session_id"],
+            b["session"]["session_start"],
+            b["session"]["session_prompt_count"],
+            b["session"]["session_duration_ms"]
+        )
+        for b in batch
+    ]
+
+    # Insert parent tables
+    self._write_many(self.INSERT_QUERIES["users"], users_rows)
+    self._write_many(self.INSERT_QUERIES["sessions"], sessions_rows)
+
+    # --- Step 2: Build prompts ---
+    prompts_rows = []
+    for b in batch:
+        user = b["user"]
+        session = b["session"]
+        model = b["model"]
+        prompt = b["prompt"]
+
+        model_id = existing_models[(model["model_name"], model["model_mode"])]
+
+        prompts_rows.append((
+            user["user_id"],
+            session["session_id"],
+            model_id,
+            prompt["text_length"],
+            prompt["tokens_in"],
+            prompt["timestamp"],
+            prompt["domain"],
+            prompt["prompt_type"],
+            prompt["safety_category"],
+            prompt["language"],
+            b["source"],
+            prompt["energy_wh"],
+            prompt["co2_g"],
+            prompt["water_l"]
+        ))
+
+    # Bulk insert prompts and get their IDs
+    prompt_ids = self._write_many_returning(self.INSERT_QUERIES["prompts"], prompts_rows)
+
+    # --- Step 3: Build child rows ---
+    responses_rows = []
+    env_rows = []
+    ui_rows = []
+
+    for i, b in enumerate(batch):
+        pid = prompt_ids[i]
+        response = b["response"]
+        env = b["environment"]
+        ui = b["ui_interaction"]
+
+        responses_rows.append((
+            pid,
+            response["characters_out"],
+            response["latency_ms"],
+            response["streaming_duration_ms"]
+        ))
+
+        env_rows.append((
+            pid,
+            env["browser"],
+            env["version"],
+            env["os"],
+            env["viewport"],
+            env["timezone"],
+            env["plugin_version"]
+        ))
+
+        ui_rows.append((
+            pid,
+            ui["regenerate_used"],
+            ui["suggested_prompt_used"],
+            ui["image_attached"],
+            ui["file_attached"],
+            ui["voice_input"],
+            ui["tool_active"]
+        ))
+
+    # --- Step 4: Bulk insert child tables ---
+    self._write_many(self.INSERT_QUERIES["responses"], responses_rows)
+    self._write_many(self.INSERT_QUERIES["environment"], env_rows)
+    self._write_many(self.INSERT_QUERIES["ui"], ui_rows)

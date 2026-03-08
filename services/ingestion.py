@@ -9,7 +9,7 @@ class Ingestion(BaseService):
     # equal to batch_insert = db_logging(batch_insert), but more elegant
     @db_logging
     def batch_insert(self, batch):
-        self.db.insert_prompts(batch) ## all these functions should be called in a try except block, to handle the original error
+        self.db.insert_prompts(batch) 
 
 
 
