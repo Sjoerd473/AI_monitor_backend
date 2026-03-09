@@ -1,15 +1,3 @@
-Use connection pooling, maybe add pgBouncer as a middleman
-Make everything async
-Do micro batching
-Keep ingestion writes cheap?
-Avoid heavy indexing on ingestion table
-Use background workers to manage the DB??
-
-
-so I would have to write a seperate python file that executes these queries and writes the output to a json file in the backend folder, attach a cronjob to this python file, then instruct the endpoints to read their data from the json file?
-
-0 * * * * /usr/bin/python3 /home/sjoerd/yourproject/precompute_cache.py hourly run for file
-
 To Do:
 
 
@@ -87,10 +75,10 @@ To Do:
 
 
 -- Misc ---
--Write README for both parts
--get plugin onto google play store
--Minimize plugin
--Write a github action to automatically update code on the server
+- Write README for both parts
+- get plugin onto google play store
+- Minimize plugin
+- Write a github action to automatically update code on the server
 
 - containerize the plugin
 - will be a multi-stage Dockerfile, first run node and bundle (frontend)
@@ -98,3 +86,17 @@ To Do:
 
 -----------------------
 
+
+Things just for me to remember
+
+Use connection pooling, maybe add pgBouncer as a middleman
+Make everything async done
+Do micro batching done
+Keep ingestion writes cheap? done
+Avoid heavy indexing on ingestion table ??
+Use background workers to manage the DB?? done-ish
+
+
+so I would have to write a seperate python file that executes these queries and writes the output to a json file in the backend folder, attach a cronjob to this python file, then instruct the endpoints to read their data from the json file?
+
+0 * * * * /usr/bin/python3 /home/sjoerd/yourproject/precompute_cache.py hourly run for file
