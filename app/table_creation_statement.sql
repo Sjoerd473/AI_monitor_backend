@@ -11,6 +11,7 @@ CREATE TABLE models (
 
 CREATE TABLE sessions (
   session_id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(user_id),
   session_start TIMESTAMPTZ NOT NULL,
   session_prompt_count INTEGER NOT NULL,
   session_duration INTEGER NOT NULL
@@ -29,9 +30,9 @@ CREATE TABLE prompts (
   safety_cat TEXT,
   language TEXT NOT NULL,
   source TEXT NOT NULL,
-  energy_consumption FLOAT NOT NULL,
-  CO2_output FLOAT NOT NULL,
-  water_consumption FLOAT NOT NULL
+  energy_consumption_wh FLOAT NOT NULL,
+  CO2_output_g FLOAT NOT NULL,
+  water_consumption_l FLOAT NOT NULL
 );
 
 CREATE TABLE responses (

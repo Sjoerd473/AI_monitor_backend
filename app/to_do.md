@@ -2,9 +2,10 @@ To Do:
 
 
 -- extension/content.js + backend/energy_calc --
--the various text analysis functions of the plugin all need to be written with Regex
--and then be expanded upon much more
--make sure the constants in energy_calc_constants.py still match
+
+- the various text analysis functions of the plugin all need to be written with Regex
+- and then be expanded upon much more
+- make sure the constants in energy_calc_constants.py still match
 
 - handle viewport insertion better, needs to be mobile/tablet/desktop depending on size
 
@@ -16,6 +17,7 @@ To Do:
 ---------------------
 
 -- DB --
+
 - add user_id to sessions table
 - add uniqueness constraint to session_id + user_id in sessions
 
@@ -25,6 +27,8 @@ To Do:
 - add a .env file
 
 - Write reading prompts
+
+- clear up columns of consumption data > add mw, g etc.
 
 
 ----------------------
@@ -68,13 +72,22 @@ To Do:
 ----------------------
 
 -- VPS --
+
 - Clean up the VPS
 - Set up the VPS
 
 ----------------------
 
+-- Cache --
+
+- Use redis for caching, the current setup will break in prod
+
+----------------------
+
+
 
 -- Misc ---
+
 - Write README for both parts
 - get plugin onto google play store
 - Minimize plugin
@@ -95,6 +108,10 @@ Do micro batching done
 Keep ingestion writes cheap? done
 Avoid heavy indexing on ingestion table ??
 Use background workers to manage the DB?? done-ish
+
+uvicorn main:app --workers 4
+
+Each worker is like a seperate instance of the application, each with its own memory, so an in-memory buffer will not work
 
 
 so I would have to write a seperate python file that executes these queries and writes the output to a json file in the backend folder, attach a cronjob to this python file, then instruct the endpoints to read their data from the json file?
