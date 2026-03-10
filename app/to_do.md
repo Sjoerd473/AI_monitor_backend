@@ -117,3 +117,5 @@ Each worker is like a seperate instance of the application, each with its own me
 so I would have to write a seperate python file that executes these queries and writes the output to a json file in the backend folder, attach a cronjob to this python file, then instruct the endpoints to read their data from the json file?
 
 0 * * * * /usr/bin/python3 /home/sjoerd/yourproject/precompute_cache.py hourly run for file
+
+- Redis works, now work on .env functionality
