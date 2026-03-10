@@ -18,17 +18,17 @@ To Do:
 
 -- DB --
 
-- add user_id to sessions table
-- add uniqueness constraint to session_id + user_id in sessions
+- add user_id to sessions table DONE
+- add uniqueness constraint to session_id + user_id in sessions DONE
 
 - decide whether to use the conversation_id or a session_id to monitor sessions
 
-- configure the pool
-- add a .env file
+- configure the pool DONE
+- add a .env file DONE
 
 - Write reading prompts
 
-- clear up columns of consumption data > add mw, g etc.
+- clear up columns of consumption data > add mw, g etc. DONE
 
 
 ----------------------
@@ -59,7 +59,7 @@ To Do:
 
 - Write graph scripting
 
-- figure out how to bundle this
+- figure out how to bundle this NOT NEEDED
 
 ----------------------
 
@@ -80,22 +80,25 @@ To Do:
 
 -- Cache --
 
-- Use redis for caching, the current setup will break in prod
+- Use redis for caching, the current setup will break in prod DONE
 
 ----------------------
 
+-- Plugin --
 
+- support other AI sites Gemini, claude? perplexity
+
+
+----------------------
 
 -- Misc ---
 
 - Write README for both parts
 - get plugin onto google play store
 - Minimize plugin
-- Write a github action to automatically update code on the server
+- Write a github action to automatically update code on the server DONE
 
-- containerize the plugin
-- will be a multi-stage Dockerfile, first run node and bundle (frontend)
-- then python
+- containerize the plugin DONE
 
 -----------------------
 
@@ -118,4 +121,4 @@ so I would have to write a seperate python file that executes these queries and 
 
 0 * * * * /usr/bin/python3 /home/sjoerd/yourproject/precompute_cache.py hourly run for file
 
-- Redis works, now work on .env functionality
+- Remeber to write the correct dotenv file on the server
