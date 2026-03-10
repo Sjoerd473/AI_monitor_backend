@@ -19,6 +19,6 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd /var/www/backend
+            cd /var/www/AI_monitor_backend
             git pull origin main
             
