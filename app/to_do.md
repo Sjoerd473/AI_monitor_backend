@@ -21,7 +21,7 @@ To Do:
 - add user_id to sessions table DONE
 - add uniqueness constraint to session_id + user_id in sessions DONE
 
-- decide whether to use the conversation_id or a session_id to monitor sessions
+- decide whether to use the conversation_id or a session_id to monitor sessions > conv_id might work more consistently
 
 - configure the pool DONE
 - add a .env file DONE

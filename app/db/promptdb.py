@@ -18,10 +18,65 @@ class PromptDB:
             "users": "INSERT INTO users (user_id) VALUES (%s) ON CONFLICT (user_id) DO NOTHING",
             "models": "INSERT INTO models (model_name, model_mode) VALUES (%s, %s) ON CONFLICT (model_name, model_mode) DO NOTHING",
             "sessions": "INSERT INTO sessions (session_id, session_start, session_prompt_count, session_duration) VALUES (%s, %s, %s, %s) ON CONFLICT (session_id) DO UPDATE SET session_prompt_count = EXCLUDED.session_prompt_count, session_duration = EXCLUDED.session_duration",
-            "prompts": "INSERT INTO prompts (user_id, session_id, model_id, characters_in, tokens_in, timestamp, domain, type, safety_cat, language, source, energy_consumption, co2_output, water_consumption) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING prompt_id",
+            "prompts": "INSERT INTO prompts (user_id, session_id, model_id, characters_in, tokens_in, timestamp, domain, type, safety_cat, language, source, energy_consumption_w, co2_output, water_consumption) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING prompt_id",
             "responses": "INSERT INTO responses (prompt_id, character_out, latency, streaming_duration) VALUES (%s, %s, %s, %s)",
             "environment": "INSERT INTO environment (prompt_id, browser, version, os, viewport, timezone, plugin_version) VALUES (%s, %s, %s, %s, %s, %s, %s)",
             "ui": "INSERT INTO ui_interactions (prompt_id, regenerate_used, suggested_prompt_used, image_attached, file_attached, voice_input, tool_active) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        }
+
+        self.METRICS = {
+            "water": "water_consumption_l",
+            "co2": "co2_output_g",
+            "energy": "energy_consumption_wh",
+            }
+        
+        self.DIMENSIONS = {
+           "category": "domain",
+            "model": "model_id"
+            }   
+
+        self.TIME_CONFIG = {
+            "hour": {
+                "format": "HH24:MI",
+                "previous": (
+                    "date_trunc('day', CURRENT_DATE - INTERVAL '1 day')",
+                    "date_trunc('day', CURRENT_DATE - INTERVAL '1 day') + INTERVAL '23 hours'",
+                    "INTERVAL '1 hour'"
+                ),
+                "current": (
+                    "date_trunc('day', NOW())",
+                    "date_trunc('hour', NOW())",
+                    "INTERVAL '1 hour'"
+                )
+            },
+
+            "day": {
+                "format": "Dy",
+                "previous": (
+                    "date_trunc('week', CURRENT_DATE) - INTERVAL '1 week'",
+                    "date_trunc('week', CURRENT_DATE) - INTERVAL '1 day'",
+                    "INTERVAL '1 day'"
+                ),
+                "current": (
+                    "date_trunc('week', CURRENT_DATE)",
+                    "CURRENT_DATE",
+                    "INTERVAL '1 day'"
+                )
+            },
+
+            "week": {
+                "format": "DD-Mon",
+                "previous": (
+                    "date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'",
+                    "date_trunc('month', CURRENT_DATE) - INTERVAL '1 week'",
+                    "INTERVAL '1 week'"
+                ),
+                "current": (
+                    "date_trunc('month', CURRENT_DATE)",
+                    "date_trunc('week', CURRENT_DATE)",
+                    "INTERVAL '1 week'"
+                )
+            }
         }
     # this keeps everything more DRY
     # the _ at the start of a method indicates that these are private methods, that should not be called outside of the class
@@ -80,26 +135,260 @@ class PromptDB:
         return returned_ids
 
     
-    def _get_timerange(self,time_unit, time_range, func):
-        return f"""SELECT date_trunc('{time_unit}', timestamp) AS date, {func}
-        FROM prompts
-        GROUP BY 1
-        ORDER BY 1
-        LIMIT {time_range}"""
+    def _agg_cte(self, dimension=None):
 
+     metric_sql = [
+         f"SUM({col}) AS {metric}"
+         for metric, col in self.METRICS.items()
+     ]
+
+     dim_select = ""
+     dim_group = ""
+
+     if dimension:
+         col = self.DIMENSIONS[dimension]
+         dim_select = f", {col}"
+         dim_group = f", {col}"
+
+     return f"""
+     WITH agg AS (
+         SELECT
+             date_trunc('hour', timestamp) AS hour,
+             date_trunc('day', timestamp)  AS day,
+             date_trunc('week', timestamp) AS week
+             {dim_select},
+
+             {",".join(metric_sql)}
+
+         FROM prompts
+         WHERE timestamp >= date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'
+
+         GROUP BY 1,2,3 {dim_group}
+     )
+     """
+    
+    def _chart_sql(self, metric, time_unit, period, dimension=None):
+
+        cfg = self.TIME_CONFIG[time_unit]
+        start, end, interval = cfg[period]
+        label_fmt = cfg["format"]
+
+        bucket = time_unit
+        key = f"{metric}_{time_unit}_{period}"
+
+        dim_join = ""
+
+        if dimension:
+            col = self.DIMENSIONS[dimension]
+            dim_join = f"AND a.{col} = d.{col}"
+
+        return f"""
+        '{key}',
+        (
+            SELECT json_build_object(
+                'labels', json_agg(to_char(t,'{label_fmt}') ORDER BY t),
+                'data', json_agg(COALESCE(a.{metric},0) ORDER BY t)
+            )
+
+            FROM generate_series(
+                {start},
+                {end},
+                {interval}
+            ) t
+
+            LEFT JOIN agg a
+            ON a.{bucket} = t
+            {dim_join}
+        )
+        """
+    
+    def _build_global_query(self):
+
+        blocks = []
+
+        for metric in self.METRICS:
+            for time_unit in self.TIME_CONFIG:
+                for period in ("previous", "current"):
+                    blocks.append(
+                        self._chart_sql(metric, time_unit, period)
+                    )
+
+        return f"""
+        {self._agg_cte()}
+
+        SELECT json_build_object(
+            {",".join(blocks)}
+        ) AS dashboard
+        """
+    
+    def _build_dimension_query(self, dimension):
+
+        dim_col = self.DIMENSIONS[dimension]
+
+        blocks = []
+
+        for metric in self.METRICS:
+            for time_unit in self.TIME_CONFIG:
+                for period in ("previous", "current"):
+                    blocks.append(
+                        self._chart_sql(metric, time_unit, period, dimension)
+                    )
+
+        return f"""
+        {self._agg_cte(dimension)}
+
+        SELECT json_object_agg(
+            d.{dim_col},
+            json_build_object(
+                {",".join(blocks)}
+            )
+        ) AS dashboard
+
+        FROM (
+            SELECT DISTINCT {dim_col}
+            FROM prompts
+        ) d
+        """
+    
+    def get_dashboard_global(self):
+
+        query = self._build_global_query()
+        result = self._read(query)
+
+        return result[0]["dashboard"] # type: ignore
+
+
+    def get_dashboard_by_column(self, column):
+
+        query = self._build_dimension_query(column)
+        result = self._read(query)
+
+        return result[0]["dashboard"] # type: ignore
+
+
+    
+
+    def _query_composer(self, object_name, func, column, time_unit, *, category=False, model=False):
+
+       configs = {
+           "hour": {
+               "format": "HH24:MI",
+               "previous": (
+                   "date_trunc('day', CURRENT_DATE - INTERVAL '1 day')",
+                   "date_trunc('day', CURRENT_DATE - INTERVAL '1 day') + INTERVAL '23 hours'",
+                   "INTERVAL '1 hour'"
+               ),
+               "current": (
+                   "date_trunc('day', NOW())",
+                   "date_trunc('hour', NOW())",
+                   "INTERVAL '1 hour'"
+               )
+           },
+
+           "day": {
+               "format": "Dy",
+               "previous": (
+                   "date_trunc('week', CURRENT_DATE) - INTERVAL '1 week'",
+                   "date_trunc('week', CURRENT_DATE) - INTERVAL '1 day'",
+                   "INTERVAL '1 day'"
+               ),
+               "current": (
+                   "date_trunc('week', CURRENT_DATE)",
+                   "CURRENT_DATE",
+                   "INTERVAL '1 day'"
+               )
+           },
+
+          "week": {
+               "format": "DD-Mon",
+                "previous": (
+                    "date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'",
+                    "date_trunc('month', CURRENT_DATE) - INTERVAL '1 week'",
+                    "INTERVAL '1 week'"
+                ),
+                "current": (
+                    "date_trunc('month', CURRENT_DATE)",
+                    "date_trunc('week', CURRENT_DATE)",
+                    "INTERVAL '1 week'"
+                )
+}
+       }
+
+       cfg = configs[time_unit]
+       agg_format = cfg["format"]
+       date_column = f"{time_unit[0]}.{time_unit}"
+       
+
+       sql_template = """
+       '{object_name}', (
+           SELECT json_build_object(
+               'labels', json_agg(to_char({time_unit}, '{agg_format}') ORDER BY {time_unit}),
+               'data', json_agg(value ORDER BY {time_unit})
+           )
+           FROM (
+               SELECT
+                   {date_column},
+                   COALESCE({func}(p.{column}), 0) AS value
+               FROM generate_series(
+                   {start},
+                   {end},
+                   {interval}
+               ) AS {alias}({time_unit})
+               LEFT JOIN prompts p
+                   ON p.timestamp >= {date_column}
+                   AND p.timestamp < {date_column} + INTERVAL '1 {time_unit}'
+               GROUP BY {date_column}
+               ORDER BY {date_column}
+           ) s
+       ),
+       """
+
+       queries = []
+
+       for period in ("previous", "current"):
+           start, end, interval = cfg[period]
+           object_name_complete = f"{object_name}_{period}"
+
+           queries.append(
+               sql_template.format(
+                   object_name=object_name_complete,
+                   time_unit=time_unit,
+                   agg_format=agg_format,
+                   date_column=date_column,
+                   func=func,
+                   column=column,
+                   start=start,
+                   end=end,
+                   interval=interval,
+                   alias=time_unit[0],
+               )
+           )
+
+       return queries
 # Public Methods #
 # this will be a list of all the queries we use, too messy?
 
-        
-  
+    def get_water(self, time_unit):
+        object_name = f'water_{time_unit}'
+        return self._query_composer(object_name, 'SUM', 'water_consumption_l', time_unit)
+    
+    def get_CO2(self, time_unit):
+        object_name = f'co2_{time_unit}'
+        return self._query_composer(object_name, 'SUM', 'co2_output_g', time_unit)
+    
+    def get_energy(self, time_unit):
+        object_name = f'energy_{time_unit}'
+        return self._query_composer(object_name, 'SUM', 'energy_consumption_wh', time_unit)
+
+ 
+    
     def get_users(self):
         return self._read("SELECT * FROM users")
 
     def get_prompts(self):
         return self._read("SELECT * FROM prompts")
     
-    def get_CO2_by_day(self):
-        return self._read(self._get_timerange("day",7,"SUM(co2_output)"))
+  
     
     def get_models(self):
         return self._read("SELECT model_id, model_name, model_mode FROM models")
@@ -255,3 +544,222 @@ class PromptDB:
 # GROUP BY 1
 # ORDER BY 1
 # LIMIT 7
+
+# SELECT json_build_object(
+#     'labels', json_agg(to_char(day, 'YYYY-MM-DD') ORDER BY day),
+#     'data', json_agg(co2_output ORDER BY day)
+# )
+# FROM (
+#     SELECT
+#         d.day,
+#         COALESCE(SUM(p.co2_output_g), 0) AS co2_output
+#     FROM generate_series(
+#         CURRENT_DATE - INTERVAL '6 days',
+#         CURRENT_DATE,
+#         INTERVAL '1 day'
+#     ) AS d(day)
+#     LEFT JOIN prompts p
+#         ON p.timestamp >= d.day
+#         AND p.timestamp < d.day + INTERVAL '1 day'
+#     GROUP BY d.day
+# ) stats;
+
+# SELECT json_build_object(
+
+#   'co2_per_day', (
+#       SELECT json_build_object(
+#           'labels', json_agg(to_char(day, 'YYYY-MM-DD') ORDER BY day),
+#           'data', json_agg(co2_output ORDER BY day)
+#       )
+#       FROM (
+#           SELECT
+#               d.day,
+#               COALESCE(SUM(p.co2_output_g),0) AS co2_output
+#           FROM generate_series(
+#               CURRENT_DATE - INTERVAL '6 days',   
+#               CURRENT_DATE,
+#               INTERVAL '1 day'
+#           ) AS d(day)
+#           LEFT JOIN prompts p
+#               ON p.timestamp >= d.day
+#               AND p.timestamp < d.day + INTERVAL '1 day'
+#           GROUP BY d.day
+#       ) s
+#   ),
+
+#   'prompts_per_model', (
+#       SELECT json_build_object(
+#           'labels', json_agg(model_name),
+#           'data', json_agg(prompt_count)
+#       )
+#       FROM (
+#           SELECT
+#               m.model_name,
+#               COUNT(*) AS prompt_count
+#           FROM prompts p
+#           JOIN models m ON p.model_id = m.model_id
+#           GROUP BY m.model_name
+#       ) s 
+#   )
+
+# );
+
+def test(object_name, series, column, time_unit):
+    date_range = 0
+    agg_format = ''
+    time_units = time_unit + 's'
+    char = time_units[0]
+    t_name = f"{char}.{time_unit}"
+
+    generate_series = {
+        "day_old" : """FROM generate_series(
+    date_trunc('week', CURRENT_DATE) - INTERVAL '1 week',
+    date_trunc('week', CURRENT_DATE) - INTERVAL '1 day',
+    INTERVAL '1 day'
+) AS d(day)""",
+        "day_current": """FROM generate_series(
+    date_trunc('week', CURRENT_DATE),
+    CURRENT_DATE,
+    INTERVAL '1 day'
+) AS d(day)""",
+        "hour_old": """FROM generate_series(
+    date_trunc('day', CURRENT_DATE - INTERVAL '1 day'),
+    date_trunc('day', CURRENT_DATE - INTERVAL '1 day') + INTERVAL '23 hours',
+    INTERVAL '1 hour'
+) AS h(hour)""",
+        "hour_current": """FROM generate_series(
+    date_trunc('day', NOW()),
+    date_trunc('hour', NOW()),
+    INTERVAL '1 hour'
+) AS h(hour)"""
+
+    }
+    
+    match time_unit:
+        case 'hours':
+            date_range = 23
+            agg_format = 'HH24:MI'
+        case 'days':
+            date_range = 6
+            agg_format = 'Dy'
+        case 'weeks':
+            date_range = 3
+            agg_format = 'DD-Mon'
+    return f"""
+
+  '{object_name}', (
+      SELECT json_build_object(
+          'labels', json_agg(to_char(day, '{agg_format}') ORDER BY {time_unit}),
+          'data', json_agg(co2_output ORDER BY {time_unit})
+      )
+      FROM (
+          SELECT
+              {t_name},
+              COALESCE(SUM(p.{column}),0) AS co2_output
+          {generate_series[series]}
+          LEFT JOIN prompts p
+    ON p.timestamp >= {t_name}
+    AND p.timestamp < {t_name} + INTERVAL '1 {time_units}'
+GROUP BY {t_name}
+ORDER BY {t_name};
+      ) s
+  ),
+ 
+
+
+"""
+# yesterday
+# use to_char('Dy')
+"""
+SELECT
+    h.hour,
+    COALESCE(SUM(p.co2_output_g), 0) AS co2_output
+FROM generate_series(
+    date_trunc('day', CURRENT_DATE - INTERVAL '1 day'),
+    date_trunc('day', CURRENT_DATE - INTERVAL '1 day') + INTERVAL '23 hours',
+    INTERVAL '1 hour'
+) AS h(hour)
+LEFT JOIN prompts p
+    ON p.timestamp >= h.hour
+    AND p.timestamp < h.hour + INTERVAL '1 hour'
+GROUP BY h.hour
+ORDER BY h.hour;"""
+# today
+"""SELECT
+    h.hour,
+    COALESCE(SUM(p.co2_output_g), 0) AS co2_output
+FROM generate_series(
+    date_trunc('day', NOW()),
+    date_trunc('hour', NOW()),
+    INTERVAL '1 hour'
+) AS h(hour)
+LEFT JOIN prompts p
+    ON p.timestamp >= h.hour
+    AND p.timestamp < h.hour + INTERVAL '1 hour'
+GROUP BY h.hour
+ORDER BY h.hour;"""
+# last week
+"""SELECT
+    d.day,
+    COALESCE(SUM(p.co2_output_g), 0) AS co2_output
+FROM generate_series(
+    date_trunc('week', CURRENT_DATE) - INTERVAL '1 week',
+    date_trunc('week', CURRENT_DATE) - INTERVAL '1 day',
+    INTERVAL '1 day'
+) AS d(day)
+LEFT JOIN prompts p
+    ON p.timestamp >= d.day
+    AND p.timestamp < d.day + INTERVAL '1 day'
+GROUP BY d.day
+ORDER BY d.day;"""
+# this week
+"""SELECT
+    d.day,
+    COALESCE(SUM(p.co2_output_g), 0) AS co2_output
+FROM generate_series(
+    date_trunc('week', CURRENT_DATE),
+    CURRENT_DATE,
+    INTERVAL '1 day'
+) AS d(day)
+LEFT JOIN prompts p
+    ON p.timestamp >= d.day
+    AND p.timestamp < d.day + INTERVAL '1 day'
+GROUP BY d.day
+ORDER BY d.day;"""
+
+#  '{object_name}', (
+#       SELECT json_build_object(
+#           'labels', json_agg(to_char(day, '{agg_format}') ORDER BY day),
+#           'data', json_agg(co2_output ORDER BY day)
+#       )
+#       FROM (
+#           SELECT
+#               d.day,
+#               COALESCE(SUM(p.{column}),0) AS co2_output
+#           FROM generate_series(
+#               CURRENT_DATE - INTERVAL '{date_range} {time_units}',   
+#               CURRENT_DATE,
+#               INTERVAL '1 {time_units}'
+#           ) AS d(day)
+#           LEFT JOIN prompts p
+#               ON p.timestamp >= d.day
+#               AND p.timestamp < d.day + INTERVAL '1 {time_units}'
+#           GROUP BY d.day
+#       ) s
+#   ),
+
+
+# SELECT json_build_object(
+#     'labels', json_agg(to_char(bucket,'DD Mon') ORDER BY bucket),
+#     'data', json_agg(value ORDER BY bucket)
+# )
+# FROM (
+#     SELECT
+#         bucket,
+#         COALESCE(SUM(p.co2_output_g),0) AS value
+#     FROM generate_series($START,$END,$STEP) AS g(bucket)
+#     LEFT JOIN prompts p
+#         ON p.timestamp >= g.bucket
+#         AND p.timestamp < g.bucket + $STEP
+#     GROUP BY bucket
+# ) s;
