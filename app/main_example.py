@@ -13,12 +13,16 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 
 from db.promptdb import PromptDB
 from db.pool import pool  # psycopg_pool.ConnectionPool
 from services.ingestion import Ingestion
 from scripts.energy_calc import compute_environmental_impact
 from caching.cache import redis_client
+from caching.prompt_data_caching import prompt_dump
+from caching.db_caching import db_dump
 
 # Logging setup
 # uses the built-in python logging module
@@ -30,6 +34,8 @@ logging.basicConfig(level=logging.INFO)
 
 # FastAPI app
 app = FastAPI()
+
+scheduler = AsyncIOScheduler()
 
 templates = Jinja2Templates(directory="templates")
 
@@ -83,7 +89,7 @@ stop_event = asyncio.Event()
 #     except asyncio.CancelledError:
 #         # this happens when the server is shut down == worker_task.cancel raises this error
 #         logger.info("[FlushWorker] Cancelled")
-import json
+
 
 async def flush_worker():
     try:
@@ -113,6 +119,13 @@ async def flush_worker():
     except asyncio.CancelledError:
         logger.info("[FlushWorker] Cancelled")
 
+async def generate_prompt_data():
+    prompt_dump()
+
+async def generate_db_dump():
+    db_dump()
+
+
 
 # FastAPI lifespan manager for startup/shutdown
 
@@ -124,6 +137,9 @@ async def lifespan(app: FastAPI):
     # Startup: launch flush worker
     worker_task = asyncio.create_task(flush_worker())
     logger.info("[Lifespan] Flush worker started")
+    scheduler.add_job(generate_prompt_data, 'cron', minute=1)
+    scheduler.add_job(generate_db_dump, 'cron', hours=0, minute=0)
+    scheduler.start()
     # yield pauses the execution of this function until it is called again
     # at that point the part after yield is exectuted
     yield
@@ -132,6 +148,7 @@ async def lifespan(app: FastAPI):
     stop_event.set()
     # and cancels the worker
     worker_task.cancel()
+    scheduler.shutdown()
     try:
         # this makes sure the program cannot stop while the worker is still running
         await worker_task

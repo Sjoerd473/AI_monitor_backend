@@ -27,6 +27,12 @@ class Retrieval(BaseService):
     def get_model_data(self):
         return self.db.get_dashboard_by_column("model")
     
+    def get_models_table(self):
+        return self.db.get_models_table()
+    
+    def get_all_data(self):
+        return self.db.get_all_data()
+    
    
 
     

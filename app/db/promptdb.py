@@ -28,14 +28,15 @@ class PromptDB:
             "water": "water_consumption_l",
             "co2": "co2_output_g",
             "energy": "energy_consumption_wh",
-            }
-        
+        }
+
         self.DIMENSIONS = {
-           "category": "domain",
+            "category": "domain",
             "model": "model_id"
-            }   
+        }
 
         self.TIME_CONFIG = {
+        
             "hour": {
                 "format": "HH24:MI",
                 "previous": (
@@ -65,7 +66,7 @@ class PromptDB:
             },
 
             "week": {
-                "format": "DD-Mon",
+                "format": "DD Mon",
                 "previous": (
                     "date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'",
                     "date_trunc('month', CURRENT_DATE) - INTERVAL '1 week'",
@@ -135,37 +136,7 @@ class PromptDB:
         return returned_ids
 
     
-    def _agg_cte(self, dimension=None):
-
-     metric_sql = [
-         f"SUM({col}) AS {metric}"
-         for metric, col in self.METRICS.items()
-     ]
-
-     dim_select = ""
-     dim_group = ""
-
-     if dimension:
-         col = self.DIMENSIONS[dimension]
-         dim_select = f", {col}"
-         dim_group = f", {col}"
-
-     return f"""
-     WITH agg AS (
-         SELECT
-             date_trunc('hour', timestamp) AS hour,
-             date_trunc('day', timestamp)  AS day,
-             date_trunc('week', timestamp) AS week
-             {dim_select},
-
-             {",".join(metric_sql)}
-
-         FROM prompts
-         WHERE timestamp >= date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'
-
-         GROUP BY 1,2,3 {dim_group}
-     )
-     """
+    
     
     def _chart_sql(self, metric, time_unit, period, dimension=None):
 
@@ -173,32 +144,47 @@ class PromptDB:
         start, end, interval = cfg[period]
         label_fmt = cfg["format"]
 
-        bucket = time_unit
+        column = self.METRICS[metric]
+
         key = f"{metric}_{time_unit}_{period}"
 
+        dim_select = ""
+        dim_group = ""
         dim_join = ""
 
         if dimension:
             col = self.DIMENSIONS[dimension]
-            dim_join = f"AND a.{col} = d.{col}"
+            dim_select = f", p.{col}"
+            dim_group = f", p.{col}"
+            dim_join = f" AND p.{col} = d.{col}"
 
         return f"""
         '{key}',
         (
             SELECT json_build_object(
-                'labels', json_agg(to_char(t,'{label_fmt}') ORDER BY t),
-                'data', json_agg(COALESCE(a.{metric},0) ORDER BY t)
+                'labels', json_agg(to_char(bucket,'{label_fmt}') ORDER BY bucket),
+                'data', json_agg(value ORDER BY bucket)
             )
+            FROM (
+                SELECT
+                    bucket
+                    {dim_select},
+                    COALESCE(SUM(p.{column}),0) AS value
 
-            FROM generate_series(
-                {start},
-                {end},
-                {interval}
-            ) t
+                FROM generate_series(
+                    {start},
+                    {end},
+                    {interval}
+                ) g(bucket)
 
-            LEFT JOIN agg a
-            ON a.{bucket} = t
-            {dim_join}
+                LEFT JOIN prompts p
+                ON p.timestamp >= g.bucket
+                AND p.timestamp < g.bucket + {interval}
+                {dim_join}
+
+                GROUP BY bucket {dim_group}
+                ORDER BY bucket
+            ) s
         )
         """
     
@@ -208,42 +194,39 @@ class PromptDB:
 
         for metric in self.METRICS:
             for time_unit in self.TIME_CONFIG:
-                for period in ("previous", "current"):
+                for period in ("previous","current"):
+
                     blocks.append(
                         self._chart_sql(metric, time_unit, period)
                     )
 
         return f"""
-        {self._agg_cte()}
-
         SELECT json_build_object(
             {",".join(blocks)}
         ) AS dashboard
         """
     
     def _build_dimension_query(self, dimension):
-
+        
         dim_col = self.DIMENSIONS[dimension]
-
+    
         blocks = []
-
+    
         for metric in self.METRICS:
             for time_unit in self.TIME_CONFIG:
-                for period in ("previous", "current"):
+                for period in ("previous","current"):
+                
                     blocks.append(
                         self._chart_sql(metric, time_unit, period, dimension)
                     )
-
+    
         return f"""
-        {self._agg_cte(dimension)}
-
         SELECT json_object_agg(
             d.{dim_col},
             json_build_object(
                 {",".join(blocks)}
             )
         ) AS dashboard
-
         FROM (
             SELECT DISTINCT {dim_col}
             FROM prompts
@@ -264,134 +247,41 @@ class PromptDB:
         result = self._read(query)
 
         return result[0]["dashboard"] # type: ignore
+    
+    def get_models_table(self):
+        query = """SELECT json_object_agg(
+          models.model_id::text, 
+          json_build_object(
+            'model_name', models.model_name,
+            'model_type', models.model_mode
+          )
+        ) AS models_json
+        FROM models;
+        """
+
+        return self._read(query)
+    
+    def get_all_data(self):
+
+        query = """SELECT json_build_object(
+  'schema_version', '1.0',
+  'exported_at', NOW(),
+  'users', (SELECT json_agg(row_to_json(u)::jsonb) FROM users u),
+  'users', (SELECT json_agg(row_to_json(u)) FROM users u),
+  'models', (SELECT json_agg(row_to_json(m)) FROM models m),
+  'sessions', (SELECT json_agg(row_to_json(s)) FROM sessions s),
+  'prompts', (SELECT json_agg(row_to_json(p)) FROM prompts p),
+  'responses', (SELECT json_agg(row_to_json(r)) FROM responses r),
+  'environment', (SELECT json_agg(row_to_json(e)) FROM environment e),
+  'ui_interactions', (SELECT json_agg(row_to_json(ui)) FROM ui_interactions ui)
+) AS db_json;"""
+
+        return self._read(query)
 
 
     
-
-    def _query_composer(self, object_name, func, column, time_unit, *, category=False, model=False):
-
-       configs = {
-           "hour": {
-               "format": "HH24:MI",
-               "previous": (
-                   "date_trunc('day', CURRENT_DATE - INTERVAL '1 day')",
-                   "date_trunc('day', CURRENT_DATE - INTERVAL '1 day') + INTERVAL '23 hours'",
-                   "INTERVAL '1 hour'"
-               ),
-               "current": (
-                   "date_trunc('day', NOW())",
-                   "date_trunc('hour', NOW())",
-                   "INTERVAL '1 hour'"
-               )
-           },
-
-           "day": {
-               "format": "Dy",
-               "previous": (
-                   "date_trunc('week', CURRENT_DATE) - INTERVAL '1 week'",
-                   "date_trunc('week', CURRENT_DATE) - INTERVAL '1 day'",
-                   "INTERVAL '1 day'"
-               ),
-               "current": (
-                   "date_trunc('week', CURRENT_DATE)",
-                   "CURRENT_DATE",
-                   "INTERVAL '1 day'"
-               )
-           },
-
-          "week": {
-               "format": "DD-Mon",
-                "previous": (
-                    "date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'",
-                    "date_trunc('month', CURRENT_DATE) - INTERVAL '1 week'",
-                    "INTERVAL '1 week'"
-                ),
-                "current": (
-                    "date_trunc('month', CURRENT_DATE)",
-                    "date_trunc('week', CURRENT_DATE)",
-                    "INTERVAL '1 week'"
-                )
-}
-       }
-
-       cfg = configs[time_unit]
-       agg_format = cfg["format"]
-       date_column = f"{time_unit[0]}.{time_unit}"
-       
-
-       sql_template = """
-       '{object_name}', (
-           SELECT json_build_object(
-               'labels', json_agg(to_char({time_unit}, '{agg_format}') ORDER BY {time_unit}),
-               'data', json_agg(value ORDER BY {time_unit})
-           )
-           FROM (
-               SELECT
-                   {date_column},
-                   COALESCE({func}(p.{column}), 0) AS value
-               FROM generate_series(
-                   {start},
-                   {end},
-                   {interval}
-               ) AS {alias}({time_unit})
-               LEFT JOIN prompts p
-                   ON p.timestamp >= {date_column}
-                   AND p.timestamp < {date_column} + INTERVAL '1 {time_unit}'
-               GROUP BY {date_column}
-               ORDER BY {date_column}
-           ) s
-       ),
-       """
-
-       queries = []
-
-       for period in ("previous", "current"):
-           start, end, interval = cfg[period]
-           object_name_complete = f"{object_name}_{period}"
-
-           queries.append(
-               sql_template.format(
-                   object_name=object_name_complete,
-                   time_unit=time_unit,
-                   agg_format=agg_format,
-                   date_column=date_column,
-                   func=func,
-                   column=column,
-                   start=start,
-                   end=end,
-                   interval=interval,
-                   alias=time_unit[0],
-               )
-           )
-
-       return queries
-# Public Methods #
-# this will be a list of all the queries we use, too messy?
-
-    def get_water(self, time_unit):
-        object_name = f'water_{time_unit}'
-        return self._query_composer(object_name, 'SUM', 'water_consumption_l', time_unit)
-    
-    def get_CO2(self, time_unit):
-        object_name = f'co2_{time_unit}'
-        return self._query_composer(object_name, 'SUM', 'co2_output_g', time_unit)
-    
-    def get_energy(self, time_unit):
-        object_name = f'energy_{time_unit}'
-        return self._query_composer(object_name, 'SUM', 'energy_consumption_wh', time_unit)
 
  
-    
-    def get_users(self):
-        return self._read("SELECT * FROM users")
-
-    def get_prompts(self):
-        return self._read("SELECT * FROM prompts")
-    
-  
-    
-    def get_models(self):
-        return self._read("SELECT model_id, model_name, model_mode FROM models")
     
     
             

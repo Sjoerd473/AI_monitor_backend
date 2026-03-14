@@ -26,7 +26,7 @@ To Do:
 - configure the pool DONE
 - add a .env file DONE
 
-- Write reading prompts
+- Write reading prompts DONE
 
 - clear up columns of consumption data > add mw, g etc. DONE
 
@@ -35,16 +35,18 @@ To Do:
 
 -- db_caching.py --
 
-- add all the functions that call the data we need for graphs
-- write all the data to a single .json file (with different objects for each graph)
+- add all the functions that call the data we need for graphs DONE
+- write all the data to a single .json file (with different objects for each graph) DONE
 - put it on a cronjob, or some other way to call the file each hour (or so)
+
+- Add a readme.md along with the whole dataset.json to explain relations between tables. Include the DB schema. Or, write down the PKs and FKs
 
 
 ----------------------
 
 -- main.py --
 
-- add an endpoint that returns the .json file with the graph data
+- add an endpoint that returns the .json file with the graph data NO NEED
 
 - add an endpoint that serves the graphs html page
 
