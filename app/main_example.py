@@ -137,8 +137,12 @@ async def lifespan(app: FastAPI):
     # Startup: launch flush worker
     worker_task = asyncio.create_task(flush_worker())
     logger.info("[Lifespan] Flush worker started")
+
+    await generate_db_dump()
+    await generate_prompt_data()
+
     scheduler.add_job(generate_prompt_data, 'cron', minute=1)
-    scheduler.add_job(generate_db_dump, 'cron', hours=0, minute=0)
+    scheduler.add_job(generate_db_dump, 'cron', hour=0, minute=0)
     scheduler.start()
     # yield pauses the execution of this function until it is called again
     # at that point the part after yield is exectuted

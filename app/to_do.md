@@ -37,7 +37,7 @@ To Do:
 
 - add all the functions that call the data we need for graphs DONE
 - write all the data to a single .json file (with different objects for each graph) DONE
-- put it on a cronjob, or some other way to call the file each hour (or so)
+- put it on a cronjob, or some other way to call the file each hour (or so) DONE
 
 - Add a readme.md along with the whole dataset.json to explain relations between tables. Include the DB schema. Or, write down the PKs and FKs
 
@@ -68,6 +68,8 @@ To Do:
 -- charts.html --
 
 - design the layout
+- make the charts look nice
+- they need the right labels
 - write the content
 
 
@@ -96,6 +98,7 @@ To Do:
 -- Misc ---
 
 - Write README for both parts
+- Write README for data
 - get plugin onto google play store
 - Minimize plugin
 - Write a github action to automatically update code on the server DONE
