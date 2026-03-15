@@ -1,0 +1,10 @@
+.chart-buttons button {
+    margin: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.chart-buttons button.active {
+    background: #007bff;
+    color: white;
+}

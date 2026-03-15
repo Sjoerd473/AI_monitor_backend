@@ -250,8 +250,13 @@ async def root(request:Request):
     return templates.TemplateResponse("index.html",  {"request": request,})
 
 @app.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request:Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+async def dashboard(request: Request):
+    import time
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "reload_timestamp": int(time.time())  # Unique per request
+    })
+
 
 @app.get("/data/dashboard.json")
 async def get_dashboard_data():
