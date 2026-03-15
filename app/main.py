@@ -6,6 +6,7 @@ import logging
 import hmac, hashlib
 import json
 from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI, Request, Header, HTTPException
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -138,8 +139,13 @@ async def lifespan(app: FastAPI):
     worker_task = asyncio.create_task(flush_worker())
     logger.info("[Lifespan] Flush worker started")
 
+    logger.info("Generating DB dump...")
     await generate_db_dump()
+    logger.info("DB dump complete")
+
+    logger.info("Generating prompt dump...")
     await generate_prompt_data()
+    logger.info("Prompt dump complete")
 
     scheduler.add_job(generate_prompt_data, 'cron', minute=1)
     scheduler.add_job(generate_db_dump, 'cron', hour=0, minute=0)
@@ -242,3 +248,15 @@ async def receive_event(request: Request, x_signature: str = Header(...)):
 @app.get("/", response_class=HTMLResponse)
 async def root(request:Request):
     return templates.TemplateResponse("index.html",  {"request": request,})
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request:Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
+
+@app.get("/data/dashboard.json")
+async def get_dashboard_data():
+    # Option 1: Serve static JSON file
+    file_path = "static/data/dashboard.json"
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+            return json.load(f)
