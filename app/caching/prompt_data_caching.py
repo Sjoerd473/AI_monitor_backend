@@ -18,7 +18,7 @@ def prompt_dump():
   with open(f"{DATA_DIR}/dashboard.json", "w") as f:
     json.dump(dashboard, f)
   
-  with open("{DATA_DIR}/models.json", "w") as f:
+  with open(f"{DATA_DIR}/models.json", "w") as f:
     json.dump(models, f) 
 
 
