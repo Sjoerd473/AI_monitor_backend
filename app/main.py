@@ -13,8 +13,10 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 
 
 from db.promptdb import PromptDB
@@ -176,6 +178,15 @@ async def lifespan(app: FastAPI):
         logger.info("[Lifespan] PromptDB pool closed")
 # this tells FastAPI to use this function to manage application lifecycle
 app.router.lifespan_context = lifespan
+
+# JUST FOR TESTING
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Shared secret for HMAC

@@ -18,6 +18,8 @@ To Do:
 
 -- DB --
 
+- Write a simple script to insert some models into the model table
+
 - add user_id to sessions table DONE
 - add uniqueness constraint to session_id + user_id in sessions DONE
 
@@ -48,7 +50,9 @@ To Do:
 
 - add an endpoint that returns the .json file with the graph data NO NEED
 
-- add an endpoint that serves the graphs html page
+- add an endpoint that serves the graphs html page DONE
+
+- change the security process from HMAC to short-lived tokens
 
 ----------------------
 
