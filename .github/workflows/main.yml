@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -e
-            cd /var/www/AI_monitor_backend
+            cd /srv/AI_monitor_backend
             git pull --ff-only origin main
             docker compose up -d --build
             docker image prune -f
