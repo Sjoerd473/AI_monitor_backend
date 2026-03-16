@@ -95,24 +95,26 @@ stop_event = asyncio.Event()
 
 
 async def flush_worker():
-    while not stop_event.is_set():
-        try:
+    try:
+        while not stop_event.is_set():
 
             batch = []
 
-            result = await redis_client.blpop("event_queue", timeout=5)
+            # Wait for first event
+            result = await redis_client.brpop("event_queue", timeout=5)
 
             if result is None:
                 continue
 
             _, event = result
-            batch.append(json.loads(event))
+            batch.append(json.loads(event.decode()))
 
+            # Drain additional events quickly
             for _ in range(99):
-                event = await redis_client.lpop("event_queue")
+                event = await redis_client.rpop("event_queue")
                 if not event:
                     break
-                batch.append(json.loads(event))
+                batch.append(json.loads(event.decode()))
 
             try:
                 ingestion.batch_insert(batch)
@@ -121,8 +123,8 @@ async def flush_worker():
             except Exception as e:
                 logger.error(f"[FlushWorker] DB error: {e}", exc_info=True)
 
-        except asyncio.CancelledError:
-            logger.info("[FlushWorker] Cancelled")
+    except asyncio.CancelledError:
+        logger.info("[FlushWorker] Cancelled")
 
 async def generate_prompt_data():
     prompt_dump()
