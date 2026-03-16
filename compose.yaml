@@ -6,7 +6,7 @@ services:
       resources:
         limits:
           memory: 512M
-          cpus: "0.8"
+          cpus: "0.4"
     depends_on:
       db:
         condition: service_healthy
@@ -33,7 +33,7 @@ services:
       resources:
         limits:
           memory: 256M
-          cpus: "0.2"
+          cpus: "0.1"
     ports:
       - "80:80"
       - "443:443"
@@ -60,7 +60,7 @@ services:
       resources:
         limits:
           memory: 796M
-          cpus: "0.7"
+          cpus: "0.4"
 
     # mem_limit: 1g
     # memswap_limit: 1g
@@ -93,7 +93,7 @@ services:
       resources:
         limits:
           memory: 256M
-          cpus: "0.3"
+          cpus: "0.1"
     command:
       - redis-server
       - --appendonly

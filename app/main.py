@@ -135,16 +135,21 @@ async def generate_db_dump():
 # run automatically, the part before yield on server start,
 # the part after yield on server stop
 async def lifespan(app: FastAPI):
+
+    logger.info("Opening DB connection pool...")
+    pool.open()
+    logger.info("DB pool opened")
+
     # Startup: launch flush worker
     worker_task = asyncio.create_task(flush_worker())
     logger.info("[Lifespan] Flush worker started")
 
     logger.info("Generating DB dump...")
-    await generate_db_dump()
+    asyncio.create_task(generate_db_dump())
     logger.info("DB dump complete")
 
     logger.info("Generating prompt dump...")
-    await generate_prompt_data()
+    asyncio.create_task(generate_prompt_data())
     logger.info("Prompt dump complete")
 
     scheduler.add_job(generate_prompt_data, 'cron', minute=1)
