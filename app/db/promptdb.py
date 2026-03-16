@@ -327,6 +327,7 @@ class PromptDB:
         sessions_rows = [
             (
                 b["session"]["session_id"],
+                b["user"]["user_id"],
                 b["session"]["session_start"],
                 b["session"]["session_prompt_count"],
                 b["session"]["session_duration_ms"]
