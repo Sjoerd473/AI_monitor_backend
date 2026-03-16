@@ -261,6 +261,9 @@ class PromptDB:
 
         return self._read(query)
     
+    def get_models(self):
+        return self._read("SELECT model_id, model_name, model_mode FROM models")
+    
     def get_all_data(self):
 
         query = """SELECT json_build_object(
