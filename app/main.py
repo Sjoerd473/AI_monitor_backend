@@ -100,7 +100,7 @@ async def flush_worker():
 
             # Wait for at least one event
             
-            _, event = await redis_client.blpop("event_queue") # type: ignore
+            _, event = await redis_client.blpop("event_queue", timeout=5) # type: ignore
             batch.append(json.loads(event))
 
             # After first event, drain more quickly
@@ -140,47 +140,40 @@ async def lifespan(app: FastAPI):
     pool.open()
     logger.info("DB pool opened")
 
-    # Startup: launch flush worker
     worker_task = asyncio.create_task(flush_worker())
     logger.info("[Lifespan] Flush worker started")
 
-    logger.info("Generating DB dump...")
-    asyncio.create_task(generate_db_dump())
-    logger.info("DB dump complete")
+    # Only one worker runs scheduler + dumps
+    if os.getenv("GUNICORN_WORKER_ID", "0") == "0":
 
-    logger.info("Generating prompt dump...")
-    asyncio.create_task(generate_prompt_data())
-    logger.info("Prompt dump complete")
+        logger.info("Generating DB dump...")
+        asyncio.create_task(generate_db_dump())
 
-    scheduler.add_job(generate_prompt_data, 'cron', minute=1)
-    scheduler.add_job(generate_db_dump, 'cron', hour=0, minute=0)
-    scheduler.start()
-    # yield pauses the execution of this function until it is called again
-    # at that point the part after yield is exectuted
+        logger.info("Generating prompt dump...")
+        asyncio.create_task(generate_prompt_data())
+
+        scheduler.add_job(generate_prompt_data, "cron", minute=1)
+        scheduler.add_job(generate_db_dump, "cron", hour=0, minute=0)
+
+        scheduler.start()
+        logger.info("Scheduler started")
+
     yield
-    # Shutdown: stop flush worker
-    # this tells the worker to stop
-    stop_event.set()
-    # and cancels the worker
-    worker_task.cancel()
-    scheduler.shutdown()
-    try:
-        # this makes sure the program cannot stop while the worker is still running
-        await worker_task
 
-        # when awaiting a cancelled task Python will throw the error again, so this ignores it
+    stop_event.set()
+    worker_task.cancel()
+
+    try:
+        await worker_task
     except asyncio.CancelledError:
         pass
 
-    # Close the pool cleanly
+    if scheduler.running:
+        scheduler.shutdown()
 
-    # this checks if the DB pool exists
     if hasattr(prompt_db, "pool") and prompt_db.pool:
-        # and closes it
-        # connection pools hold open database connections, so this way we avoid connection leaks
-        prompt_db.pool.close()  # Correct method for psycopg_pool
+        prompt_db.pool.close()
         logger.info("[Lifespan] PromptDB pool closed")
-
 # this tells FastAPI to use this function to manage application lifecycle
 app.router.lifespan_context = lifespan
 

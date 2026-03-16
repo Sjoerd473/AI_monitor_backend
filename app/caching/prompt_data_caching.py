@@ -1,5 +1,9 @@
 from services.retrieval import Retrieval
 import json
+import os
+
+DATA_DIR = "static/data"
+os.makedirs(DATA_DIR, exist_ok=True)
 
 db = Retrieval()
 def prompt_dump():
@@ -11,10 +15,10 @@ def prompt_dump():
   
   models = db.get_models_table()
   
-  with open("static/data/dashboard.json", "w") as f:
+  with open(f"{DATA_DIR}/dashboard.json", "w") as f:
     json.dump(dashboard, f)
   
-  with open("static/data/models.json", "w") as f:
+  with open("{DATA_DIR}/models.json", "w") as f:
     json.dump(models, f) 
 
 
