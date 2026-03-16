@@ -62,9 +62,9 @@ services:
           memory: 796M
           cpus: "0.7"
 
-    mem_limit: 1g
-    memswap_limit: 1g
-    shm_size: 256mb
+    # mem_limit: 1g
+    # memswap_limit: 1g
+    # shm_size: 256mb
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db_init:/docker-entrypoint-initdb.d/
