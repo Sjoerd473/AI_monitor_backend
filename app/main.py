@@ -99,7 +99,6 @@ async def flush_worker():
 
     while not stop_event.is_set():
         try:
-            # Wait for an event (blocks until one exists)
             result = await redis_client.blpop("event_queue", timeout=5)
 
             if result is None:
@@ -107,7 +106,7 @@ async def flush_worker():
 
             _, event = result
 
-            data = json.loads(event.decode())
+            data = json.loads(event)
 
             ingestion.batch_insert([data])
 
