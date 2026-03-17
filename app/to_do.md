@@ -53,6 +53,7 @@ To Do:
 - add an endpoint that serves the graphs html page DONE
 
 - change the security process from HMAC to short-lived tokens
+- add rate limiting to limit the amount of sends from a client
 
 ----------------------
 
@@ -81,8 +82,8 @@ To Do:
 
 -- VPS --
 
-- Clean up the VPS
-- Set up the VPS
+- Clean up the VPS DONE
+- Set up the VPS DONE
 
 ----------------------
 
@@ -106,6 +107,8 @@ To Do:
 - get plugin onto google play store
 - Minimize plugin
 - Write a github action to automatically update code on the server DONE
+
+- Add time stamps to logs
 
 - containerize the plugin DONE
 

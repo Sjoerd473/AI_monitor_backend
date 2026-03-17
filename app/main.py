@@ -99,7 +99,7 @@ async def flush_worker():
 
     while not stop_event.is_set():
         try:
-            result = await redis_client.blpop("event_queue", timeout=5)
+            result = await redis_client.blpop("event_queue", timeout=5) # type: ignore
 
             if result is None:
                 continue
@@ -174,7 +174,9 @@ app.router.lifespan_context = lifespan
 # JUST FOR TESTING
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins = [
+    "chrome-extension://enhmgcekbcibpljmgkpiljjfcnhljgdc"
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
