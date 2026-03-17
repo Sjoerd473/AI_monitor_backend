@@ -3,6 +3,8 @@ To Do:
 
 -- extension/content.js + backend/energy_calc --
 
+- handle models not in the energy_calc variables
+
 - the various text analysis functions of the plugin all need to be written with Regex
 - and then be expanded upon much more
 - make sure the constants in energy_calc_constants.py still match
