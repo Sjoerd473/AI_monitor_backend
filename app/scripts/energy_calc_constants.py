@@ -62,6 +62,12 @@ MODEL_REGISTRY = {
         "power_watts": 180,
         "latency_factor": 0.3
     },
+    ("claude-sonnet", "chat"): {
+        "energy_per_input_token": 0.00000034, # 0.34 Wh avg query / 1000 tokens
+        "energy_per_output_token": 0.00000068,
+        "power_watts": 180,
+        "latency_factor": 0.3
+    },
     ("unknown", "standard"): {
         "energy_per_input_token": 0.000002,
         "energy_per_output_token": 0.000004,
