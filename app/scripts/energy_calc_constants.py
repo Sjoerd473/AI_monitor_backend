@@ -80,6 +80,12 @@ MODEL_REGISTRY = {
     "power_watts": 300,
     "latency_factor": 0.1
 },
+("sonar", "standard"): {
+    "energy_per_input_token": 0.000001,
+    "energy_per_output_token": 0.000002,
+    "power_watts": 300,
+    "latency_factor": 0.1
+},
 }
 
 
