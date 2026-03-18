@@ -239,8 +239,8 @@ async def receive_event(request: Request, x_signature: str = Header(...)):
 
     data = await request.json()
 
-    impact_values = compute_environmental_impact(data)
-    data["prompt"].update(impact_values)
+    # impact_values = compute_environmental_impact(data)
+    # data["prompt"].update(impact_values)
 
     # Push event to Redis queue
     await redis_client.rpush("event_queue", json.dumps(data)) # type: ignore
