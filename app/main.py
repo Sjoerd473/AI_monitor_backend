@@ -114,11 +114,17 @@ async def flush_worker():
 
         except Exception as e:
             logger.error(f"[FlushWorker] Error: {e}", exc_info=True)
+
+
+
 async def generate_prompt_data():
-    prompt_dump()
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, prompt_dump)
+
 
 async def generate_db_dump():
-    db_dump()
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, db_dump)
 
 
 
