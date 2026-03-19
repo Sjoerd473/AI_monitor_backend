@@ -9,12 +9,12 @@ To Do:
 - and then be expanded upon much more
 - make sure the constants in energy_calc_constants.py still match
 
-- handle viewport insertion better, needs to be mobile/tablet/desktop depending on size
+- handle viewport insertion better, needs to be mobile/tablet/desktop depending on size DONE
 
 - handle region detection based on timezone offset, drop renewable from constants?
 
-- move energy calculations to the extension perhaps?
-- might be useful for the future, to show user data to the user without DB queries
+- move energy calculations to the extension perhaps? DONE
+- might be useful for the future, to show user data to the user without DB queries DONE
 
 ---------------------
 
@@ -25,7 +25,9 @@ To Do:
 - add user_id to sessions table DONE
 - add uniqueness constraint to session_id + user_id in sessions DONE
 
+- use conversation_id, definetly, grab it from the url, different per AI
 - decide whether to use the conversation_id or a session_id to monitor sessions > conv_id might work more consistently
+
 
 - configure the pool DONE
 - add a .env file DONE

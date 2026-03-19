@@ -39,9 +39,3 @@ class Retrieval(BaseService):
     
     
     
-   
-
-# this is just for testing, to be deleted
-if __name__ == "__main__":
-    r = Retrieval()
-    

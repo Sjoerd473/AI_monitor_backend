@@ -13,13 +13,13 @@ def prompt_dump():
       # "models": db.get_model_data()
   }
   
-  # models = db.get_models_table()
+  models = db.get_models_table()
   
   with open(f"{DATA_DIR}/dashboard.json", "w") as f:
     json.dump(dashboard, f)
   
-  # with open(f"{DATA_DIR}/models.json", "w") as f:
-  #   json.dump(models, f) 
+  with open(f"{DATA_DIR}/models.json", "w") as f:
+    json.dump(models, f) 
 
 
 # this file will query the DB for the data we need, then save it in a .json file
