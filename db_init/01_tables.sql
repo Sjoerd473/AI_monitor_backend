@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS ui_interactions (
 
 CREATE TABLE api_tokens (
     id          SERIAL PRIMARY KEY,
-    user_id     TEXT NOT NULL UNIQUE REFERENCES users(user_id),   -- your existing stable user_id
-    token_hash  TEXT NOT NULL UNIQUE,   -- SHA-256 of the raw token
+    user_id     TEXT NOT NULL UNIQUE REFERENCES users(user_id),   
+    token_hash  TEXT NOT NULL UNIQUE, 
     created_at  TIMESTAMPTZ DEFAULT now(),
     last_used   TIMESTAMPTZ
 );
