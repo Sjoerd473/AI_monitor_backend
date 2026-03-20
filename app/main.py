@@ -183,18 +183,21 @@ async def lifespan(app: FastAPI):
 
     stop_event.set()
     worker_task.cancel()
-
+    
     try:
         await worker_task
     except asyncio.CancelledError:
         pass
-
+    
     if scheduler.running:
         scheduler.shutdown()
-
-    if hasattr(prompt_db, "pool") and prompt_db.pool:
-        prompt_db.pool.close()
-        logger.info("[Lifespan] PromptDB pool closed")
+    
+    # always close the pool, no conditions
+    try:
+        pool.close()
+        logger.info("[Lifespan] Pool closed")
+    except Exception as e:
+        logger.error(f"[Lifespan] Pool close failed: {e}")
 # this tells FastAPI to use this function to manage application lifecycle
 app.router.lifespan_context = lifespan
 
