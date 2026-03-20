@@ -10,7 +10,7 @@ def prompt_dump():
   dashboard = {
       "prompts" : db.get_prompt_data(),
       "categories": db.get_category_data(),
-      # "models": db.get_model_data()
+      "models": db.get_model_data()
   }
   
   models = db.get_models_table()

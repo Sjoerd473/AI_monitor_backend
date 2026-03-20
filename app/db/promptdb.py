@@ -31,8 +31,15 @@ class PromptDB:
         }
 
         self.DIMENSIONS = {
-            "category": "domain",
-            "model": "model_id"
+            "category": {
+            "col": "domain",
+            "join": None
+            },
+
+            "model": {
+                "col": "model_name",
+                "join": "JOIN models ON models.model_id = p.model_id"
+            }
         }
 
         self.TIME_CONFIG = {
@@ -139,24 +146,23 @@ class PromptDB:
     
     
     def _chart_sql(self, metric, time_unit, period, dimension=None):
-
         cfg = self.TIME_CONFIG[time_unit]
         start, end, interval = cfg[period]
         label_fmt = cfg["format"]
-
         column = self.METRICS[metric]
-
         key = f"{metric}_{time_unit}_{period}"
 
         dim_select = ""
         dim_group = ""
         dim_join = ""
+        dim_filter = ""
 
         if dimension:
-            col = self.DIMENSIONS[dimension]
-            dim_select = f", p.{col}"
-            dim_group = f", p.{col}"
-            dim_join = f" AND p.{col} = d.{col}"
+            dim_cfg = self.DIMENSIONS[dimension]
+            col = dim_cfg["col"]
+            dim_select = f", p_outer.{col}"          # changed
+            dim_group = f", p_outer.{col}"           # changed
+            dim_filter = f" AND p.{col} = p_outer.{col}"
 
         return f"""
         '{key}',
@@ -170,24 +176,20 @@ class PromptDB:
                     bucket
                     {dim_select},
                     COALESCE(SUM(p.{column}),0) AS value
-
                 FROM generate_series(
                     {start},
                     {end},
                     {interval}
                 ) g(bucket)
-
                 LEFT JOIN prompts p
                 ON p.timestamp >= g.bucket
                 AND p.timestamp < g.bucket + {interval}
-                {dim_join}
-
+                {dim_filter}
                 GROUP BY bucket {dim_group}
                 ORDER BY bucket
             ) s
         )
         """
-    
     def _build_global_query(self):
 
         blocks = []
@@ -207,30 +209,28 @@ class PromptDB:
         """
     
     def _build_dimension_query(self, dimension):
-        
-        dim_col = self.DIMENSIONS[dimension]
+        dim_cfg = self.DIMENSIONS[dimension]
+        dim_col = dim_cfg["col"]
+        dim_join = dim_cfg["join"] or ""
     
         blocks = []
-    
         for metric in self.METRICS:
             for time_unit in self.TIME_CONFIG:
-                for period in ("previous","current"):
-                
-                    blocks.append(
-                        self._chart_sql(metric, time_unit, period, dimension)
-                    )
+                for period in ("previous", "current"):
+                    blocks.append(self._chart_sql(metric, time_unit, period, dimension))
     
         return f"""
         SELECT json_object_agg(
-            d.{dim_col},
+            p_outer.{dim_col},
             json_build_object(
                 {",".join(blocks)}
             )
         ) AS dashboard
         FROM (
-            SELECT DISTINCT {dim_col}
-            FROM prompts
-        ) d
+            SELECT DISTINCT p.{dim_col}
+            FROM prompts p
+            {dim_join}
+        ) p_outer
         """
     
     def get_dashboard_global(self):
