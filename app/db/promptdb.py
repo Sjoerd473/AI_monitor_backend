@@ -32,13 +32,14 @@ class PromptDB:
 
         self.DIMENSIONS = {
             "category": {
-            "col": "domain",
-            "join": None
+                "col": "domain",
+                "join": None,
+                "table": "p"        # domain lives on prompts
             },
-
             "model": {
                 "col": "model_name",
-                "join": "JOIN models ON models.model_id = p.model_id"
+                "join": "JOIN models ON models.model_id = p.model_id",
+                "table": "models"   # model_name lives on models
             }
         }
 
@@ -160,9 +161,11 @@ class PromptDB:
         if dimension:
             dim_cfg = self.DIMENSIONS[dimension]
             col = dim_cfg["col"]
-            dim_select = f", p_outer.{col}"          # changed
-            dim_group = f", p_outer.{col}"           # changed
-            dim_filter = f" AND p.{col} = p_outer.{col}"
+            table = dim_cfg["table"]
+            dim_join   = dim_cfg["join"] or ""      # ← use the stored join
+            dim_select = f", p_outer.{col}"
+            dim_group  = f", p_outer.{col}"
+            dim_filter = f" AND {table}.{col} = p_outer.{col}"
 
         return f"""
         '{key}',
@@ -184,6 +187,7 @@ class PromptDB:
                 LEFT JOIN prompts p
                 ON p.timestamp >= g.bucket
                 AND p.timestamp < g.bucket + {interval}
+                {dim_join}
                 {dim_filter}
                 GROUP BY bucket {dim_group}
                 ORDER BY bucket
@@ -212,17 +216,19 @@ class PromptDB:
         dim_cfg = self.DIMENSIONS[dimension]
         dim_col = dim_cfg["col"]
         dim_join = dim_cfg["join"] or ""
-    
+
         # Use the correct table alias for the distinct column
         # For "model", model_name comes from the joined "models" table, not "p"
-        distinct_table = "models" if dim_join else "p"
-    
+       
+        distinct_table = dim_cfg["table"]
+
         blocks = []
         for metric in self.METRICS:
             for time_unit in self.TIME_CONFIG:
                 for period in ("previous", "current"):
                     blocks.append(self._chart_sql(metric, time_unit, period, dimension))
-    
+
+
         return f"""
         SELECT json_object_agg(
             p_outer.{dim_col},
