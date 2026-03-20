@@ -33,13 +33,13 @@ class PromptDB:
         self.DIMENSIONS = {
             "category": {
                 "col": "domain",
-                "join": None,
-                "table": "p"        # domain lives on prompts
+                "join": "",
+                "table": "p"
             },
             "model": {
                 "col": "model_name",
-                "join": "JOIN models ON models.model_id = p.model_id",
-                "table": "models"   # model_name lives on models
+                "join": "LEFT JOIN models ON models.model_id = p.model_id",
+                "table": "models"
             }
         }
 
@@ -184,8 +184,8 @@ class PromptDB:
                 LEFT JOIN prompts p
                     ON p.timestamp >= g.bucket
                     AND p.timestamp < g.bucket + {interval}
-                    {dim_join}
                     {dim_filter}
+                {dim_join}
                 GROUP BY g.bucket
                 ORDER BY g.bucket
             ) s
