@@ -33,6 +33,9 @@ class Retrieval(BaseService):
     def get_all_data(self):
         return self.db.get_all_data()
     
+    def get_token(self, token_hash):
+        return self.db.get_token(token_hash)
+    
    
 
     

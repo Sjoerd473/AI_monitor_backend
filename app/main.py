@@ -3,12 +3,12 @@ load_dotenv()
 
 import asyncio
 import logging
-import hmac, hashlib
+import secrets, hashlib
 import json
 from contextlib import asynccontextmanager
 import os
 
-from fastapi import FastAPI, Request, Header, HTTPException
+from fastapi import FastAPI, Request, Header, HTTPException, Depends
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,7 +22,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from db.promptdb import PromptDB
 from db.pool import pool  # psycopg_pool.ConnectionPool
 from services.ingestion import Ingestion
-from scripts.energy_calc import compute_environmental_impact
+from services.retrieval import Retrieval
 from caching.cache import redis_client
 from caching.prompt_data_caching import prompt_dump
 from caching.db_caching import db_dump
@@ -48,6 +48,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Initialize PromptDB + Ingestion
 prompt_db = PromptDB(pool)
 ingestion = Ingestion()  # ingestion.db is already PromptDB(pool)
+retrieval = Retrieval()
 
 # Buffer for batching events
 buffer = []
@@ -126,6 +127,20 @@ async def generate_db_dump():
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, db_dump)
 
+def verify_token(authorization: str = Header(...)):
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid auth header")
+
+    raw_token = authorization.removeprefix("Bearer ")
+    token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
+
+    row = retrieval.get_token(token_hash)
+    if not row:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    ingestion.update_token_last_used(token_hash)
+    return row["user_id"]
+
 
 
 # FastAPI lifespan manager for startup/shutdown
@@ -189,8 +204,7 @@ app.add_middleware(
 )
 
 
-# Shared secret for HMAC
-SECRET_KEY = b"super_secret_key_here"
+
 
 
 # @app.post("/events")
@@ -228,29 +242,36 @@ SECRET_KEY = b"super_secret_key_here"
 #     # we return a message to the extension to confirm we received the data
 #     return {"status": "received"}
 
+# Shared secret for HMAC
+SECRET_KEY = b"super_secret_key_here"
+
+
+# @app.post("/events")
+# async def receive_event(request: Request, x_signature: str = Header(...)):
+#     raw_body = await request.body()
+#     payload_string = raw_body.decode("utf-8")
+
+#     computed_hmac = hmac.new(
+#         SECRET_KEY,
+#         payload_string.encode("utf-8"),
+#         hashlib.sha256
+#     ).hexdigest()
+
+#     if not hmac.compare_digest(computed_hmac, x_signature):
+#         raise HTTPException(status_code=403, detail="Invalid signature")
+
+#     data = await request.json()
+
+#     # Push event to Redis queue
+#     await redis_client.rpush("event_queue", json.dumps(data)) # type: ignore
+
+#     return {"status": "queued"}
 
 @app.post("/events")
-async def receive_event(request: Request, x_signature: str = Header(...)):
-    raw_body = await request.body()
-    payload_string = raw_body.decode("utf-8")
-
-    computed_hmac = hmac.new(
-        SECRET_KEY,
-        payload_string.encode("utf-8"),
-        hashlib.sha256
-    ).hexdigest()
-
-    if not hmac.compare_digest(computed_hmac, x_signature):
-        raise HTTPException(status_code=403, detail="Invalid signature")
-
+async def receive_event(request: Request, user_id: str = Depends(verify_token)):
     data = await request.json()
-
-    # impact_values = compute_environmental_impact(data)
-    # data["prompt"].update(impact_values)
-
-    # Push event to Redis queue
+    data["user_id"] = user_id  # now server-authoritative, not from payload
     await redis_client.rpush("event_queue", json.dumps(data)) # type: ignore
-
     return {"status": "queued"}
 
 
@@ -274,3 +295,27 @@ async def get_dashboard_data():
     if os.path.exists(file_path):
         with open(file_path, "r") as f:
             return json.load(f)
+        
+
+
+@app.post("/register")
+async def register(request: Request):
+    data = await request.json()
+    user_id = data.get("user_id")  # the stable ID from the extension
+
+    # Generate a raw token — this is the ONLY time it exists in plaintext
+    raw_token = secrets.token_hex(32)
+    token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
+
+    await ingestion.insert_token(user_id, token_hash) # type: ignore
+    
+    # db.execute("""
+    #     INSERT INTO api_tokens (user_id, token_hash)
+    #     VALUES ($1, $2)
+    #     ON CONFLICT (user_id) DO UPDATE SET
+    #         token_hash = EXCLUDED.token_hash,
+    #         created_at = now()
+    # """, user_id, token_hash)
+
+    # Raw token is returned ONCE and never stored server-side
+    return {"token": raw_token}

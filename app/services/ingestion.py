@@ -11,5 +11,11 @@ class Ingestion(BaseService):
     def batch_insert(self, batch):
         self.db.insert_prompts(batch) 
 
+    def insert_token(self, user_id, token_hash):
+        self.db.insert_token(user_id, token_hash)
+    
+    def update_token_last_used(self, token_hash):
+        self.db.update_token_last_used(token_hash)
+
 
 

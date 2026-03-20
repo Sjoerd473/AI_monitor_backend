@@ -153,8 +153,8 @@ class PromptDB:
         column = self.METRICS[metric]
         key = f"{metric}_{time_unit}_{period}"
 
-        dim_select = ""
-        dim_group = ""
+        # dim_select = ""
+        # dim_group = ""
         dim_join = ""
         dim_filter = ""
 
@@ -279,25 +279,42 @@ class PromptDB:
     def get_all_data(self):
 
         query = """SELECT json_build_object(
-  'schema_version', '1.0',
-  'exported_at', NOW(),
-  'users', (SELECT json_agg(row_to_json(u)::jsonb) FROM users u),
-  'users', (SELECT json_agg(row_to_json(u)) FROM users u),
-  'models', (SELECT json_agg(row_to_json(m)) FROM models m),
-  'sessions', (SELECT json_agg(row_to_json(s)) FROM sessions s),
-  'prompts', (SELECT json_agg(row_to_json(p)) FROM prompts p),
-  'responses', (SELECT json_agg(row_to_json(r)) FROM responses r),
-  'environment', (SELECT json_agg(row_to_json(e)) FROM environment e),
-  'ui_interactions', (SELECT json_agg(row_to_json(ui)) FROM ui_interactions ui)
-) AS db_json;"""
+          'schema_version', '1.0',
+          'exported_at', NOW(),
+          'users', (SELECT json_agg(row_to_json(u)::jsonb) FROM users u),
+          'users', (SELECT json_agg(row_to_json(u)) FROM users u),
+          'models', (SELECT json_agg(row_to_json(m)) FROM models m),
+          'sessions', (SELECT json_agg(row_to_json(s)) FROM sessions s),
+          'prompts', (SELECT json_agg(row_to_json(p)) FROM prompts p),
+          'responses', (SELECT json_agg(row_to_json(r)) FROM responses r),
+          'environment', (SELECT json_agg(row_to_json(e)) FROM environment e),
+          'ui_interactions', (SELECT json_agg(row_to_json(ui)) FROM ui_interactions ui)
+        ) AS db_json;"""
 
         return self._read(query)
 
 
-    
+    def get_token(self, token_hash):
+        query = "SELECT user_id FROM api_tokens WHERE token_hash = %s"
+        result = self._read(query, (token_hash,))
+        return result[0] if result else None
+
+    def update_token_last_used(self, token_hash):
+        query = "UPDATE api_tokens SET last_used = now() WHERE token_hash = %s"
+        self._write(query, (token_hash,))
 
  
-    
+    def insert_token(self,user_id, token_hash):
+
+        query = """
+             INSERT INTO api_tokens (user_id, token_hash)
+             VALUES (%s, %s)
+             ON CONFLICT (user_id) DO UPDATE SET
+                 token_hash = EXCLUDED.token_hash,
+                 created_at = now()
+        """
+        return self._write(query, (user_id, token_hash))
+
     
             
     def insert_prompts(self, batch):
@@ -432,240 +449,3 @@ class PromptDB:
         self._write_many(self.INSERT_QUERIES["responses"], responses_rows)
         self._write_many(self.INSERT_QUERIES["environment"], env_rows)
         self._write_many(self.INSERT_QUERIES["ui"], ui_rows) 
-
-
-# date_trunc(interval, timestamp) cuts off the smaller time units of a timestamp so everything aligns to a clean boundary.
-
-
-# This selects all the sessions per day/week/month/year, one row for each timeunit
-#     SELECT date_trunc('month', session_start), count(*)
-# FROM sessions
-# GROUP BY 1
-# ORDER BY 1
-# LIMIT X > 7 for days, 4 for weeks, or whatever
-# this only works if there is data for these dates, otherwise skips over
-
-# SELECT date_trunc('day', timestamp), sum(co2_output)
-# FROM prompts
-# GROUP BY 1
-# ORDER BY 1
-# LIMIT 7
-
-# SELECT json_build_object(
-#     'labels', json_agg(to_char(day, 'YYYY-MM-DD') ORDER BY day),
-#     'data', json_agg(co2_output ORDER BY day)
-# )
-# FROM (
-#     SELECT
-#         d.day,
-#         COALESCE(SUM(p.co2_output_g), 0) AS co2_output
-#     FROM generate_series(
-#         CURRENT_DATE - INTERVAL '6 days',
-#         CURRENT_DATE,
-#         INTERVAL '1 day'
-#     ) AS d(day)
-#     LEFT JOIN prompts p
-#         ON p.timestamp >= d.day
-#         AND p.timestamp < d.day + INTERVAL '1 day'
-#     GROUP BY d.day
-# ) stats;
-
-# SELECT json_build_object(
-
-#   'co2_per_day', (
-#       SELECT json_build_object(
-#           'labels', json_agg(to_char(day, 'YYYY-MM-DD') ORDER BY day),
-#           'data', json_agg(co2_output ORDER BY day)
-#       )
-#       FROM (
-#           SELECT
-#               d.day,
-#               COALESCE(SUM(p.co2_output_g),0) AS co2_output
-#           FROM generate_series(
-#               CURRENT_DATE - INTERVAL '6 days',   
-#               CURRENT_DATE,
-#               INTERVAL '1 day'
-#           ) AS d(day)
-#           LEFT JOIN prompts p
-#               ON p.timestamp >= d.day
-#               AND p.timestamp < d.day + INTERVAL '1 day'
-#           GROUP BY d.day
-#       ) s
-#   ),
-
-#   'prompts_per_model', (
-#       SELECT json_build_object(
-#           'labels', json_agg(model_name),
-#           'data', json_agg(prompt_count)
-#       )
-#       FROM (
-#           SELECT
-#               m.model_name,
-#               COUNT(*) AS prompt_count
-#           FROM prompts p
-#           JOIN models m ON p.model_id = m.model_id
-#           GROUP BY m.model_name
-#       ) s 
-#   )
-
-# );
-
-def test(object_name, series, column, time_unit):
-    date_range = 0
-    agg_format = ''
-    time_units = time_unit + 's'
-    char = time_units[0]
-    t_name = f"{char}.{time_unit}"
-
-    generate_series = {
-        "day_old" : """FROM generate_series(
-    date_trunc('week', CURRENT_DATE) - INTERVAL '1 week',
-    date_trunc('week', CURRENT_DATE) - INTERVAL '1 day',
-    INTERVAL '1 day'
-) AS d(day)""",
-        "day_current": """FROM generate_series(
-    date_trunc('week', CURRENT_DATE),
-    CURRENT_DATE,
-    INTERVAL '1 day'
-) AS d(day)""",
-        "hour_old": """FROM generate_series(
-    date_trunc('day', CURRENT_DATE - INTERVAL '1 day'),
-    date_trunc('day', CURRENT_DATE - INTERVAL '1 day') + INTERVAL '23 hours',
-    INTERVAL '1 hour'
-) AS h(hour)""",
-        "hour_current": """FROM generate_series(
-    date_trunc('day', NOW()),
-    date_trunc('hour', NOW()),
-    INTERVAL '1 hour'
-) AS h(hour)"""
-
-    }
-    
-    match time_unit:
-        case 'hours':
-            date_range = 23
-            agg_format = 'HH24:MI'
-        case 'days':
-            date_range = 6
-            agg_format = 'Dy'
-        case 'weeks':
-            date_range = 3
-            agg_format = 'DD-Mon'
-    return f"""
-
-  '{object_name}', (
-      SELECT json_build_object(
-          'labels', json_agg(to_char(day, '{agg_format}') ORDER BY {time_unit}),
-          'data', json_agg(co2_output ORDER BY {time_unit})
-      )
-      FROM (
-          SELECT
-              {t_name},
-              COALESCE(SUM(p.{column}),0) AS co2_output
-          {generate_series[series]}
-          LEFT JOIN prompts p
-    ON p.timestamp >= {t_name}
-    AND p.timestamp < {t_name} + INTERVAL '1 {time_units}'
-GROUP BY {t_name}
-ORDER BY {t_name};
-      ) s
-  ),
- 
-
-
-"""
-# yesterday
-# use to_char('Dy')
-"""
-SELECT
-    h.hour,
-    COALESCE(SUM(p.co2_output_g), 0) AS co2_output
-FROM generate_series(
-    date_trunc('day', CURRENT_DATE - INTERVAL '1 day'),
-    date_trunc('day', CURRENT_DATE - INTERVAL '1 day') + INTERVAL '23 hours',
-    INTERVAL '1 hour'
-) AS h(hour)
-LEFT JOIN prompts p
-    ON p.timestamp >= h.hour
-    AND p.timestamp < h.hour + INTERVAL '1 hour'
-GROUP BY h.hour
-ORDER BY h.hour;"""
-# today
-"""SELECT
-    h.hour,
-    COALESCE(SUM(p.co2_output_g), 0) AS co2_output
-FROM generate_series(
-    date_trunc('day', NOW()),
-    date_trunc('hour', NOW()),
-    INTERVAL '1 hour'
-) AS h(hour)
-LEFT JOIN prompts p
-    ON p.timestamp >= h.hour
-    AND p.timestamp < h.hour + INTERVAL '1 hour'
-GROUP BY h.hour
-ORDER BY h.hour;"""
-# last week
-"""SELECT
-    d.day,
-    COALESCE(SUM(p.co2_output_g), 0) AS co2_output
-FROM generate_series(
-    date_trunc('week', CURRENT_DATE) - INTERVAL '1 week',
-    date_trunc('week', CURRENT_DATE) - INTERVAL '1 day',
-    INTERVAL '1 day'
-) AS d(day)
-LEFT JOIN prompts p
-    ON p.timestamp >= d.day
-    AND p.timestamp < d.day + INTERVAL '1 day'
-GROUP BY d.day
-ORDER BY d.day;"""
-# this week
-"""SELECT
-    d.day,
-    COALESCE(SUM(p.co2_output_g), 0) AS co2_output
-FROM generate_series(
-    date_trunc('week', CURRENT_DATE),
-    CURRENT_DATE,
-    INTERVAL '1 day'
-) AS d(day)
-LEFT JOIN prompts p
-    ON p.timestamp >= d.day
-    AND p.timestamp < d.day + INTERVAL '1 day'
-GROUP BY d.day
-ORDER BY d.day;"""
-
-#  '{object_name}', (
-#       SELECT json_build_object(
-#           'labels', json_agg(to_char(day, '{agg_format}') ORDER BY day),
-#           'data', json_agg(co2_output ORDER BY day)
-#       )
-#       FROM (
-#           SELECT
-#               d.day,
-#               COALESCE(SUM(p.{column}),0) AS co2_output
-#           FROM generate_series(
-#               CURRENT_DATE - INTERVAL '{date_range} {time_units}',   
-#               CURRENT_DATE,
-#               INTERVAL '1 {time_units}'
-#           ) AS d(day)
-#           LEFT JOIN prompts p
-#               ON p.timestamp >= d.day
-#               AND p.timestamp < d.day + INTERVAL '1 {time_units}'
-#           GROUP BY d.day
-#       ) s
-#   ),
-
-
-# SELECT json_build_object(
-#     'labels', json_agg(to_char(bucket,'DD Mon') ORDER BY bucket),
-#     'data', json_agg(value ORDER BY bucket)
-# )
-# FROM (
-#     SELECT
-#         bucket,
-#         COALESCE(SUM(p.co2_output_g),0) AS value
-#     FROM generate_series($START,$END,$STEP) AS g(bucket)
-#     LEFT JOIN prompts p
-#         ON p.timestamp >= g.bucket
-#         AND p.timestamp < g.bucket + $STEP
-#     GROUP BY bucket
-# ) s;

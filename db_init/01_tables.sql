@@ -65,6 +65,14 @@ CREATE TABLE IF NOT EXISTS ui_interactions (
   tool_active BOOL NOT NULL
 );
 
+CREATE TABLE api_tokens (
+    id          SERIAL PRIMARY KEY,
+    user_id     TEXT NOT NULL UNIQUE REFERENCES users(user_id),   -- your existing stable user_id
+    token_hash  TEXT NOT NULL UNIQUE,   -- SHA-256 of the raw token
+    created_at  TIMESTAMPTZ DEFAULT now(),
+    last_used   TIMESTAMPTZ
+);
+
 CREATE INDEX IF NOT EXISTS idx_prompts_user_id ON prompts(user_id);
 CREATE INDEX IF NOT EXISTS idx_prompts_session_id ON prompts(session_id);
 CREATE INDEX IF NOT EXISTS idx_prompts_model_id ON prompts(model_id);

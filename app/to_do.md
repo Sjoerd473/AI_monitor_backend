@@ -99,7 +99,7 @@ To Do:
 
 -- Plugin --
 
-- support other AI sites Gemini, claude? perplexity
+- support other AI sites Gemini, claude? perplexity DONE
 
 
 ----------------------
@@ -137,4 +137,4 @@ so I would have to write a seperate python file that executes these queries and 
 
 0 * * * * /usr/bin/python3 /home/sjoerd/yourproject/precompute_cache.py hourly run for file
 
-- Remeber to write the correct dotenv file on the server
+- Remeber to write the correct dotenv file on the server DONE
