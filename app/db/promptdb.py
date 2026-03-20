@@ -314,6 +314,20 @@ class PromptDB:
                  created_at = now()
         """
         return self._write(query, (user_id, token_hash))
+    
+    def log_download(self, user_id):
+        query = "INSERT INTO download_log (user_id) VALUES (%s)"
+        self._write(query, (user_id,))
+
+    def get_last_download(self, user_id):
+        query = """
+            SELECT downloaded_at FROM download_log
+            WHERE user_id = %s
+            ORDER BY downloaded_at DESC
+            LIMIT 1
+        """
+        result = self._read(query, (user_id,))
+        return result[0] if result else None
 
     
             

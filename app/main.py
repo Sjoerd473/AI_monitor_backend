@@ -7,15 +7,21 @@ import secrets, hashlib
 import json
 from contextlib import asynccontextmanager
 import os
+import zipfile
+import io
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, Request, Header, HTTPException, Depends
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+
+
 
 
 
@@ -319,3 +325,32 @@ async def register(request: Request):
 
     # Raw token is returned ONCE and never stored server-side
     return {"token": raw_token}
+
+
+@app.get("/download/dataset")
+async def download_dataset(user_id: str = Depends(verify_token)):
+    
+    # Check if user has already downloaded today
+    last_download = retrieval.get_last_download(user_id)
+    
+    if last_download:
+        last_dt = last_download["downloaded_at"]
+        today = datetime.now(timezone.utc).date()
+        if last_dt.date() == today:
+            raise HTTPException(status_code=429, detail="Daily download limit reached")
+
+    # Log the download
+    ingestion.log_download(user_id)
+
+    # Build zip in memory
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.write("static/data/AI_monitor_dataset.json", "AI_monitor_dataset.json")
+        zf.write("static/data/README.md", "README.md")
+    zip_buffer.seek(0)
+
+    return StreamingResponse(
+        zip_buffer,
+        media_type="application/zip",
+        headers={"Content-Disposition": "attachment; filename=AI_monitor_dataset.zip"}
+    )

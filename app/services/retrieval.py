@@ -36,6 +36,9 @@ class Retrieval(BaseService):
     def get_token(self, token_hash):
         return self.db.get_token(token_hash)
     
+    def get_last_download(self, user_id):
+        return self.db.get_last_download(user_id)
+    
    
 
     
