@@ -257,7 +257,6 @@ class PromptDB:
 
     def get_dashboard_by_column(self, column):
         query = self._build_dimension_query(column)
-        print(query)  # <-- add this
         result = self._read(query)
         return result[0]["dashboard"] # type: ignore
     
