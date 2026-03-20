@@ -2,7 +2,7 @@ from services.retrieval import Retrieval
 import json
 import os
 
-DATA_DIR = "static/data"
+DATA_DIR = "protected"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 db = Retrieval()
