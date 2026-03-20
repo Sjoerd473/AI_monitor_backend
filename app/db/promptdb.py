@@ -164,33 +164,40 @@ class PromptDB:
             table = dim_cfg["table"]
             dim_join   = dim_cfg["join"] or ""
             dim_filter = f"AND {table}.{col} = p_outer.{col}"
+        if dim_join:
+            join_clause = f"""LEFT JOIN prompts p
+                        ON p.timestamp >= g.bucket
+                        AND p.timestamp < g.bucket + {interval}
+                    {dim_join}
+                        {dim_filter}"""
+        else:
+            join_clause = f"""LEFT JOIN prompts p
+                        ON p.timestamp >= g.bucket
+                        AND p.timestamp < g.bucket + {interval}
+                        {dim_filter}"""
 
         return f"""
-        '{key}',
-        (
-            SELECT json_build_object(
-                'labels', json_agg(to_char(bucket, '{label_fmt}') ORDER BY bucket),
-                'data',   json_agg(value ORDER BY bucket)
+            '{key}',
+            (
+                SELECT json_build_object(
+                    'labels', json_agg(to_char(bucket, '{label_fmt}') ORDER BY bucket),
+                    'data',   json_agg(value ORDER BY bucket)
+                )
+                FROM (
+                    SELECT
+                        g.bucket,
+                        COALESCE(SUM(p.{column}), 0) AS value
+                    FROM generate_series(
+                        {start},
+                        {end},
+                        {interval}
+                    ) g(bucket)
+                    {join_clause}
+                    GROUP BY g.bucket
+                    ORDER BY g.bucket
+                ) s
             )
-            FROM (
-                SELECT
-                    g.bucket,
-                    COALESCE(SUM(p.{column}), 0) AS value
-                FROM generate_series(
-                    {start},
-                    {end},
-                    {interval}
-                ) g(bucket)
-                LEFT JOIN prompts p
-                    ON p.timestamp >= g.bucket
-                    AND p.timestamp < g.bucket + {interval}
-                    {dim_filter}
-                {dim_join}
-                GROUP BY g.bucket
-                ORDER BY g.bucket
-            ) s
-        )
-        """
+            """
     def _build_global_query(self):
 
         blocks = []
