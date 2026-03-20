@@ -333,11 +333,11 @@ async def download_dataset(user_id: str = Depends(verify_token)):
     # Check if user has already downloaded today
     last_download = retrieval.get_last_download(user_id)
     
-    if last_download:
-        last_dt = last_download["downloaded_at"]
-        today = datetime.now(timezone.utc).date()
-        if last_dt.date() == today:
-            raise HTTPException(status_code=429, detail="Daily download limit reached")
+    # if last_download:
+    #     last_dt = last_download["downloaded_at"]
+    #     today = datetime.now(timezone.utc).date()
+    #     if last_dt.date() == today:
+    #         raise HTTPException(status_code=429, detail="Daily download limit reached")
 
     # Log the download
     ingestion.log_download(user_id)

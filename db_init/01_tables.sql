@@ -73,6 +73,12 @@ CREATE TABLE api_tokens (
     last_used   TIMESTAMPTZ
 );
 
+CREATE TABLE download_log (
+    id          SERIAL PRIMARY KEY,
+    user_id     TEXT NOT NULL REFERENCES users(user_id),
+    downloaded_at TIMESTAMPTZ DEFAULT now()
+);
+
 CREATE INDEX IF NOT EXISTS idx_prompts_user_id ON prompts(user_id);
 CREATE INDEX IF NOT EXISTS idx_prompts_session_id ON prompts(session_id);
 CREATE INDEX IF NOT EXISTS idx_prompts_model_id ON prompts(model_id);
