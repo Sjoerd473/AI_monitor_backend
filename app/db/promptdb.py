@@ -162,10 +162,8 @@ class PromptDB:
             dim_cfg = self.DIMENSIONS[dimension]
             col = dim_cfg["col"]
             table = dim_cfg["table"]
-            dim_join   = dim_cfg["join"] or ""      # ← use the stored join
-            dim_select = f", p_outer.{col}"
-            dim_group  = f", p_outer.{col}"
-            dim_filter = f" AND {table}.{col} = p_outer.{col}"
+            dim_join   = dim_cfg["join"] or ""
+            dim_filter = f"AND {table}.{col} = p_outer.{col}"
 
         return f"""
         '{key}',
@@ -176,7 +174,7 @@ class PromptDB:
             )
             FROM (
                 SELECT
-                    bucket,
+                    g.bucket,
                     COALESCE(SUM(p.{column}), 0) AS value
                 FROM generate_series(
                     {start},
@@ -188,8 +186,8 @@ class PromptDB:
                     AND p.timestamp < g.bucket + {interval}
                     {dim_join}
                     {dim_filter}
-                GROUP BY bucket
-                ORDER BY bucket
+                GROUP BY g.bucket
+                ORDER BY g.bucket
             ) s
         )
         """
