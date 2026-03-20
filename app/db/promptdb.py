@@ -171,25 +171,24 @@ class PromptDB:
         '{key}',
         (
             SELECT json_build_object(
-                'labels', json_agg(to_char(bucket,'{label_fmt}') ORDER BY bucket),
-                'data', json_agg(value ORDER BY bucket)
+                'labels', json_agg(to_char(bucket, '{label_fmt}') ORDER BY bucket),
+                'data',   json_agg(value ORDER BY bucket)
             )
             FROM (
                 SELECT
-                    bucket
-                    {dim_select},
-                    COALESCE(SUM(p.{column}),0) AS value
+                    bucket,
+                    COALESCE(SUM(p.{column}), 0) AS value
                 FROM generate_series(
                     {start},
                     {end},
                     {interval}
                 ) g(bucket)
                 LEFT JOIN prompts p
-                ON p.timestamp >= g.bucket
-                AND p.timestamp < g.bucket + {interval}
-                {dim_join}
-                {dim_filter}
-                GROUP BY bucket {dim_group}
+                    ON p.timestamp >= g.bucket
+                    AND p.timestamp < g.bucket + {interval}
+                    {dim_join}
+                    {dim_filter}
+                GROUP BY bucket
                 ORDER BY bucket
             ) s
         )
