@@ -213,6 +213,10 @@ class PromptDB:
         dim_col = dim_cfg["col"]
         dim_join = dim_cfg["join"] or ""
     
+        # Use the correct table alias for the distinct column
+        # For "model", model_name comes from the joined "models" table, not "p"
+        distinct_table = "models" if dim_join else "p"
+    
         blocks = []
         for metric in self.METRICS:
             for time_unit in self.TIME_CONFIG:
@@ -227,7 +231,7 @@ class PromptDB:
             )
         ) AS dashboard
         FROM (
-            SELECT DISTINCT p.{dim_col}
+            SELECT DISTINCT {distinct_table}.{dim_col}
             FROM prompts p
             {dim_join}
         ) p_outer
