@@ -315,7 +315,8 @@ async def register(request: Request):
     # Generate a raw token — this is the ONLY time it exists in plaintext
     raw_token = secrets.token_hex(32)
     token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
-
+    
+    ingestion.insert_user(user_id)
     ingestion.insert_token(user_id, token_hash) # type: ignore
     
     # db.execute("""

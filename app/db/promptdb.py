@@ -315,6 +315,10 @@ class PromptDB:
         """
         return self._write(query, (user_id, token_hash))
     
+    def insert_user(self, user_id):
+        query = self.INSERT_QUERIES["users"]
+        self._write(query, user_id)
+    
     def log_download(self, user_id):
         query = "INSERT INTO download_log (user_id) VALUES (%s)"
         self._write(query, (user_id,))

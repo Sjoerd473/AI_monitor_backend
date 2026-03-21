@@ -19,6 +19,9 @@ class Ingestion(BaseService):
 
     def log_download(self, user_id):
         self.db.log_download(user_id)
+    
+    def insert_user(self, user_id):
+        self.db.insert_user(user_id)
 
 
 

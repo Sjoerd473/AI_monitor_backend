@@ -56,7 +56,7 @@ To Do:
 
 - add an endpoint that serves the graphs html page DONE
 
-- change the security process from HMAC to short-lived tokens
+- change the security process from HMAC to short-lived tokens DONE
 - add rate limiting to limit the amount of sends from a client
 
 ----------------------
