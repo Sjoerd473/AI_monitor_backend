@@ -317,7 +317,7 @@ class PromptDB:
     
     def insert_user(self, user_id):
         query = self.INSERT_QUERIES["users"]
-        self._write(query, user_id)
+        self._write(query, (user_id,))
     
     def log_download(self, user_id):
         query = "INSERT INTO download_log (user_id) VALUES (%s)"
