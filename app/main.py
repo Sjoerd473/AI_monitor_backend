@@ -117,7 +117,7 @@ async def flush_worker():
 
             ingestion.batch_insert([data])
 
-            logger.info("[FlushWorker] Inserted 1 event")
+            logger.info(f"{datetime.now()}[FlushWorker] Inserted 1 event")
 
         except Exception as e:
             logger.error(f"[FlushWorker] Error: {e}", exc_info=True)
@@ -215,67 +215,6 @@ app.add_middleware(
 
 
 
-
-# @app.post("/events")
-# # request allows us to access body, headers and client info
-# # Header(...) means this header (x_signature) is required, otherwise error 422
-# async def receive_event(request: Request, x_signature: str = Header(...)):
-#     """Receive an event from the plugin and append it to the buffer."""
-#     global buffer
-
-#     # Read raw body
-#     # the raw body is required for verifying the signature
-#     raw_body = await request.body()
-#     # convert from bytes to string
-#     payload_string = raw_body.decode("utf-8")
-
-#     # Verify HMAC
-#     # this creates the expected signature as it was in the extension
-#     computed_hmac = hmac.new(SECRET_KEY, payload_string.encode("utf-8"), hashlib.sha256).hexdigest()
-#     # if they don't match, raise an error and return 403
-#     if not hmac.compare_digest(computed_hmac, x_signature):
-#         raise HTTPException(status_code=403, detail="Invalid signature")
-
-#     # Parse JSON
-#     data = await request.json()
-
-#     # Compute environmental impact
-#     impact_values = compute_environmental_impact(data)
-
-#     # we merge the extra values into the object for ease of use
-#     data["prompt"].update(impact_values)
-
-#     # Add to buffer
-#     async with buffer_lock:
-#         buffer.append(data)
-#     # we return a message to the extension to confirm we received the data
-#     return {"status": "received"}
-
-# Shared secret for HMAC
-SECRET_KEY = b"super_secret_key_here"
-
-
-# @app.post("/events")
-# async def receive_event(request: Request, x_signature: str = Header(...)):
-#     raw_body = await request.body()
-#     payload_string = raw_body.decode("utf-8")
-
-#     computed_hmac = hmac.new(
-#         SECRET_KEY,
-#         payload_string.encode("utf-8"),
-#         hashlib.sha256
-#     ).hexdigest()
-
-#     if not hmac.compare_digest(computed_hmac, x_signature):
-#         raise HTTPException(status_code=403, detail="Invalid signature")
-
-#     data = await request.json()
-
-#     # Push event to Redis queue
-#     await redis_client.rpush("event_queue", json.dumps(data)) # type: ignore
-
-#     return {"status": "queued"}
-
 @app.post("/events")
 async def receive_event(request: Request, user_id: str = Depends(verify_token)):
     data = await request.json()
@@ -319,15 +258,7 @@ async def register(request: Request):
     ingestion.insert_user(user_id)
     ingestion.insert_token(user_id, token_hash) # type: ignore
     
-    # db.execute("""
-    #     INSERT INTO api_tokens (user_id, token_hash)
-    #     VALUES ($1, $2)
-    #     ON CONFLICT (user_id) DO UPDATE SET
-    #         token_hash = EXCLUDED.token_hash,
-    #         created_at = now()
-    # """, user_id, token_hash)
 
-    # Raw token is returned ONCE and never stored server-side
     return {"token": raw_token}
 
 

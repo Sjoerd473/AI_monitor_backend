@@ -9,12 +9,9 @@ To Do:
 - and then be expanded upon much more
 - make sure the constants in energy_calc_constants.py still match
 
-- handle viewport insertion better, needs to be mobile/tablet/desktop depending on size DONE
-
 - handle region detection based on timezone offset, drop renewable from constants?
 
-- move energy calculations to the extension perhaps? DONE
-- might be useful for the future, to show user data to the user without DB queries DONE
+
 
 ---------------------
 
@@ -22,28 +19,19 @@ To Do:
 
 - Write a simple script to insert some models into the model table
 
-- add user_id to sessions table DONE
-- add uniqueness constraint to session_id + user_id in sessions DONE
+
 
 - use conversation_id, definetly, grab it from the url, different per AI
 - decide whether to use the conversation_id or a session_id to monitor sessions > conv_id might work more consistently
 
 
-- configure the pool DONE
-- add a .env file DONE
-
-- Write reading prompts DONE
-
-- clear up columns of consumption data > add mw, g etc. DONE
 
 
 ----------------------
 
 -- db_caching.py --
 
-- add all the functions that call the data we need for graphs DONE
-- write all the data to a single .json file (with different objects for each graph) DONE
-- put it on a cronjob, or some other way to call the file each hour (or so) DONE
+
 
 - Add a readme.md along with the whole dataset.json to explain relations between tables. Include the DB schema. Or, write down the PKs and FKs
 
@@ -52,11 +40,6 @@ To Do:
 
 -- main.py --
 
-- add an endpoint that returns the .json file with the graph data NO NEED
-
-- add an endpoint that serves the graphs html page DONE
-
-- change the security process from HMAC to short-lived tokens DONE
 - add rate limiting to limit the amount of sends from a client
 
 ----------------------
@@ -86,20 +69,19 @@ To Do:
 
 -- VPS --
 
-- Clean up the VPS DONE
-- Set up the VPS DONE
+
 
 ----------------------
 
 -- Cache --
 
-- Use redis for caching, the current setup will break in prod DONE
+
 
 ----------------------
 
 -- Plugin --
 
-- support other AI sites Gemini, claude? perplexity DONE
+
 
 
 ----------------------
@@ -109,12 +91,11 @@ To Do:
 - Write README for both parts
 - Write README for data
 - get plugin onto google play store
-- Minimize plugin
-- Write a github action to automatically update code on the server DONE
 
-- Add time stamps to logs
 
-- containerize the plugin DONE
+
+
+
 
 -----------------------
 
@@ -122,11 +103,7 @@ To Do:
 Things just for me to remember
 
 Use connection pooling, maybe add pgBouncer as a middleman
-Make everything async done
-Do micro batching done
-Keep ingestion writes cheap? done
-Avoid heavy indexing on ingestion table ??
-Use background workers to manage the DB?? done-ish
+
 
 uvicorn main:app --workers 4
 
