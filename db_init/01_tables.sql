@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS prompts (
   timestamp TIMESTAMPTZ NOT NULL,
   domain TEXT NOT NULL,
   type TEXT NOT NULL,
-  safety_cat TEXT,
   language TEXT NOT NULL,
   source TEXT NOT NULL,
   energy_consumption_wh FLOAT NOT NULL,

@@ -18,7 +18,7 @@ class PromptDB:
             "users": "INSERT INTO users (user_id) VALUES (%s) ON CONFLICT (user_id) DO NOTHING",
             "models": "INSERT INTO models (model_name, model_mode) VALUES (%s, %s) ON CONFLICT (model_name, model_mode) DO NOTHING",
             "sessions": "INSERT INTO sessions (session_id, user_id, session_start, session_prompt_count, session_duration) VALUES (%s, %s, %s, %s, %s) ON CONFLICT (session_id) DO UPDATE SET session_prompt_count = EXCLUDED.session_prompt_count, session_duration = EXCLUDED.session_duration",
-            "prompts": "INSERT INTO prompts (user_id, session_id, model_id, characters_in, tokens_in, timestamp, domain, type, safety_cat, language, source, energy_consumption_wh, co2_output_g, water_consumption_l) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING prompt_id",
+            "prompts": "INSERT INTO prompts (user_id, session_id, model_id, characters_in, tokens_in, timestamp, domain, type, language, source, energy_consumption_wh, co2_output_g, water_consumption_l) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING prompt_id",
             "responses": "INSERT INTO responses (prompt_id, character_out, latency, streaming_duration) VALUES (%s, %s, %s, %s)",
             "environment": "INSERT INTO environment (prompt_id, browser, version, os, viewport, timezone, plugin_version) VALUES (%s, %s, %s, %s, %s, %s, %s)",
             "ui": "INSERT INTO ui_interactions (prompt_id, regenerate_used, suggested_prompt_used, image_attached, file_attached, voice_input, tool_active) VALUES (%s, %s, %s, %s, %s, %s, %s)"
@@ -409,7 +409,6 @@ class PromptDB:
                 prompt["timestamp"],
                 prompt["domain"],
                 prompt["prompt_type"],
-                prompt["safety_category"],
                 prompt["language"],
                 b["source"],
                 prompt["energy_wh"],
