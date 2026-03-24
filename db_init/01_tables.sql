@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS prompts (
   user_id TEXT NOT NULL REFERENCES users(user_id),
   session_id TEXT NOT NULL REFERENCES sessions(session_id),
   model_id INTEGER NOT NULL REFERENCES models(model_id),
+  conversation_id TEXT NOT NULL REFERENCES conversations(conversation_id),
   characters_in INTEGER NOT NULL,
   tokens_in INTEGER NOT NULL,
   timestamp TIMESTAMPTZ NOT NULL,
@@ -62,6 +63,10 @@ CREATE TABLE IF NOT EXISTS ui_interactions (
   file_attached BOOL NOT NULL,
   voice_input BOOL NOT NULL,
   tool_active BOOL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS conversations (
+  conversation_id TEXT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS api_tokens (

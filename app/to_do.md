@@ -39,7 +39,7 @@ To Do:
 
 -- main.py --
 
-- add rate limiting to limit the amount of sends from a client
+
 
 ----------------------
 
@@ -80,6 +80,8 @@ To Do:
 -- Plugin --
 
 - Write the HTML for the plugin
+
+- getCurrentModel in claude and gemini are currently not being used, only getAIModel in parser is being called, what to do?
 
 
 ----------------------
