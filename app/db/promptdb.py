@@ -260,18 +260,7 @@ class PromptDB:
         result = self._read(query)
         return result[0]["dashboard"] # type: ignore
     
-    def get_models_table(self):
-        query = """SELECT json_object_agg(
-          models.model_id::text, 
-          json_build_object(
-            'model_name', models.model_name,
-            'model_type', models.model_mode
-          )
-        ) AS models_json
-        FROM models;
-        """
 
-        return self._read(query)
     
     def get_models(self):
         return self._read("SELECT model_id, model_name, model_mode FROM models")

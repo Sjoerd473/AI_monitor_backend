@@ -6,7 +6,7 @@ To Do:
 - handle models not in the energy_calc variables
 
 
-- make sure the constants in energy_calc_constants.py still match
+---> make sure the constants in energy_calc_constants.py still match
 
 ---> handle region detection based on timezone offset, drop renewable from constants?
 
