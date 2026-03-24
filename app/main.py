@@ -149,6 +149,29 @@ def verify_token(authorization: str = Header(...)):
     ingestion.update_token_last_used(token_hash)
     return row["user_id"]
 
+async def rate_limit(user_id: str = Depends(verify_token)):
+    key = f"rate_limit:{user_id}"
+    window = 60        # seconds
+    max_requests = 60  # requests per window
+
+    now = asyncio.get_event_loop().time()
+    window_start = now - window
+
+    pipe = redis_client.pipeline()
+    pipe.zremrangebyscore(key, 0, window_start)       # drop old entries
+    pipe.zadd(key, {str(now): now})                   # add current request
+    pipe.zcard(key)                                   # count requests in window
+    pipe.expire(key, window)                          # auto-cleanup key
+    results = await pipe.execute()
+
+    request_count = results[2]
+    if request_count > max_requests:
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit exceeded. Try again later."
+        )
+    return user_id
+
 
 
 # FastAPI lifespan manager for startup/shutdown
@@ -218,7 +241,7 @@ app.add_middleware(
 
 
 @app.post("/events")
-async def receive_event(request: Request, user_id: str = Depends(verify_token)):
+async def receive_event(request: Request, user_id: str = Depends(rate_limit)):
     data = await request.json()
     data["user_id"] = user_id  # now server-authoritative, not from payload
     await redis_client.rpush("event_queue", json.dumps(data)) # type: ignore

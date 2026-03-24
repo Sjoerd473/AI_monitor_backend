@@ -16,7 +16,6 @@ To Do:
 
 -- DB --
 
-- Write a simple script to insert some models into the model table
 
 
 
