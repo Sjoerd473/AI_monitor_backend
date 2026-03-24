@@ -59,12 +59,12 @@ ingestion = Ingestion()  # ingestion.db is already PromptDB(pool)
 retrieval = Retrieval()
 
 # Buffer for batching events
-buffer = []
+# buffer = []
 # because we are running async, more than one function might be trying to access the buffer at the same time
 # the lock will allow only one coroutine to access the buffer at a time
 # thus preventing race conditions (reading the buffer while it is being wiped, etc.)
-buffer_lock = asyncio.Lock()
-flush_interval = 0.2  # seconds
+# buffer_lock = asyncio.Lock()
+# flush_interval = 0.2  # seconds
 
 # Event to signal shutdown
 stop_event = asyncio.Event()
@@ -284,6 +284,7 @@ async def download_dataset(user_id: str = Depends(verify_token)):
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
         zf.write("protected/AI_monitor_dataset.json", "AI_monitor_dataset.json")
         zf.write("protected/README.md", "README.md")
+        zf.write("protected/schema.sql", "schema.sql")
     zip_buffer.seek(0)
 
     return StreamingResponse(
