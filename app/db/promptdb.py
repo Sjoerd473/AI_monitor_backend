@@ -269,7 +269,6 @@ class PromptDB:
         query = """SELECT json_build_object(
           'schema_version', '1.0',
           'exported_at', NOW(),
-          'users', (SELECT json_agg(row_to_json(u)::jsonb) FROM users u),
           'users', (SELECT json_agg(row_to_json(u)) FROM users u),
           'models', (SELECT json_agg(row_to_json(m)) FROM models m),
           'sessions', (SELECT json_agg(row_to_json(s)) FROM sessions s),
@@ -277,7 +276,7 @@ class PromptDB:
           'responses', (SELECT json_agg(row_to_json(r)) FROM responses r),
           'environment', (SELECT json_agg(row_to_json(e)) FROM environment e),
           'ui_interactions', (SELECT json_agg(row_to_json(ui)) FROM ui_interactions ui),
-          'conversations', (SELECT json_agg(row_to_json(c)) FROM conversations c),
+          'conversations', (SELECT json_agg(row_to_json(c)) FROM conversations c)
         ) AS db_json;"""
 
         return self._read(query)
