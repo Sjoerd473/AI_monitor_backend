@@ -277,7 +277,7 @@ class PromptDB:
           'responses', (SELECT json_agg(row_to_json(r)) FROM responses r),
           'environment', (SELECT json_agg(row_to_json(e)) FROM environment e),
           'ui_interactions', (SELECT json_agg(row_to_json(ui)) FROM ui_interactions ui),
-          'conversations', (SELECT json_agg(row_to_json)) FROM conversations c),
+          'conversations', (SELECT json_agg(row_to_json(c)) FROM conversations c),
         ) AS db_json;"""
 
         return self._read(query)
