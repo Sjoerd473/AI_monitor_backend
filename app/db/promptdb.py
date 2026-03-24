@@ -2,7 +2,7 @@
 # - Cursor.execute() → “Send this command and give me a handle to read the rows that come back.”
 
 # we import our connection pool here
-from db.pool import pool
+# from db.pool import pool
 
 from psycopg.rows import dict_row
 
@@ -154,8 +154,6 @@ class PromptDB:
         column = self.METRICS[metric]
         key = f"{metric}_{time_unit}_{period}"
 
-        # dim_select = ""
-        # dim_group = ""
         dim_join = ""
         dim_filter = ""
 
@@ -169,7 +167,7 @@ class PromptDB:
             join_clause = f"""LEFT JOIN prompts p
                         ON p.timestamp >= g.bucket
                         AND p.timestamp < g.bucket + {interval}
-                    {dim_join}
+                        {dim_join}
                         {dim_filter}"""
         else:
             join_clause = f"""LEFT JOIN prompts p

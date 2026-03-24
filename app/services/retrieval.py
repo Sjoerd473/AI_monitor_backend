@@ -7,34 +7,28 @@ class Retrieval(BaseService):
     # all these methods will call methods inside promptdb
     # this is the syntax for a decorator
     # equal to get_users = db_logging(get_users), but more elegant
+ 
     @db_logging
-  
-    
-    # def get_prompt_impact(self, type):
-    #     match type:
-    #         case 'co2':
-    #             return self.db.get_CO2('hour'), self.db.get_CO2('day'), self.db.get_CO2('week') 
-    #         case 'water':
-    #             return self.db.get_water('hour'), self.db.get_water('day'), self.db.get_water('week')
-    #         case 'energy':
-    #             return self.db.get_energy('hour'), self.db.get_energy('day'), self.db.get_energy('week')
     def get_prompt_data(self):
         return self.db.get_dashboard_global()
     
+    @db_logging
     def get_category_data(self):
         return self.db.get_dashboard_by_column("category")
     
+    @db_logging
     def get_model_data(self):
         return self.db.get_dashboard_by_column("model")
     
-
-    
+    @db_logging
     def get_all_data(self):
         return self.db.get_all_data()
     
+    @db_logging
     def get_token(self, token_hash):
         return self.db.get_token(token_hash)
     
+    @db_logging
     def get_last_download(self, user_id):
         return self.db.get_last_download(user_id)
     

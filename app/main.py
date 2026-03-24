@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from db.pool import pool  # psycopg_pool.ConnectionPool
 load_dotenv()
 
 import asyncio
@@ -25,8 +26,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
 
-from db.promptdb import PromptDB
-from db.pool import pool  # psycopg_pool.ConnectionPool
+
 from services.ingestion import Ingestion
 from services.retrieval import Retrieval
 from caching.cache import redis_client
@@ -54,7 +54,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # Initialize PromptDB + Ingestion
-prompt_db = PromptDB(pool)
+
 ingestion = Ingestion()  # ingestion.db is already PromptDB(pool)
 retrieval = Retrieval()
 
