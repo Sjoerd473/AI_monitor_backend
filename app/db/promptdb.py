@@ -372,11 +372,14 @@ class PromptDB:
             for b in batch
         ]
 
+        conversations_rows = [(b["conversation_id"], ) for b in batch]
+
         # Insert parent tables
         # first two writes
         # they go first as they don't depend on anything
         self._write_many(self.INSERT_QUERIES["users"], users_rows)
         self._write_many(self.INSERT_QUERIES["sessions"], sessions_rows)
+        self._write_many(self.INSERT_QUERIES["conversations"], conversations_rows)
 
         # --- Step 2: Build prompts ---
         # we create an empty list to keep the code easier to read
