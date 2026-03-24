@@ -8,20 +8,14 @@ To Do:
 
 ---> make sure the constants in energy_calc_constants.py still match
 
----> handle region detection based on timezone offset, drop renewable from constants?
+---> handle region detection based on timezone offset
+---> this means also changing the DB tables
 
 
 
 ---------------------
 
 -- DB --
-
-
-
-
-
-
-
 
 ----------------------
 
@@ -36,12 +30,9 @@ To Do:
 
 -- main.py --
 
-
-
 ----------------------
 
 -- dashboard.js --
-
 
 
 - Write graph scripting
@@ -62,12 +53,9 @@ To Do:
 -- VPS --
 
 
-
 ----------------------
 
 -- Cache --
-
-
 
 ----------------------
 
@@ -85,11 +73,6 @@ To Do:
 - Write README for both parts
 - Write README for data
 - get plugin onto google play store
-
-
-
-
-
 
 -----------------------
 

@@ -172,6 +172,28 @@ async def rate_limit(user_id: str = Depends(verify_token)):
         )
     return user_id
 
+async def rate_limit_ip(request: Request):
+    if request.client is None:
+        raise HTTPException(status_code=400, detail="Could not determine client IP")
+    
+    ip = request.client.host
+    key = f"rate_limit_ip:{ip}"
+    window = 60
+    max_requests = 5  # stricter than the token limit
+
+    now = asyncio.get_event_loop().time()
+    window_start = now - window
+
+    pipe = redis_client.pipeline()
+    pipe.zremrangebyscore(key, 0, window_start)
+    pipe.zadd(key, {str(now): now})
+    pipe.zcard(key)
+    pipe.expire(key, window)
+    results = await pipe.execute()
+
+    request_count = results[2]
+    if request_count > max_requests:
+        raise HTTPException(status_code=429, detail="Too many registration attempts")
 
 
 # FastAPI lifespan manager for startup/shutdown
@@ -272,7 +294,7 @@ async def get_dashboard_data():
 
 
 @app.post("/register")
-async def register(request: Request):
+async def register(request: Request,  _: None = Depends(rate_limit_ip)):
     data = await request.json()
     user_id = data.get("user_id")  # the stable ID from the extension
 

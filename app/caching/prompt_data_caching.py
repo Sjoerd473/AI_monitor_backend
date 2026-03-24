@@ -12,9 +12,7 @@ def prompt_dump():
       "categories": db.get_category_data(),
       "models": db.get_model_data()
   }
-  
-
-  
+    
   with open(f"{DATA_DIR}/dashboard.json", "w") as f:
     json.dump(dashboard, f)
   
