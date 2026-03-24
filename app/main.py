@@ -32,6 +32,7 @@ from services.retrieval import Retrieval
 from caching.cache import redis_client
 from caching.prompt_data_caching import prompt_dump
 from caching.db_caching import db_dump
+from security_headers import SecurityHeadersMiddleware
 
 # Logging setup
 # uses the built-in python logging module
@@ -43,6 +44,7 @@ logging.basicConfig(level=logging.INFO)
 
 # FastAPI app
 app = FastAPI()
+app.add_middleware(SecurityHeadersMiddleware)
 
 scheduler = AsyncIOScheduler()
 

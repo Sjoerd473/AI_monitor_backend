@@ -5,11 +5,10 @@ To Do:
 
 - handle models not in the energy_calc variables
 
-- the various text analysis functions of the plugin all need to be written with Regex
-- and then be expanded upon much more
+
 - make sure the constants in energy_calc_constants.py still match
 
-- handle region detection based on timezone offset, drop renewable from constants?
+---> handle region detection based on timezone offset, drop renewable from constants?
 
 
 
@@ -21,8 +20,9 @@ To Do:
 
 
 
-- use conversation_id, definetly, grab it from the url, different per AI
-- decide whether to use the conversation_id or a session_id to monitor sessions > conv_id might work more consistently
+
+- grab conv_id from the url individually for each ai, and save it in prompt data?
+- or in it's own table
 
 
 
@@ -53,7 +53,6 @@ To Do:
 
 - Write graph scripting
 
-- figure out how to bundle this NOT NEEDED
 
 ----------------------
 
@@ -81,7 +80,7 @@ To Do:
 
 -- Plugin --
 
-
+- Write the HTML for the plugin
 
 
 ----------------------
