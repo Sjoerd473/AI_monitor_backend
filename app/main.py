@@ -309,31 +309,31 @@ async def register(request: Request,  _: None = Depends(rate_limit_ip)):
     return {"token": raw_token}
 
 
-@app.get("/download/dataset")
-async def download_dataset(user_id: str = Depends(verify_token)):
+# @app.get("/download/dataset")
+# async def download_dataset(user_id: str = Depends(verify_token)):
     
-    # Check if user has already downloaded today
-    last_download = retrieval.get_last_download(user_id)
+#     # Check if user has already downloaded today
+#     last_download = retrieval.get_last_download(user_id)
     
-    if last_download:
-        last_dt = last_download["downloaded_at"]
-        today = datetime.now(timezone.utc).date()
-        if last_dt.date() == today:
-            raise HTTPException(status_code=429, detail="Daily download limit reached")
+#     if last_download:
+#         last_dt = last_download["downloaded_at"]
+#         today = datetime.now(timezone.utc).date()
+#         if last_dt.date() == today:
+#             raise HTTPException(status_code=429, detail="Daily download limit reached")
 
-    # Log the download
-    ingestion.log_download(user_id)
+#     # Log the download
+#     ingestion.log_download(user_id)
 
-    # Build zip in memory
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
-        zf.write("protected/AI_monitor_dataset.json", "AI_monitor_dataset.json")
-        zf.write("protected/README.md", "README.md")
-        zf.write("protected/schema.sql", "schema.sql")
-    zip_buffer.seek(0)
+#     # Build zip in memory
+#     zip_buffer = io.BytesIO()
+#     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+#         zf.write("protected/AI_monitor_dataset.json", "AI_monitor_dataset.json")
+#         zf.write("protected/README.md", "README.md")
+#         zf.write("protected/schema.sql", "schema.sql")
+#     zip_buffer.seek(0)
 
-    return StreamingResponse(
-        zip_buffer,
-        media_type="application/zip",
-        headers={"Content-Disposition": "attachment; filename=AI_monitor_dataset.zip"}
-    )
+#     return StreamingResponse(
+#         zip_buffer,
+#         media_type="application/zip",
+#         headers={"Content-Disposition": "attachment; filename=AI_monitor_dataset.zip"}
+#     )

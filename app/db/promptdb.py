@@ -20,7 +20,7 @@ class PromptDB:
             "sessions": "INSERT INTO sessions (session_id, user_id, session_start, session_prompt_count, session_duration) VALUES (%s, %s, %s, %s, %s) ON CONFLICT (session_id) DO UPDATE SET session_prompt_count = EXCLUDED.session_prompt_count, session_duration = EXCLUDED.session_duration",
             "prompts": "INSERT INTO prompts (user_id, session_id, model_id, conversation_id, characters_in, tokens_in, timestamp, domain, type, language, source, energy_consumption_wh, co2_output_g, water_consumption_l) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING prompt_id",
             "responses": "INSERT INTO responses (prompt_id, character_out, latency, streaming_duration) VALUES (%s, %s, %s, %s)",
-            "environment": "INSERT INTO environment (prompt_id, browser, version, os, viewport, timezone, plugin_version) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            "environment": "INSERT INTO environment (prompt_id, browser, version, os, viewport, timezone, region, plugin_version) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
             "ui": "INSERT INTO ui_interactions (prompt_id, regenerate_used, suggested_prompt_used, image_attached, file_attached, voice_input, tool_active) VALUES (%s, %s, %s, %s, %s, %s, %s)",
             "conversations": "INSERT INTO conversations (conversation_id) VALUES (%s) ON CONFLICT (conversation_id) DO NOTHING",
         }
@@ -440,6 +440,7 @@ class PromptDB:
                 env["os"],
                 env["viewport"],
                 env["timezone"],
+                env["region"],
                 env["plugin_version"]
             ))
 

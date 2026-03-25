@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS environment (
   os TEXT NOT NULL,
   viewport TEXT NOT NULL,
   timezone INT NOT NULL,
+  region TEXT NOT NULL,
   plugin_version TEXT NOT NULL
 );
 
