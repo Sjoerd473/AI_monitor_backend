@@ -92,10 +92,15 @@ async def flush_worker():
             # Flush Logic: If buffer is full OR time has passed and buffer isn't empty
             if len(buffer) >= MAX_BATCH_SIZE or (len(buffer) > 0 and result is None):
                 # Ensure ingestion.batch_insert is awaited if it's an async function
-                ingestion.batch_insert(buffer)
+                # ingestion.batch_insert(buffer)
                 
-                logger.info(f"{datetime.now()} [FlushWorker] Inserted {len(buffer)} events")
+                batch_to_insert = list(buffer)
                 buffer.clear()
+
+                # This is safe because Ingestion.batch_insert 
+                # requests its own connection from the pool.
+                await asyncio.to_thread(ingestion.batch_insert, batch_to_insert)
+                logger.info(f"{datetime.now()} [FlushWorker] Inserted {len(batch_to_insert)} events")
 
         except Exception as e:
             logger.error(f"[FlushWorker] Error: {e}", exc_info=True)
