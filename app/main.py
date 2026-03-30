@@ -67,32 +67,44 @@ stop_event = asyncio.Event()
 
 
 
-
+# This runs permanently in the background, awaiting incoming prompt data
+# in order to gather it all into a buffer and create a big INSERT statement
+# which is much more efficient than many single statements.
 async def flush_worker():
     logger.info("[FlushWorker] Started")
     buffer = []
-    MAX_BATCH_SIZE = 100
+    MAX_BATCH_SIZE = 50
     FLUSH_INTERVAL = 10  # seconds
 
+    # while loop that keeps running until it receives a shutdown signal
     while not stop_event.is_set():
         try:
             # We try to get an item from Redis, but we timeout based on our flush interval
             try:
+                # blpop = blocking left pop, waits 5 seconds for something to arrive
+                # incase the queue is empty. A normal lpop would poll the CPU constantly
+                # which is less efficient
+
+                # this keeps repeating until the FLUSH_INTERVAL has passed, or the buffer
+                # is full
                 result = await asyncio.wait_for(
-                    redis_client.blpop("event_queue", timeout=1),  # type: ignore
+                    redis_client.blpop("event_queue", timeout=5),  # type: ignore
                     timeout=FLUSH_INTERVAL
                 )
             except asyncio.TimeoutError:
                 result = None # Trigger a manual flush check
 
             if result:
+                # blpop returns a tuple: ('name of queue', {data_inserted})
+                # we discard the name of the queue as we don't need it
+                # BLpop can listen to more than one queue simultaneously 
                 _, event = result
                 buffer.append(json.loads(event))
 
             # Flush Logic: If buffer is full OR time has passed and buffer isn't empty
             if len(buffer) >= MAX_BATCH_SIZE or (len(buffer) > 0 and result is None):
-                # Ensure ingestion.batch_insert is awaited if it's an async function
-                # ingestion.batch_insert(buffer)
+                
+                
                 
                 batch_to_insert = list(buffer)
                 buffer.clear()
@@ -108,15 +120,14 @@ async def flush_worker():
             await asyncio.sleep(1)
 
 
-
+# these sync functions are made to run on a different thread too.
 async def generate_prompt_data():
-    loop = asyncio.get_event_loop()
-    await loop.run_in_executor(None, prompt_dump)
+    await asyncio.to_thread(prompt_dump)
 
 
-async def generate_db_dump():
-    loop = asyncio.get_event_loop()
-    await loop.run_in_executor(None, db_dump)
+# async def generate_db_dump():
+#     loop = asyncio.get_event_loop()
+#     await loop.run_in_executor(None, db_dump)
 
 def verify_token(authorization: str = Header(...)):
     if not authorization.startswith("Bearer "):
@@ -197,14 +208,14 @@ async def lifespan(app: FastAPI):
     # Only one worker runs scheduler + dumps
     if os.getenv("GUNICORN_WORKER_ID", "0") == "0":
 
-        logger.info("Generating DB dump...")
-        asyncio.create_task(generate_db_dump())
+        # logger.info("Generating DB dump...")
+        # asyncio.create_task(generate_db_dump())
 
         logger.info("Generating prompt dump...")
         asyncio.create_task(generate_prompt_data())
 
         scheduler.add_job(generate_prompt_data, "cron", minute=1)
-        scheduler.add_job(generate_db_dump, "cron", hour=0, minute=0)
+        # scheduler.add_job(generate_db_dump, "cron", hour=0, minute=0)
 
         scheduler.start()
         logger.info("Scheduler started")

@@ -130,18 +130,17 @@ class PromptDB:
 
     def _write_many_returning(self, query, seq_of_params):
         returned_ids = []
-        for params in seq_of_params:
-            result = self._execute(query, params, fetch=True)
-            if not result or len(result) == 0:
-            # Row was not inserted (ON CONFLICT DO NOTHING)
-                returned_ids.append(None)
-                continue
-
-            row = result[0]  # This is a dict
-        # Get the first column's value (usually the returning id)
-            first_column_name = list(row.keys())[0]
-            returned_ids.append(row[first_column_name])
-            
+        with self.pool.connection() as conn:
+            with conn.cursor(row_factory=dict_row) as cur:
+                for params in seq_of_params:
+                    cur.execute(query, params)
+                    result = cur.fetchone()
+                    if result:
+                        first_column_name = list(result.keys())[0]
+                        returned_ids.append(result[first_column_name])
+                    else:
+                        returned_ids.append(None)
+            conn.commit()
         return returned_ids
 
     

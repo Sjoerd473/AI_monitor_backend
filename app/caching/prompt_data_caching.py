@@ -13,8 +13,10 @@ def prompt_dump():
       "models": db.get_model_data()
   }
     
-  with open(f"{DATA_DIR}/dashboard.json", "w") as f:
+  temp_file = f"{DATA_DIR}/dashboard.json.tmp"
+  with open(temp_file, "w") as f:
     json.dump(dashboard, f)
+  os.replace(temp_file, f"{DATA_DIR}/dashboard.json") # Atomic swap
   
 
 
