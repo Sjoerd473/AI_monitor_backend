@@ -19,9 +19,9 @@ class Ingestion(BaseService):
     def update_token_last_used(self, token_hash):
         self.db.update_token_last_used(token_hash)
 
-    @db_logging
-    def log_download(self, user_id):
-        self.db.log_download(user_id)
+    # @db_logging
+    # def log_download(self, user_id):
+    #     self.db.log_download(user_id)
         
     @db_logging
     def insert_user(self, user_id):
