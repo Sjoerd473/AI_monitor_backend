@@ -90,58 +90,90 @@ class PromptDB:
         }
     # this keeps everything more DRY
     # the _ at the start of a method indicates that these are private methods, that should not be called outside of the class
-    def _execute(self, query, params=None, *, fetch=False, many=False):
-        # * makes the following arguments keyword only (so _execute(... False ...) won't work)
-        with self.pool.connection() as conn:
-            # open a connection
-            try:
-                with conn.cursor(row_factory=dict_row) as cur:
-                    # open a cursor to perform database interactions
-                    if many:
-                        cur.executemany(query, params)
-                    else:
-                        cur.execute(query, params)
+    # def _execute(self, query, params=None, *, fetch=False, many=False):
+    #     # * makes the following arguments keyword only (so _execute(... False ...) won't work)
+    #     with self.pool.connection() as conn:
+    #         # open a connection
+    #         try:
+    #             with conn.cursor(row_factory=dict_row) as cur:
+    #                 # open a cursor to perform database interactions
+    #                 if many:
+    #                     cur.executemany(query, params)
+    #                 else:
+    #                     cur.execute(query, params)
 
-                    if fetch:
-                        return cur.fetchall()
-                    # execute a command based on the parameters passed into the method
+    #                 if fetch:
+    #                     return cur.fetchall()
+    #                 # execute a command based on the parameters passed into the method
 
-                conn.commit()
-                # commit the changes to the DB, otherwise nothing is saved.
+    #             conn.commit()
+    #             # commit the changes to the DB, otherwise nothing is saved.
 
-            except Exception:
-                conn.rollback()
-                raise
+    #         except Exception:
+    #             conn.rollback()
+    #             raise
             # without the rollback the connection would be left in a failed transaction state,
             #  leaving said connection unusable > all commands fail
             # rollback undoes all changes made in the current transaction, then returns the connection to the pool
             # the Exception bubbles up instead, to be handles higher up in the chain (and is not modified here)
 
+    def _execute(self, query, params=None, *, fetch=False, many=False, conn=None):
+        # If a connection is provided, we use it directly without managing lifecycle
+        if conn:
+            with conn.cursor(row_factory=dict_row) as cur:
+                if many:
+                    cur.executemany(query, params)
+                else:
+                    cur.execute(query, params)
+                return cur.fetchall() if fetch else None
+
+        # Otherwise, we manage the connection from the pool (standard behavior)
+        with self.pool.connection() as new_conn:
+            try:
+                with new_conn.cursor(row_factory=dict_row) as cur:
+                    if many:
+                        cur.executemany(query, params)
+                    else:
+                        cur.execute(query, params)
+                    result = cur.fetchall() if fetch else None
+                new_conn.commit()
+                return result
+            except Exception:
+                new_conn.rollback()
+                raise
+
     # wrappers
     # these pretty much do what you'd expect, read for reading, write/write_many for writing one or for writing many at once.
-    def _read(self, query, params=None):
-        return self._execute(query, params, fetch=True)
+    def _read(self, query, params=None, conn=None):
+        return self._execute(query, params, fetch=True, conn=conn)
 
-    def _write(self, query, params=None):
-        self._execute(query, params)
+    def _write(self, query, params=None, conn=None):
+        self._execute(query, params, conn=conn)
 
-    def _write_many(self, query, seq_of_params):
-        self._execute(query, seq_of_params, many=True)
+    def _write_many(self, query, seq_of_params, conn=None):
+        self._execute(query, seq_of_params, many=True, conn=conn)
 
-    def _write_many_returning(self, query, seq_of_params):
+    def _write_many_returning(self, query, seq_of_params, conn=None):
         returned_ids = []
-        with self.pool.connection() as conn:
+
+        # If we have a shared connection, we loop using its cursor
+        if conn:
             with conn.cursor(row_factory=dict_row) as cur:
                 for params in seq_of_params:
                     cur.execute(query, params)
                     result = cur.fetchone()
-                    if result:
-                        first_column_name = list(result.keys())[0]
-                        returned_ids.append(result[first_column_name])
-                    else:
+                    if not result:
                         returned_ids.append(None)
-            conn.commit()
-        return returned_ids
+                        continue
+                    first_column_name = list(result.keys())[0]
+                    returned_ids.append(result[first_column_name])
+            return returned_ids
+
+        # Fallback: If no conn is passed, we open a new one for the whole loop
+        with self.pool.connection() as new_conn:
+            ids = self._write_many_returning(query, seq_of_params, conn=new_conn)
+            new_conn.commit()
+            return ids
 
     
     
@@ -260,8 +292,8 @@ class PromptDB:
     
 
     
-    def get_models(self):
-        return self._read("SELECT model_id, model_name, model_mode FROM models")
+    def get_models(self, conn=None):
+        return self._read("SELECT model_id, model_name, model_mode FROM models", conn=conn)
     
     def get_all_data(self):
 
@@ -323,138 +355,144 @@ class PromptDB:
     
             
     def insert_prompts(self, batch):
-        """Insert a batch of prompts and all related tables (users, sessions, responses, environment, UI)."""
+        with self.pool.connection() as conn:
+            try:
+                # --- Step 0: Prepare model lookup ---
+                # queries the database for all existing models
+                # and turns it into a map for quicker lookups
+                existing_models = {
+                    (m["model_name"], m["model_mode"]): m["model_id"]
+                    for m in self.get_models(conn=conn) # type: ignore
+                }
 
-        # --- Step 0: Prepare model lookup ---
-        # queries the database for all existing models
-        # and turns it into a map for quicker lookups
-        existing_models = {
-            (m["model_name"], m["model_mode"]): m["model_id"]
-            for m in self.get_models() # type: ignore
-        }
+                # Identify new models not yet in DB
+                # A set can't have duplicate values, so all the models in there are unique
+                # if a model coming in from a prompt is not in the dict, it adds it to it
+                new_models = set()
+                for b in batch:
+                    model = b["model"]
+                    key = (model["model_name"], model["model_mode"])
+                    if key not in existing_models:
+                        new_models.add(key)
 
-        # Identify new models not yet in DB
-        # A set can't have duplicate values, so all the models in there are unique
-        # if a model coming in from a prompt is not in the dict, it adds it to it
-        new_models = set()
-        for b in batch:
-            model = b["model"]
-            key = (model["model_name"], model["model_mode"])
-            if key not in existing_models:
-                new_models.add(key)
+                # Insert missing models
+                # if there is infact a new model, it gets added to the database, and then to existing_models
+                if new_models:
+                    self._write_many(self.INSERT_QUERIES["models"], [tuple(m) for m in new_models], conn=conn)
+                    # Update mapping using the same connection
+                    existing_models.update({
+                        (m["model_name"], m["model_mode"]): m["model_id"]
+                        for m in self.get_models(conn=conn) # type: ignore
+                    })
 
-        # Insert missing models
-        # if there is infact a new model, it gets added to the database, and then to existing_models
-        if new_models:
-            self._write_many(self.INSERT_QUERIES["models"], [tuple(m) for m in new_models])
-            # Re-fetch models to update mapping
-            existing_models.update({
-                (m["model_name"], m["model_mode"]): m["model_id"]
-                for m in self.get_models() # type: ignore
-            })
+                # --- Step 1: Build parent rows ---
+                # all inserts must be done with tuples, so there is a lot of converting going on
+                # grabs all user_ids out of the batch and puts them as tuples in a list
+                users_rows = [(b["user"]["user_id"],) for b in batch]
+                # grabs all session data out of the batch and puts it as tuples in a list
+                sessions_rows = [
+                    (
+                        b["session"]["session_id"],
+                        b["user"]["user_id"],
+                        b["session"]["session_start"],
+                        b["session"]["session_prompt_count"],
+                        b["session"]["session_duration_ms"]
+                    )
+                    for b in batch
+                ]
 
-        # --- Step 1: Build parent rows ---
-        # all inserts must be done with tuples, so there is a lot of converting going on
-        # grabs all user_ids out of the batch and puts them as tuples in a list
-        users_rows = [(b["user"]["user_id"],) for b in batch]
-        # grabs all session data out of the batch and puts it as tuples in a list
-        sessions_rows = [
-            (
-                b["session"]["session_id"],
-                b["user"]["user_id"],
-                b["session"]["session_start"],
-                b["session"]["session_prompt_count"],
-                b["session"]["session_duration_ms"]
-            )
-            for b in batch
-        ]
+                conversations_rows = [(b["conversation_id"], ) for b in batch]
 
-        conversations_rows = [(b["conversation_id"], ) for b in batch]
+                # Insert parent tables
+                # first two writes
+                # they go first as they don't depend on anything
+                self._write_many(self.INSERT_QUERIES["users"], users_rows, conn=conn)
+                self._write_many(self.INSERT_QUERIES["sessions"], sessions_rows, conn=conn)
+                self._write_many(self.INSERT_QUERIES["conversations"], conversations_rows, conn=conn)
 
-        # Insert parent tables
-        # first two writes
-        # they go first as they don't depend on anything
-        self._write_many(self.INSERT_QUERIES["users"], users_rows)
-        self._write_many(self.INSERT_QUERIES["sessions"], sessions_rows)
-        self._write_many(self.INSERT_QUERIES["conversations"], conversations_rows)
+                # --- Step 2: Build prompts ---
+                # we create an empty list to keep the code easier to read
+                prompts_rows = []
+                for b in batch:
+                    # we create these variables to avoid repeating them over and over again
+                    user = b["user"]
+                    session = b["session"]
+                    model = b["model"]
+                    prompt = b["prompt"]
+                    # we look up the model id from the lookup dict, using the model name and mode
+                    model_id = existing_models[(model["model_name"], model["model_mode"])]
+                    # then we append all the prompt data as tuples to the list
+                    prompts_rows.append((
+                        user["user_id"],
+                        session["session_id"],
+                        model_id,
+                        b["conversation_id"],
+                        prompt["text_length"],
+                        prompt["tokens_in"],
+                        prompt["timestamp"],
+                        prompt["domain"],
+                        prompt["prompt_type"],
+                        prompt["language"],
+                        b["source"],
+                        prompt["energy_wh"],
+                        prompt["co2_g"],
+                        prompt["water_l"]
+                    ))
 
-        # --- Step 2: Build prompts ---
-        # we create an empty list to keep the code easier to read
-        prompts_rows = []
-        for b in batch:
-            # we create these variables to avoid repeating them over and over again
-            user = b["user"]
-            session = b["session"]
-            model = b["model"]
-            prompt = b["prompt"]
-            # we look up the model id from the lookup dict, using the model name and mode
-            model_id = existing_models[(model["model_name"], model["model_mode"])]
-            # then we append all the prompt data as tuples to the list
-            prompts_rows.append((
-                user["user_id"],
-                session["session_id"],
-                model_id,
-                b["conversation_id"],
-                prompt["text_length"],
-                prompt["tokens_in"],
-                prompt["timestamp"],
-                prompt["domain"],
-                prompt["prompt_type"],
-                prompt["language"],
-                b["source"],
-                prompt["energy_wh"],
-                prompt["co2_g"],
-                prompt["water_l"]
-            ))
+                # Bulk insert prompts and get their IDs
+                # This is crucial, as the IDs are needed to correctly insert responses, env, and ui
+                prompt_ids = self._write_many_returning(self.INSERT_QUERIES["prompts"], prompts_rows, conn=conn)
 
-        # Bulk insert prompts and get their IDs
-        # This is crucial, as the IDs are needed to correctly insert responses, env, and ui
-        prompt_ids = self._write_many_returning(self.INSERT_QUERIES["prompts"], prompts_rows)
+                # --- Step 3: Build child rows ---
+                responses_rows = []
+                env_rows = []
+                ui_rows = []
 
-        # --- Step 3: Build child rows ---
-        responses_rows = []
-        env_rows = []
-        ui_rows = []
+                # we need to enumerate here, so we can simultaneously loop over the list of prompt_ids
+                for i, b in enumerate(batch):
+                    # also here we create some variables to avoid repetition
+                    pid = prompt_ids[i]
+                    response = b["response"]
+                    env = b["environment"]
+                    ui = b["ui_interaction"]
 
-        # we need to enumerate here, so we can simultaneously loop over the list of prompt_ids
-        for i, b in enumerate(batch):
-            # also here we create some variables to avoid repetition
-            pid = prompt_ids[i]
-            response = b["response"]
-            env = b["environment"]
-            ui = b["ui_interaction"]
+                    # and then create append all the data as tuples to their lists
+                    responses_rows.append((
+                        pid,
+                        response["characters_out"],
+                        response["latency_ms"],
+                        response["streaming_duration_ms"]
+                    ))
 
-            # and then create append all the data as tuples to their lists
-            responses_rows.append((
-                pid,
-                response["characters_out"],
-                response["latency_ms"],
-                response["streaming_duration_ms"]
-            ))
+                    env_rows.append((
+                        pid,
+                        env["browser"],
+                        env["version"],
+                        env["os"],
+                        env["viewport"],
+                        env["timezone"],
+                        env["region"],
+                        env["plugin_version"]
+                    ))
 
-            env_rows.append((
-                pid,
-                env["browser"],
-                env["version"],
-                env["os"],
-                env["viewport"],
-                env["timezone"],
-                env["region"],
-                env["plugin_version"]
-            ))
+                    ui_rows.append((
+                        pid,
+                        ui["regenerate_used"],
+                        ui["suggested_prompt_used"],
+                        ui["image_attached"],
+                        ui["file_attached"],
+                        ui["voice_input"],
+                        ui["tool_active"]
+                    ))
 
-            ui_rows.append((
-                pid,
-                ui["regenerate_used"],
-                ui["suggested_prompt_used"],
-                ui["image_attached"],
-                ui["file_attached"],
-                ui["voice_input"],
-                ui["tool_active"]
-            ))
+                # --- Step 4: Bulk insert child tables ---
+                # then send it all into the DB
+                self._write_many(self.INSERT_QUERIES["responses"], responses_rows, conn=conn)
+                self._write_many(self.INSERT_QUERIES["environment"], env_rows, conn=conn)
+                self._write_many(self.INSERT_QUERIES["ui"], ui_rows, conn=conn)
 
-        # --- Step 4: Bulk insert child tables ---
-        # then send it all into the DB
-        self._write_many(self.INSERT_QUERIES["responses"], responses_rows)
-        self._write_many(self.INSERT_QUERIES["environment"], env_rows)
-        self._write_many(self.INSERT_QUERIES["ui"], ui_rows) 
+                conn.commit()
+
+            except Exception:
+                conn.rollback()
+                raise
