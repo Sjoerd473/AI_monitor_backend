@@ -92,7 +92,7 @@ async def flush_worker():
             # Flush Logic: If buffer is full OR time has passed and buffer isn't empty
             if len(buffer) >= MAX_BATCH_SIZE or (len(buffer) > 0 and result is None):
                 # Ensure ingestion.batch_insert is awaited if it's an async function
-                await ingestion.batch_insert(buffer)  # type: ignore
+                ingestion.batch_insert(buffer)
                 
                 logger.info(f"{datetime.now()} [FlushWorker] Inserted {len(buffer)} events")
                 buffer.clear()
