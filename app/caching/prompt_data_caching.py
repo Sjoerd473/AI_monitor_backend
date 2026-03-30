@@ -22,11 +22,10 @@ def prompt_dump():
 
 
 # this file will query the DB for the data we need, then save it in a .json file
-# it'll be a cron job running every hour(?) 
+# it'll be a cron job running every hour
 # this way our application does not need to query the DB often at all
 
-# a list of functions that compile an sql query
-# then send it to the DB to get one single json file
+
 
 
 
