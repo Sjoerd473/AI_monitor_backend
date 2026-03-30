@@ -58,71 +58,49 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 ingestion = Ingestion()  # ingestion.db is already PromptDB(pool)
 retrieval = Retrieval()
 
-# Buffer for batching events
-# buffer = []
-# because we are running async, more than one function might be trying to access the buffer at the same time
-# the lock will allow only one coroutine to access the buffer at a time
-# thus preventing race conditions (reading the buffer while it is being wiped, etc.)
-# buffer_lock = asyncio.Lock()
-# flush_interval = 0.2  # seconds
+
 
 # Event to signal shutdown
 stop_event = asyncio.Event()
 
 
-# async def flush_worker():
-#     """Background task to flush buffer to the database."""
-#     # must be global as it lives outside the function, and has to
-#     global buffer
-#     try:
-#         # this mean run forever until the server sends a stop signal
-#         # stop_event is an async signal for shutdown
-#         while not stop_event.is_set():
-#             # asyncio.sleep() to wake up every 0.2 seconds > micro-batches
-#             await asyncio.sleep(flush_interval)
-#             # here it acquires the lock
-#             async with buffer_lock:
-#                 # if the buffer is empty skip the cycle
-#                 if not buffer:
-#                     continue
-#                 # the buffer is copied to a flush_buffer so we don't block incoming requests
-#                 # while processing the batch
-#                 flush_buffer = buffer
-#                 buffer = []
 
-#             # Insert batch
-#             try:
-#                 # then we send the whole batch on to the DB
-#                 ingestion.batch_insert(flush_buffer)
-#                 logger.info(f"[FlushWorker] Inserted {len(flush_buffer)} events")
-#             except Exception as e:
-#                 # print the error with full stack trace
-#                 logger.error(f"[FlushWorker] Failed to insert batch: {e}", exc_info=True)
-#     except asyncio.CancelledError:
-#         # this happens when the server is shut down == worker_task.cancel raises this error
-#         logger.info("[FlushWorker] Cancelled")
+
 
 
 async def flush_worker():
     logger.info("[FlushWorker] Started")
+    buffer = []
+    MAX_BATCH_SIZE = 100
+    FLUSH_INTERVAL = 10  # seconds
 
     while not stop_event.is_set():
         try:
-            result = await redis_client.blpop("event_queue", timeout=5) # type: ignore
+            # We try to get an item from Redis, but we timeout based on our flush interval
+            try:
+                result = await asyncio.wait_for(
+                    redis_client.blpop("event_queue", timeout=1),  # type: ignore
+                    timeout=FLUSH_INTERVAL
+                )
+            except asyncio.TimeoutError:
+                result = None # Trigger a manual flush check
 
-            if result is None:
-                continue
+            if result:
+                _, event = result
+                buffer.append(json.loads(event))
 
-            _, event = result
-
-            data = json.loads(event)
-
-            ingestion.batch_insert([data])
-
-            logger.info(f"{datetime.now()}[FlushWorker] Inserted 1 event")
+            # Flush Logic: If buffer is full OR time has passed and buffer isn't empty
+            if len(buffer) >= MAX_BATCH_SIZE or (len(buffer) > 0 and result is None):
+                # Ensure ingestion.batch_insert is awaited if it's an async function
+                await ingestion.batch_insert(buffer)  # type: ignore
+                
+                logger.info(f"{datetime.now()} [FlushWorker] Inserted {len(buffer)} events")
+                buffer.clear()
 
         except Exception as e:
             logger.error(f"[FlushWorker] Error: {e}", exc_info=True)
+            # Optional: Sleep briefly on error to avoid rapid-fire failure loops
+            await asyncio.sleep(1)
 
 
 
