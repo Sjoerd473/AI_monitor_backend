@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 
 from fastapi import FastAPI, Request, Header, HTTPException, Depends
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -130,42 +130,58 @@ async def generate_prompt_data():
 #     await loop.run_in_executor(None, db_dump)
 
 def verify_token(authorization: str = Header(...)):
+    # This matches how we send the API key from the plugin, the message, per standard
+    # practice starts with 'Bearer'
+    # if it does not match, return an error
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid auth header")
-
+    
+    # trim the message and hash it
     raw_token = authorization.removeprefix("Bearer ")
     token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
 
+    # We look for the exact hash in the DB, and throw an error
+    # if it is not found
     row = retrieval.get_token(token_hash)
     if not row:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+    # We then update when the token was last used, and return
+    # the connected user_id
     ingestion.update_token_last_used(token_hash)
     return row["user_id"]
 
+# This is a sliding window rate limiter, using redis. Thus the 60 seconds are relative
+# to the exact moment a user sends a prompt. This is instead of resetting a counter every fixed minute.
 async def rate_limit(user_id: str = Depends(verify_token)):
+    # the key is a unique identifier redis uses to bucket the data
     key = f"rate_limit:{user_id}"
     window = 60        # seconds
-    max_requests = 60  # requests per window
+    max_requests = 20  # requests per window
 
     now = asyncio.get_event_loop().time()
     window_start = now - window
 
+    # a pipeline allows us to bundle commands into a 'package'
+    # thus only one network trip, instead of four.
+    # Uses a redis ZSET (Sorted Set) as a data structure
     pipe = redis_client.pipeline()
-    pipe.zremrangebyscore(key, 0, window_start)       # drop old entries
+
+    pipe.zremrangebyscore(key, 0, window_start)       # drop old entries, slides the window forward
     pipe.zadd(key, {str(now): now})                   # add current request
     pipe.zcard(key)                                   # count requests in window
     pipe.expire(key, window)                          # auto-cleanup key
     results = await pipe.execute()
 
-    request_count = results[2]
+    request_count = results[2]                        # [2] is what zcard returns
     if request_count > max_requests:
         raise HTTPException(
             status_code=429,
             detail="Rate limit exceeded. Try again later."
         )
     return user_id
-
+# The same idea as rate_limit, but more strict
+# this limits the amount of times a user can register per IP per minute.
 async def rate_limit_ip(request: Request):
     if request.client is None:
         raise HTTPException(status_code=400, detail="Could not determine client IP")
@@ -197,11 +213,11 @@ async def rate_limit_ip(request: Request):
 # run automatically, the part before yield on server start,
 # the part after yield on server stop
 async def lifespan(app: FastAPI):
-
+    # we open the pool/connect to the database to ensure readiness
     logger.info("Opening DB connection pool...")
     pool.open()
     logger.info("DB pool opened")
-
+    # we start the aforementioned flushworker
     worker_task = asyncio.create_task(flush_worker())
     logger.info("[Lifespan] Flush worker started")
 
@@ -213,7 +229,7 @@ async def lifespan(app: FastAPI):
 
         logger.info("Generating prompt dump...")
         asyncio.create_task(generate_prompt_data())
-
+        # we add a cronjob to dump the prompt data every hour one minute after the hour.
         scheduler.add_job(generate_prompt_data, "cron", minute=1)
         # scheduler.add_job(generate_db_dump, "cron", hour=0, minute=0)
 
@@ -221,19 +237,20 @@ async def lifespan(app: FastAPI):
         logger.info("Scheduler started")
 
     yield
-
+    # these two ensure a 'graceful exit' = finish what you are doing then terminate.
     stop_event.set()
     worker_task.cancel()
-
+    # server shutdown without ugly logs
     try:
         await worker_task
     except asyncio.CancelledError:
         pass
-
+    # no new cronjobs as the server is dying
     if scheduler.running:
         scheduler.shutdown()
 
     # always close the pool, no conditions
+    # this ensures we don't end up with 'zombie' connections on the DB
     try:
         pool.close()
         logger.info("[Lifespan] Pool closed")
@@ -255,11 +272,15 @@ app.add_middleware(
 
 
 
-
+# endpoint for collecting prompt data
 @app.post("/events")
+# Depends is like a gatekeeper, the function will only go ahead if it returns a user_id
+# and we u
 async def receive_event(request: Request, user_id: str = Depends(rate_limit)):
     data = await request.json()
-    data["user_id"] = user_id  # now server-authoritative, not from payload
+    data["user_id"] = user_id  # now server-authoritative, not from payload but from our DB
+    # rpush adds the data to the end(right side) of a list in redis named 'event_queue'
+    # the same event queue that our flush worker is watching
     await redis_client.rpush("event_queue", json.dumps(data)) # type: ignore
     return {"status": "queued"}
 
@@ -276,17 +297,17 @@ async def dashboard(request: Request):
         "reload_timestamp": int(time.time())  # Unique per request
     })
 
-
+# This endpoint is needed to get the json data to the frontend
 @app.get("/data/dashboard.json")
 async def get_dashboard_data():
-    # Option 1: Serve static JSON file
     file_path = "static/data/dashboard.json"
     if os.path.exists(file_path):
-        with open(file_path, "r") as f:
-            return json.load(f)
+        # This is more efficient for FastAPI/Starlette
+        return FileResponse(file_path)
+    raise HTTPException(status_code=404, detail="Data not ready yet")
         
 
-
+# this function too only runs if Depends returns no error
 @app.post("/register")
 async def register(request: Request,  _: None = Depends(rate_limit_ip)):
     data = await request.json()
@@ -299,7 +320,7 @@ async def register(request: Request,  _: None = Depends(rate_limit_ip)):
     ingestion.insert_user(user_id)
     ingestion.insert_token(user_id, token_hash) # type: ignore
     
-
+    # this is sent back to the plugin user
     return {"token": raw_token}
 
 
