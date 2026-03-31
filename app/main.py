@@ -297,10 +297,14 @@ async def dashboard(request: Request):
         "reload_timestamp": int(time.time())  # Unique per request
     })
 
+@app.get('/privacy', response_class=HTMLResponse)
+async def privacy(request:Request):
+    return templates.TemplateResponse('privacy-policy.html', {'request': request})
+
 # This endpoint is needed to get the json data to the frontend
 @app.get("/data/dashboard.json")
 async def get_dashboard_data():
-    file_path = "static/data/dashboard.json"
+    file_path = "protected/data/dashboard.json"
     if os.path.exists(file_path):
         # This is more efficient for FastAPI/Starlette
         return FileResponse(file_path)

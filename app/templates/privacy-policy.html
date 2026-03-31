@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — AI Impact Monitor</title>
+  <style>
+    :root {
+      --bg: #252525;
+      --surface: #2e2e2e;
+      --surface2: #333333;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: rgba(255, 255, 255, 0.85);
+      --muted: rgba(255, 255, 255, 0.4);
+      --co2: #5c2a2a;
+      --co2-text: #e07070;
+      --energy: #5c3c1a;
+      --energy-text: #e09040;
+      --water: #1a3a38;
+      --water-text: #50b8a8;
+      --green: #3a7d5a;
+      --green-text: #6ecf9a;
+      --accent: #b87333;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 16px;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #1e1e1e;
+      border-bottom: 1px solid var(--border);
+      padding: 36px 0 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+
+    .header-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(184, 115, 51, 0.15);
+      border: 1px solid rgba(184, 115, 51, 0.3);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .header-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    header h1 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: bold;
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .header-meta {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px 24px;
+    }
+
+    .header-meta a {
+      color: var(--water-text);
+      text-decoration: none;
+    }
+
+    .header-meta a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Layout ── */
+    .page-wrapper {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    /* ── Section ── */
+    section {
+      margin-bottom: 48px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    section:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    section:nth-child(2) {
+      animation-delay: 0.10s;
+    }
+
+    section:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    section:nth-child(4) {
+      animation-delay: 0.20s;
+    }
+
+    section:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    section:nth-child(6) {
+      animation-delay: 0.30s;
+    }
+
+    section:nth-child(7) {
+      animation-delay: 0.35s;
+    }
+
+    .section-number {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: bold;
+      color: #fff;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.7);
+      margin: 24px 0 10px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.65);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+
+    /* ── Data type cards ── */
+    .data-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin: 16px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .data-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .data-card.local::before {
+      background: linear-gradient(to bottom, var(--water-text), #2a7a6a);
+    }
+
+    .data-card.research::before {
+      background: linear-gradient(to bottom, var(--energy-text), #b85020);
+    }
+
+    .data-card.never::before {
+      background: linear-gradient(to bottom, var(--green-text), #2a6a48);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .card-icon.local {
+      background: var(--water);
+    }
+
+    .card-icon.research {
+      background: var(--energy);
+    }
+
+    .card-icon.never {
+      background: var(--green);
+      opacity: 0.8;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── List items ── */
+    .item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .item-list li {
+      display: flex;
+      gap: 10px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.5;
+    }
+
+    .item-list li::before {
+      content: '—';
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .item-list li strong {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Never list — strikethrough style */
+    .never-list li {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .never-list li::before {
+      content: '✕';
+      color: var(--co2-text);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .never-list li strong {
+      color: var(--co2-text);
+    }
+
+    /* ── Purpose list ── */
+    .purpose-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      counter-reset: purpose;
+    }
+
+    .purpose-list li {
+      display: flex;
+      gap: 14px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.55;
+      counter-increment: purpose;
+    }
+
+    .purpose-list li::before {
+      content: counter(purpose);
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--accent);
+      background: rgba(184, 115, 51, 0.12);
+      border: 1px solid rgba(184, 115, 51, 0.25);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ── Info row (retention / third-parties) ── */
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 540px) {
+      .info-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .info-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+
+    .info-tile .label {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .info-tile .value {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.5;
+    }
+
+    /* ── Permission badges ── */
+    .permission-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .permission-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+
+    .perm-badge {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      background: var(--surface2);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 5px;
+      padding: 3px 9px;
+      color: var(--water-text);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .perm-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.5;
+    }
+
+    /* ── Control cards ── */
+    .control-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+
+    .control-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .control-dot.green {
+      background: var(--green-text);
+    }
+
+    .control-dot.orange {
+      background: var(--energy-text);
+    }
+
+    .control-text strong {
+      display: block;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 2px;
+    }
+
+    .control-text span {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #1e1e1e;
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    footer p {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    footer a {
+      color: var(--water-text);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--water-text);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="header-badge">Privacy Policy</div>
+      <h1>AI Impact Monitor</h1>
+      <div class="header-meta">
+        <span>Effective: March 31, 2026</span>
+        <span>Developer: Sjoerd Brussee</span>
+        <span><a href="mailto:sjoerdbrussee@hotmail.com">sjoerdbrussee@hotmail.com</a></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrapper">
+
+    <!-- 1. Introduction -->
+    <section>
+      <div class="section-number">§ 1 — Introduction</div>
+      <h2>Introduction</h2>
+      <p>AI Impact Monitor ("the Extension") is designed to help users understand the environmental cost of their AI
+        usage. We believe in transparency — both regarding the planet's resources and your personal data. This policy
+        explains what data we collect, how it is stored, and your rights as a user.</p>
+    </section>
+
+    <!-- 2. Data Collection -->
+    <section>
+      <div class="section-number">§ 2 — Data Collection &amp; Usage</div>
+      <h2>Data Collection and Usage</h2>
+      <p>We categorize the data we handle into two groups: <strong>Local Data</strong> (kept on your device) and
+        <strong>Research Data</strong> (sent to our backend).</p>
+
+      <!-- Local Data -->
+      <div class="data-card local">
+        <div class="card-header">
+          <div class="card-icon local">💧</div>
+          <div>
+            <div class="card-title">Local Data</div>
+            <div class="card-subtitle">Device-only · Never transmitted</div>
+          </div>
+        </div>
+        <p style="font-size:14px; margin-bottom:0;">The Extension stores your daily, weekly, and monthly AI usage stats
+          and environmental impact estimates locally using the Chrome <code>storage</code> API. This data is used only
+          to display your personal dashboard and is deleted automatically if you uninstall the extension.</p>
+      </div>
+
+      <!-- Research Data -->
+      <div class="data-card research">
+        <div class="card-header">
+          <div class="card-icon research">⚡</div>
+          <div>
+            <div class="card-title">Research Data</div>
+            <div class="card-subtitle">Opt-in only · Backend storage</div>
+          </div>
+        </div>
+        <p style="font-size:14px; margin-bottom:12px;">If you opt-in to our research project, the following data is sent
+          to <code>https://ai-monitor.madebyshu.net/events</code>:</p>
+        <ul class="item-list">
+          <li>
+            <div><strong>Identifiers:</strong> A randomly generated, hashed <code>user_id</code> and a
+              <code>session_id</code>. These are pseudonymous and cannot be used to identify your real-world identity,
+              email, or Google account.</div>
+          </li>
+          <li>
+            <div><strong>Prompt Metadata:</strong> Character/token counts, timestamp, the AI model used (e.g., GPT-4),
+              the category, and the detected language.</div>
+          </li>
+          <li>
+            <div><strong>Environmental Metrics:</strong> Estimated energy (Wh), CO₂ (g), and water (L) consumption.
+            </div>
+          </li>
+          <li>
+            <div><strong>UI &amp; Interaction Data:</strong> Whether you used voice input, attached a file/image, used a
+              suggested prompt, or triggered a "regenerate" response.</div>
+          </li>
+          <li>
+            <div><strong>Technical Environment:</strong> Your browser version, operating system, viewport size, and
+              general region/timezone (to calculate grid-specific carbon intensity).</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Never collect -->
+      <div class="data-card never">
+        <div class="card-header">
+          <div class="card-icon never">🛡️</div>
+          <div>
+            <div class="card-title">What We Never Collect</div>
+            <div class="card-subtitle">Hard limits · Always enforced</div>
+          </div>
+        </div>
+        <ul class="item-list never-list">
+          <li>
+            <div><strong>No Text Content:</strong> We never store or transmit the actual text of your prompts or the
+              AI's responses.</div>
+          </li>
+          <li>
+            <div><strong>No Personal Information:</strong> We do not collect names, emails, IP addresses, or browsing
+              history outside of the four supported AI platforms.</div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. Purpose -->
+    <section>
+      <div class="section-number">§ 3 — Purpose of Research</div>
+      <h2>Purpose of Research</h2>
+      <p>The data collected is used by Sjoerd Brussee for personal research purposes to:</p>
+      <ol class="purpose-list">
+        <li>Analyze the correlation between different types of AI usage (e.g., voice vs. text) and their environmental
+          costs.</li>
+        <li>Develop more precise advice for users on how to reduce their digital footprint.</li>
+        <li>Identify trends in AI consumption to advocate for more sustainable AI alternatives.</li>
+      </ol>
+    </section>
+
+    <!-- 4. Retention & Third Parties -->
+    <section>
+      <div class="section-number">§ 4 — Retention &amp; Third Parties</div>
+      <h2>Data Retention and Third Parties</h2>
+      <div class="info-row">
+        <div class="info-tile">
+          <div class="label">Retention Period</div>
+          <div class="value">Raw research data is kept for <strong>one year</strong>, after which it is fully aggregated
+            into anonymous trends and individual records are deleted.</div>
+        </div>
+        <div class="info-tile">
+          <div class="label">Third Parties</div>
+          <div class="value">We do <strong>not</strong> share, sell, or trade your data with any third parties. All data
+            is stored on a private VPS controlled solely by the developer.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Permissions -->
+    <section>
+      <div class="section-number">§ 5 — Permissions Justification</div>
+      <h2>Permissions Justification</h2>
+      <div class="permission-list">
+        <div class="permission-item">
+          <div class="perm-badge">storage</div>
+          <div class="perm-desc">To save your personal impact history and preferences locally on your device.</div>
+        </div>
+        <div class="permission-item">
+          <div class="perm-badge">host_permissions</div>
+          <div class="perm-desc">To detect activity on ChatGPT, Claude, Gemini, and Perplexity for the purpose of
+            calculating environmental impact.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. User Control -->
+    <section>
+      <div class="section-number">§ 6 — User Control</div>
+      <h2>User Control</h2>
+      <div class="control-list">
+        <div class="control-item">
+          <div class="control-dot green"></div>
+          <div class="control-text">
+            <strong>Opt-In / Opt-Out</strong>
+            <span>You can enable or disable data sharing at any time via the Extension settings.</span>
+          </div>
+        </div>
+        <div class="control-item">
+          <div class="control-dot orange"></div>
+          <div class="control-text">
+            <strong>Data Deletion</strong>
+            <span>You may clear your local data at any time through the Extension popup.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>AI Impact Monitor &nbsp;·&nbsp; <a href="mailto:sjoerdbrussee@hotmail.com">sjoerdbrussee@hotmail.com</a>
+      &nbsp;·&nbsp; Effective March 31, 2026</p>
+  </footer>
+
+</body>
+
+</html>
