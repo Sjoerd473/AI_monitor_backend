@@ -113,7 +113,7 @@ POSTGRES_PASSWORD=your_secure_password
 | `GET`  | `/dashboard`                 | Dashboard UI with interactive charts. |
 | `GET`  | `/data/dashboard.json`       | JSON‑based metrics for charts (CO₂, energy, water over time and by category/model). |
 | `GET`  | `/privacy`                   | Privacy policy page. |
-| `GET`  | `/download/dataset` (opt‑in) | Download anonymized research dataset ZIP (if enabled). |
+
 
 ## Privacy & Data Policy
 

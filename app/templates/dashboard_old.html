@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Prompt Dashboard</title>
+  <!-- <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet"> -->
+  <link href="{{ url_for('static', path='/dashboard_style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+  <h1>Prompt Dashboard</h1>
+
+  <div id="dashboard" style="max-width: 500px; margin:auto;"></div>
+
+  <script src="/static/dashboard.js?t={{ reload_timestamp }}"></script>
+
+  <script src="{{ url_for('static', path='/chart.min.js') }}"></script>
+
+</body>
+
+</html>
