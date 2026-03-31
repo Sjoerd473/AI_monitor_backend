@@ -6,21 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Monitor Dashboard</title>
 
-  <!-- Favicon -->
-  <link rel="icon"
-    href="https://logo-icons.com/cdn/shop/files/370-logo-1712247273.814color-6A994E.svg?v=1712759881&width=416"
-    type="image/svg+xml">
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Chart.js -->
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"> -->
   <link href="{{ url_for('static', path='/dashboard_style.css') }}" rel="stylesheet">
 
 </head>
@@ -179,6 +169,8 @@
   <script src="/static/dashboard.js?t={{ reload_timestamp }}"></script>
 
   <script src="{{ url_for('static', path='/chart.min.js') }}"></script>
+  <script src="{{ url_for('static', path='/lucide.min.js') }}"></script>
+  <script src="{{ url_for('static', path='/tailwind.js') }}"></script>
 </body>
 
 </html>
