@@ -305,11 +305,13 @@ async def privacy(request:Request):
 @app.get("/data/dashboard.json")
 async def get_dashboard_data():
     file_path = "protected/data/dashboard.json"
+    
     if os.path.exists(file_path):
-        # This is more efficient for FastAPI/Starlette
-        return FileResponse(file_path)
+        with open(file_path, "r") as f:
+            data = json.load(f)
+        return data  # FastAPI automatically returns this as application/json
+    
     raise HTTPException(status_code=404, detail="Data not ready yet")
-        
 
 # this function too only runs if Depends returns no error
 @app.post("/register")
