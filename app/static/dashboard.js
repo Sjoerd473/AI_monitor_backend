@@ -443,10 +443,10 @@ function renderChart() {
     const costRates = { acqua: 0.0045, co2: 0.00009, energia: 0.00028 }; // Moltiplicatori fittizi per calcolare il costo
     const targetCost = total * costRates[state.output];
 
-    animateValue(document.getElementById('stat-total'), currentTotalVal, total, 1200, (val) => val.toFixed(2) + unitSuffix);
+    animateValue(document.getElementById('stat-total'), currentTotalVal, total, 1200, (val) => val.toFixed(4) + unitSuffix);
     currentTotalVal = total;
 
-    animateValue(document.getElementById('stat-cost'), currentCostVal, targetCost, 1200, (val) => '€ ' + val.toFixed(3));
+    animateValue(document.getElementById('stat-cost'), currentCostVal, targetCost, 1200, (val) => '€ ' + val.toFixed(4));
     currentCostVal = targetCost;
 
     // Percentage difference vs previous
