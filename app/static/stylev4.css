@@ -1116,21 +1116,21 @@ RESPONSIVE (Aumentato breakpoint a 1150px per sicurezza estrema)
 }
 
 /* Mobile by default */
-.desktop-only {
+.desktop-svg-only {
     display: none;
 }
 
-.mobile-only {
+.mobile-svg-only {
     display: block;
 }
 
 /* Desktop version for screens wider than 768px */
 @media (min-width: 768px) {
-    .desktop-only {
+    .desktop-svg-only {
         display: block;
     }
 
-    .mobile-only {
+    .mobile-svg-only {
         display: none;
     }
 

@@ -13,7 +13,7 @@
         href="{{ url_for('static', path='/images/icons/favicon-16x16.png' ) }}">
     <link rel="manifest" href="{{ url_for('static', path='/images/icons/site.webmanifest') }}">
 
-    <link href="{{ url_for('static', path='/stylev3.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='/stylev4.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -75,7 +75,7 @@
             <main>
                 <!-- NUOVA SEZIONE INTRO -->
                 <section class="intro-outro-section">
-                    <img src="https://ai-monitor.madebyshu.net/static/images/Background.svg" alt="Logo Icona">
+                    <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo Icona">
                     <h3>Il nostro approccio alla Sostenibilità IA</h3>
                     <p>Prima di analizzare i dati, crediamo fermamente che la trasparenza debba essere al centro
                         dell'innovazione tecnologica. Abbiamo costruito questa piattaforma per rendere visibile
@@ -92,7 +92,7 @@
 
                     <div class="cards-grid">
                         <div class="card" id="card-co2">
-                            <img src="https://ai-monitor.madebyshu.net/static/images/co2.svg" alt="Emissioni CO2"
+                            <img src="{{ url_for('static', path='images/co2_new.svg') }}" alt="Emissioni CO2"
                                 class="card-img">
                             <div class="card-content">
                                 <h3>Emissioni di CO2</h3>
@@ -103,7 +103,7 @@
                         </div>
 
                         <div class="card" id="card-energy">
-                            <img src="https://ai-monitor.madebyshu.net/static/images/energy.svg"
+                            <img src="{{ url_for('static', path='images/en_new.svg') }}"
                                 alt="Consumo Energetico" class="card-img">
                             <div class="card-content">
                                 <h3>Consumo Energetico</h3>
@@ -114,7 +114,7 @@
                         </div>
 
                         <div class="card" id="card-water">
-                            <img src="https://ai-monitor.madebyshu.net/static/images/water.svg" alt="Impronta Idrica"
+                            <img src="{{ url_for('static', path='images/water_new.svg') }}" alt="Impronta Idrica"
                                 class="card-img">
                             <div class="card-content">
                                 <h3>Impronta Idrica</h3>
@@ -286,7 +286,7 @@
 
                 <!-- NUOVA SEZIONE OUTRO -->
                 <section class="intro-outro-section">
-                    <img src="https://ai-monitor.madebyshu.net/static/images/Background.svg" alt="Logo Icona">
+                    <img src="{{ url_for('static', path='images/circle_new.svg') }}" alt="Logo Icona">
                     <h3>Unisciti al Cambiamento</h3>
                     <p>Misurare l'impatto è solo il primo passo verso un'Intelligenza Artificiale etica e sostenibile.
                         Supportando progetti come il nostro, contribuisci a costruire un ecosistema tecnologico più
