@@ -248,3 +248,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+
+const paths = Array.from(document.querySelectorAll('#Foreground path'))
+const pathsLength = paths.length
+const PATHCOLORS = ['hsl(325, 63%, 52%)', 'hsl(192, 78%, 46%)', 'hsl(29, 85%, 53%)']
+
+
+function animatePath(path) {
+    const totalLength = path.getTotalLength();
+    const circuitDuration = totalLength * 30 + getRandomInt(10) * 20
+    path.classList.add('draw')
+    path.style.setProperty('--stroke-color', PATHCOLORS[getRandomInt(3)])
+    path.style.setProperty('--total-length', totalLength + 'px');
+    path.style.setProperty('--circuit-duration', circuitDuration - (circuitDuration / 10) + 'ms')
+    // path.style.setProperty('--circuit-delay', (getRandomInt(500) + 500) + 'ms')
+    path.style.setProperty('--wiggle-duration', (2500 + getRandomInt(5000)) + 'ms')
+
+    setTimeout(() => {
+        path.classList.remove('draw')
+    }, circuitDuration);
+}
+
+setInterval(() => {
+    let index = getRandomInt(pathsLength);
+
+    // Use Math.max/min or modulo to stay within array bounds
+    animatePath(paths[index]);
+    animatePath(paths[(index + 2) % pathsLength]);
+    animatePath(paths[Math.abs(index - 2)]);
+}, 1000);
