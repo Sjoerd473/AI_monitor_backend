@@ -18,131 +18,292 @@
 
 <body>
 
-    <header>
-        <div class="logo">AI Monitor</div>
+    <header id="main-header">
+        <div class="logo" onclick="showMain()">
+            <img src="https://ai-monitor.madebyshu.net/static/images/Background.svg" alt="Logo AI Monitor">
+            AI Monitor
+        </div>
 
         <nav id="main-nav">
             <ul>
-                <li><a href="#sezione-1">Analisi Dati</a></li>
-                <li><a href="#sezione-2">Impatto Reale</a></li>
-                <li><a href="#sezione-3">Trasparenza</a></li>
-                <li class="nav-actions">
-                    <a href="approfondisci.html" class="nav-cta">Scarica plugin</a>
-                    <!-- Pulsante Cambio Tema -->
-                    <button id="theme-toggle" class="theme-btn" aria-label="Cambia Tema Giorno/Notte">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
-                </li>
+                <li><a href="#dati">Metriche</a></li>
+                <li><a href="#progetto">Il Progetto</a></li>
+                <li><a href="#soluzioni">Soluzioni</a></li>
+                <li><a href="#risorse">Risorse</a></li>
+                <li><a href="#contatti">Contatti</a></li>
+                <li class="mobile-only-cta"><a href="#download" class="btn btn-premium">Scarica Ora</a></li>
             </ul>
         </nav>
 
         <div class="header-controls">
-            <!-- Solo Pulsante Menu Hamburger (visibile su mobile) -->
-            <button class="menu-toggle" aria-label="Apri menu di navigazione">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button id="theme-toggle" class="theme-btn" aria-label="Cambia Tema"></button>
+            <a href="#download" class="btn btn-premium header-cta desktop-only">Scarica Ora</a>
+            <button id="mobile-menu-btn" class="hamburger" aria-label="Menu Mobile">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line class="line-top" x1="3" y1="6" x2="21" y2="6"></line>
+                    <line class="line-mid" x1="3" y1="12" x2="21" y2="12"></line>
+                    <line class="line-bot" x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
             </button>
         </div>
     </header>
 
-    <main>
-        <!-- SEZIONE 1 -->
-        <section id="sezione-1">
-            <div class="grid-2-cols">
-                <div class="column-text">
-                    <span class="eco-badge">Monitoraggio Globale</span>
-                    <h1>L'Ecosistema Invisibile dell'AI</h1>
-                    <p>L'adozione dei sistemi di Intelligenza Artificiale sta trasformando rapidamente i processi su
-                        scala globale, rappresentando oggi un'infrastruttura fondamentale per l'innovazione tecnologica.
-                    </p>
-                    <p>Tuttavia, per comprendere a pieno questa rivoluzione, è necessario monitorare non solo i benefici
-                        tangibili, ma anche le dinamiche strutturali, il consumo di risorse e il reale utilizzo degli
-                        strumenti generativi.</p>
-                    <a href="#" class="btn">Scarica plugin</a>
+    <div id="main-content">
+        <!-- SEZIONE 1 (HERO) -->
+        <div class="hero-wrapper" id="hero-section">
+            <section class="hero-screen" style="justify-content: center; flex-direction: column;">
+                <div
+                    style="width: 100%; max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-top: 20px; transform: translateY(-2vh);">
+                    <img src="https://tomc.odoo.com/web/image/468-126a6090/image%20%281%29.webp"
+                        alt="Immagine di copertina"
+                        style="width: 100%; max-width: 900px; max-height: 65vh; object-fit: contain; border: none; border-radius: 0; box-shadow: none; outline: none; filter: contrast(1.15) brightness(1.10) saturate(1.25); image-rendering: -webkit-optimize-contrast; transform: translateZ(0);">
                 </div>
-                <div class="column-image">
-                    <!-- Aggiunto loading="lazy" per il green web design -->
-                    <img src="https://miro.medium.com/v2/resize:fit:1400/1*VplI9Cu1FSjhbfa-Wr6NOA.png"
-                        alt="Grafico sull'adozione e l'impatto dell'AI" class="hero-image" loading="lazy">
-                </div>
-            </div>
-        </section>
-
-        <!-- SEZIONE 2 -->
-        <section id="sezione-2">
-            <div class="grid-2-cols">
-                <div class="column-image">
-                    <img src="https://whatisai.sirv.com/WP_whatisai.co.uk/2025/11/is_ai_bad_for_the_environment.webp"
-                        alt="L'impatto ambientale dell'Intelligenza Artificiale" class="hero-image" loading="lazy">
-                </div>
-                <div class="column-text">
-                    <h2>Il Costo Nascosto del Calcolo</h2>
-                    <p>La crescita esponenziale dell'Intelligenza Artificiale porta con sé sfide infrastrutturali e
-                        ambientali urgenti. L'addestramento dei grandi modelli (LLM) richiede risorse computazionali
-                        senza precedenti.</p>
-                    <p>Questo si traduce in un <strong>impatto climatico diretto</strong>. I moderni data center
-                        consumano quantità massicce di energia elettrica e richiedono milioni di litri d'acqua per il
-                        raffreddamento. A ciò si aggiunge la pressione sull'estrazione di terre rare per i
-                        semiconduttori.</p>
-                    <p>Mentre i vantaggi sono evidenti, i costi ecologici nascosti chiamano policy maker e industria a
-                        sviluppare modelli di efficienza radicalmente nuovi e sostenibili.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SEZIONE 3 -->
-        <section id="sezione-3">
-            <div class="grid-2-cols">
-                <div class="column-text">
-                    <h2>L'Urgenza della Trasparenza</h2>
-                    <p>Il nodo centrale di questa sfida è la <strong>mancanza di dati aperti</strong>. Attualmente,
-                        l'industria opera con un elevato grado di opacità riguardo al dispendio reale associato alle
-                        singole operazioni AI.</p>
-                    <p>Quanta energia richiede la generazione di un'immagine? Qual è il bilancio idrico per
-                        l'addestramento di un nuovo modello? Le aziende raramente condividono metriche dettagliate e
-                        standardizzate.</p>
-                    <p>Senza queste misurazioni, è impossibile regolamentare il settore, ottimizzare i consumi e
-                        permettere agli utenti finali di fare scelte digitali etiche e consapevoli.</p>
-                </div>
-                <div class="column-image">
-                    <img src="https://aiwhisper.co.uk/wp-content/uploads/2025/08/how-is-ai-bad-for-the-environment.jpeg"
-                        alt="Il problema ecologico dell'AI" class="hero-image" loading="lazy">
-                </div>
-            </div>
-        </section>
-
-        <!-- SEZIONE 4: VIDEO -->
-        <section id="sezione-video" class="text-center">
-            <h2>Dati alla Mano</h2>
-            <div class="text-content">
-                <p>Per comprendere meglio le dinamiche strutturali, i consumi energetici e le sfide aperte in questo
-                    settore, guarda l'intervento completo:</p>
-            </div>
-            <div class="video-container">
-                <!-- Aggiunto loading="lazy" per ritardare il caricamento dell'iframe pesante -->
-                <iframe src="https://www.youtube-nocookie.com/embed/b0C56yqIkbk?start=64" title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen loading="lazy"></iframe>
-            </div>
-            <div class="video-fallback">
-                <p>Preferisci non caricare il player per risparmiare dati? <a
-                        href="https://www.youtube.com/watch?v=b0C56yqIkbk&t=64s" target="_blank"
-                        rel="noopener noreferrer">Apri il link su YouTube</a>.</p>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 AI Monitor. Progetto di analisi strutturale e sensibilizzazione tecnologica.</p>
-            <p><small>🌿 Questo sito utilizza il Lazy Loading e il tema scuro automatico per ridurre l'impronta di
-                    carbonio della navigazione.</small></p>
+            </section>
         </div>
+
+        <main>
+            <!-- NUOVA SEZIONE INTRO -->
+            <section class="intro-outro-section">
+                <img src="https://ai-monitor.madebyshu.net/static/images/Background.svg" alt="Logo Icona">
+                <h3>Il nostro approccio alla Sostenibilità IA</h3>
+                <p>Prima di analizzare i dati, crediamo fermamente che la trasparenza debba essere al centro
+                    dell'innovazione tecnologica. Abbiamo costruito questa piattaforma per rendere visibile l'impatto
+                    invisibile degli algoritmi.</p>
+            </section>
+
+            <!-- SEZIONE 2 (METRICHE) -->
+            <section class="cards-section" id="dati">
+                <div class="cards-section-header">
+                    <h2>Esplora le metriche</h2>
+                    <p>Analizza l'impatto e la struttura dei sistemi cognitivi moderni.</p>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card" id="card-co2">
+                        <img src="https://ai-monitor.madebyshu.net/static/images/co2.svg" alt="Emissioni CO2"
+                            class="card-img">
+                        <div class="card-content">
+                            <h3>Emissioni di CO2</h3>
+                            <p>Scopri e monitora le emissioni di anidride carbonica generate dall'addestramento e
+                                dall'uso intensivo dei grandi modelli.</p>
+                            <button class="btn" onclick="showDetail('co2')">Approfondisci</button>
+                        </div>
+                    </div>
+
+                    <div class="card" id="card-energy">
+                        <img src="https://ai-monitor.madebyshu.net/static/images/energy.svg" alt="Consumo Energetico"
+                            class="card-img">
+                        <div class="card-content">
+                            <h3>Consumo Energetico</h3>
+                            <p>Analizza l'impatto energetico dei data center e quanto pesa la potenza di calcolo
+                                richiesta dall'ecosistema.</p>
+                            <button class="btn" onclick="showDetail('energy')">Approfondisci</button>
+                        </div>
+                    </div>
+
+                    <div class="card" id="card-water">
+                        <img src="https://ai-monitor.madebyshu.net/static/images/water.svg" alt="Impronta Idrica"
+                            class="card-img">
+                        <div class="card-content">
+                            <h3>Impronta Idrica</h3>
+                            <p>Calcola e valuta il consumo di acqua dolce necessario ai sistemi di raffreddamento dei
+                                server IA.</p>
+                            <button class="btn" onclick="showDetail('water')">Approfondisci</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NUOVO CAROSELLO 1 (Testo Sx, Immagini Dx) -->
+            <section class="split-carousel-section" id="soluzioni">
+                <div class="split-container">
+                    <div class="split-content">
+                        <h2>Analisi in tempo reale<br>sul tuo cruscotto</h2>
+                        <p>Ottieni un controllo completo e metriche azionabili sui consumi dei tuoi modelli preferiti,
+                            direttamente integrato nel tuo workflow quotidiano.</p>
+                    </div>
+                    <div class="split-visual" id="carousel-1">
+                        <div class="carousel-track">
+                            <div class="carousel-slide active"><img
+                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 1"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 2"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 3"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 4"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 5"></div>
+                        </div>
+                        <button class="carousel-btn prev" aria-label="Precedente">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="carousel-btn next" aria-label="Successivo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                        <div class="carousel-dots"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEZIONE PROGETTO ORIGINALE -->
+            <section class="project-section" id="progetto">
+                <div class="project-container">
+                    <div class="project-header-row">
+                        <div class="project-hero-image">
+                            <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
+                                alt="Sviluppo dell'Estensione AI Monitor">
+                        </div>
+                        <div class="project-content">
+                            <h2>L'Estensione AI Monitor</h2>
+                            <p>Il nostro progetto si concretizza in un'<strong>estensione per browser</strong>
+                                innovativa. Mentre chatti con i tuoi modelli di IA preferiti, l'estensione calcola in
+                                tempo reale l'impatto ambientale delle tue interazioni.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-item-content">
+                                <h4>Token Consumati</h4>
+                                <p>Traccia in tempo reale la quantità di dati elaborati, tenendo conto sia dell'input
+                                    che dell'output generato.</p>
+                            </div>
+                            <img src="https://images.pexels.com/photos/5473337/pexels-photo-5473337.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Token" class="feature-item-image">
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-item-content">
+                                <h4>Emissioni di CO2</h4>
+                                <p>Stima l'impronta di carbonio istantanea, calcolando i grammi di CO2 generati per ogni
+                                    tua conversazione.</p>
+                            </div>
+                            <img src="https://images.pexels.com/photos/2565400/pexels-photo-2565400.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="CO2" class="feature-item-image">
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-item-content">
+                                <h4>Acqua Utilizzata</h4>
+                                <p>Monitora le frazioni di litro d'acqua necessarie per dissipare il calore dei server
+                                    durante l'interrogazione.</p>
+                            </div>
+                            <img src="https://images.pexels.com/photos/40784/drops-of-water-water-nature-liquid-40784.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Acqua" class="feature-item-image">
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-item-content">
+                                <h4>Consumo di Energia</h4>
+                                <p>Misura l'elettricità (in kWh) richiesta dall'infrastruttura per elaborare la tua
+                                    singola richiesta.</p>
+                            </div>
+                            <img src="https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Energia" class="feature-item-image">
+                        </div>
+                    </div>
+
+                    <div class="download-cta" id="download">
+                        <p>Curioso di vedere queste metriche in azione? Prova l'estensione gratuitamente nel tuo
+                            browser.</p>
+                        <button class="btn btn-premium">Scarica Ora</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NUOVO CAROSELLO 2 (Immagini Sx, Testo Dx) -->
+            <section class="split-carousel-section" id="risorse">
+                <div class="split-container" style="flex-direction: row-reverse;">
+                    <div class="split-content">
+                        <h2>L'invisibile reso<br>finalmente tangibile</h2>
+                        <p>Ogni singola query processata lascia un segno. Attraverso grafiche chiare e immediate,
+                            traduciamo calcoli complessi in dati facili da interpretare, permettendoti di comprendere a
+                            colpo d'occhio il peso reale del tuo impiego dell'intelligenza artificiale giorno dopo
+                            giorno.</p>
+                    </div>
+                    <div class="split-visual" id="carousel-2">
+                        <div class="carousel-track">
+                            <div class="carousel-slide active"><img
+                                    src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=1200"
+                                    alt="UI Element 1"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.pexels.com/photos/7887859/pexels-photo-7887859.jpeg"
+                                    alt="UI Element 2"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
+                                    alt="UI Element 3"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=1200"
+                                    alt="UI Element 4"></div>
+                        </div>
+                        <button class="carousel-btn prev" aria-label="Precedente">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="carousel-btn next" aria-label="Successivo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                        <div class="carousel-dots"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NUOVA SEZIONE OUTRO -->
+            <section class="intro-outro-section">
+                <img src="https://ai-monitor.madebyshu.net/static/images/Background.svg" alt="Logo Icona">
+                <h3>Unisciti al Cambiamento</h3>
+                <p>Misurare l'impatto è solo il primo passo verso un'Intelligenza Artificiale etica e sostenibile.
+                    Supportando progetti come il nostro, contribuisci a costruire un ecosistema tecnologico più
+                    consapevole del proprio ecosistema naturale.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- VISTA DETTAGLIO (Nasconde Main) -->
+    <div id="detail-view">
+        <div class="back-link" onclick="showMain(true)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Torna alla Home
+        </div>
+        <div id="detail-content"></div>
+    </div>
+
+    <!-- MICRO-BANNER EXTENSION -->
+    <div id="micro-banner" class="micro-banner">
+        <button id="close-banner" class="close-banner" aria-label="Chiudi">&times;</button>
+        <div class="banner-content">
+            <p id="banner-text-1" class="banner-text">Vedi le metriche in azione</p>
+            <p id="banner-text-2" class="banner-text">Prova l'estensione gratuita.</p>
+            <button class="btn btn-premium">Scarica Ora</button>
+        </div>
+    </div>
+
+    <footer id="contatti">
+        <p>&copy; 2026 AI Monitor. Progetto di analisi strutturale e sensibilizzazione tecnologica.</p>
+        <p><small>Design leggero e ottimizzato per ridurre l'impronta carbonica.</small></p>
     </footer>
 
 
