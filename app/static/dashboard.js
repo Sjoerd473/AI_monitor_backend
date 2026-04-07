@@ -36,6 +36,7 @@ themeToggleBtn.addEventListener('click', () => {
 
 // Stato dei filtri
 const savedFilters = JSON.parse(localStorage.getItem('dashboard-filters')) || {};
+
 const state = {
     output: savedFilters.output || 'acqua',
     tempo: savedFilters.tempo || 'giorno',
@@ -178,7 +179,8 @@ async function fetchAndRenderData() {
 
         if (data) {
             dashboardData = data;
-            console.log(data)
+            buildDynamicUI(data);
+            applyFilterClasses();
             renderChart();
         } else {
             console.error("Data received is empty or invalid");
