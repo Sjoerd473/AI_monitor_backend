@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+{% include 'components/head.html' %}
+
+<body>
+    <div id="detail-view">
+
+        <div class="detail-header">
+            <img src="{{ url_for('static', path='images/energy_new.svg') }}" class="detail-image"
+                alt="Icona Metrica">
+            <h2>Impronta Idrica</h2>
+        </div>
+
+        <div class="detail-body">
+
+            <div class="detail-row">
+                <div class="detail-row-img">
+                    <img src="https://images.pexels.com/photos/40784/drops-of-water-water-nature-liquid-40784.jpeg"
+                        alt="Gocce d'acqua">
+                </div>
+                <div class="detail-row-text">
+                    <p>I sistemi di raffreddamento ad acqua sono essenziali per evitare il surriscaldamento dei server,
+                        ma richiedono miliardi di litri di acqua dolce ogni anno.</p>
+                </div>
+            </div>
+
+            <div class="detail-row reverse">
+                <div class="detail-row-img">
+                    <img src="https://images.pexels.com/photos/11489544/pexels-photo-11489544.jpeg"
+                        alt="Server cooling">
+                </div>
+                <div class="detail-row-text">
+                    <p>Gran parte dell'acqua utilizzata evapora durante il processo, sottraendo risorse preziose agli
+                        ecosistemi locali, spesso in zone già soggette a stress idrico.</p>
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-row-img">
+                    <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg" alt="Comunità locale">
+                </div>
+                <div class="detail-row-text">
+                    <p>La trasparenza sui dati idrici permette alle comunità locali di valutare meglio l'impatto
+                        territoriale delle infrastrutture tecnologiche.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <section class="intro-outro-section" style="padding: 4rem 0 2rem;">
+            <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo Icona">
+            <h3>Preserva l'Acqua</h3>
+            <p>Unisciti alla nostra missione per rendere l'IA più sostenibile per il pianeta e per le sue risorse
+                vitali.</p>
+
+            <button class="filter-btn active-tempo" style="margin-top: 2rem;">
+                Torna alla Dashboard
+            </button>
+        </section>
+    </div>
+</body>
+
+</html>

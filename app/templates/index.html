@@ -1,53 +1,11 @@
 <!DOCTYPE html>
 <html lang="it" data-theme="light">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Monitor</title>
-    <link rel="apple-touch-icon" sizes="180x180"
-        href="{{ url_for('static', path='/images/icons/apple-touch-icon.png' ) }}">
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="{{ url_for('static', path='/images/icons/favicon-32x32.png' ) }}">
-    <link rel="icon" type="image/png" sizes="16x16"
-        href="{{ url_for('static', path='/images/icons/favicon-16x16.png' ) }}">
-    <link rel="manifest" href="{{ url_for('static', path='/images/icons/site.webmanifest') }}">
-
-    <link href="{{ url_for('static', path='/stylev4.css') }}" rel="stylesheet">
-</head>
+{% include 'components/head.html' %}
 
 <body>
 
-    <header id="main-header">
-        <div class="logo" onclick="showMain()">
-            <img src="https://ai-monitor.madebyshu.net/static/images/Background.svg" alt="Logo AI Monitor">
-            AI Monitor
-        </div>
-
-        <nav id="main-nav">
-            <ul>
-                <li><a href="#dati">Metriche</a></li>
-                <li><a href="#progetto">Il Progetto</a></li>
-                <li><a href="#soluzioni">Soluzioni</a></li>
-                <li><a href="#risorse">Risorse</a></li>
-                <li><a href="#contatti">Contatti</a></li>
-                <li class="mobile-only-cta"><a href="#download" class="btn btn-premium">Scarica Ora</a></li>
-            </ul>
-        </nav>
-
-        <div class="header-controls">
-            <button id="theme-toggle" class="theme-btn" aria-label="Cambia Tema"></button>
-            <a href="#download" class="btn btn-premium header-cta desktop-only">Scarica Ora</a>
-            <button id="mobile-menu-btn" class="hamburger" aria-label="Menu Mobile">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line class="line-top" x1="3" y1="6" x2="21" y2="6"></line>
-                    <line class="line-mid" x1="3" y1="12" x2="21" y2="12"></line>
-                    <line class="line-bot" x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-    </header>
+    {% include 'components/header.html' %}
 
     <div id="main-content">
         <!-- SEZIONE 1 (HERO) -->
@@ -98,18 +56,18 @@
                                 <h3>Emissioni di CO2</h3>
                                 <p>Scopri e monitora le emissioni di anidride carbonica generate dall'addestramento e
                                     dall'uso intensivo dei grandi modelli.</p>
-                                <button class="btn" onclick="showDetail('co2')">Approfondisci</button>
+                                <a class="btn" href="https://ai-monitor.madebyshu.net/co2">Approfondisci</a>
                             </div>
                         </div>
 
                         <div class="card" id="card-energy">
-                            <img src="{{ url_for('static', path='images/en_new.svg') }}"
-                                alt="Consumo Energetico" class="card-img">
+                            <img src="{{ url_for('static', path='images/en_new.svg') }}" alt="Consumo Energetico"
+                                class="card-img">
                             <div class="card-content">
                                 <h3>Consumo Energetico</h3>
                                 <p>Analizza l'impatto energetico dei data center e quanto pesa la potenza di calcolo
                                     richiesta dall'ecosistema.</p>
-                                <button class="btn" onclick="showDetail('energy')">Approfondisci</button>
+                                <a class="btn" href="https://ai-monitor.madebyshu.net/energy">Approfondisci</a>
                             </div>
                         </div>
 
@@ -121,7 +79,7 @@
                                 <p>Calcola e valuta il consumo di acqua dolce necessario ai sistemi di raffreddamento
                                     dei
                                     server IA.</p>
-                                <button class="btn" onclick="showDetail('water')">Approfondisci</button>
+                                <a class="btn" href="https://ai-monitor.madebyshu.net/water">Approfondisci</a>
                             </div>
                         </div>
                     </div>

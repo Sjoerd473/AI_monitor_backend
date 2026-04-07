@@ -1,0 +1,33 @@
+<header id="main-header">
+    <div class="logo">
+        <a href="https://ai-monitor.madebyshu.net">
+            <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo AI Monitor">
+            AI Monitor
+        </a>
+
+    </div>
+
+    <nav id="main-nav">
+        <ul>
+            <li><a href="#dati">Metriche</a></li>
+            <li><a href="#progetto">Il Progetto</a></li>
+            <li><a href="#soluzioni">Soluzioni</a></li>
+            <li><a href="#risorse">Risorse</a></li>
+            <li><a href="#contatti">Contatti</a></li>
+            <li class="mobile-only-cta"><a href="#download" class="btn btn-premium">Scarica Ora</a></li>
+        </ul>
+    </nav>
+
+    <div class="header-controls">
+        <button id="theme-toggle" class="theme-btn" aria-label="Cambia Tema"></button>
+        <a href="#download" class="btn btn-premium header-cta desktop-only">Scarica Ora</a>
+        <button id="mobile-menu-btn" class="hamburger" aria-label="Menu Mobile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line class="line-top" x1="3" y1="6" x2="21" y2="6"></line>
+                <line class="line-mid" x1="3" y1="12" x2="21" y2="12"></line>
+                <line class="line-bot" x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+</header>

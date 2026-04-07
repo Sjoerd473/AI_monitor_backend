@@ -289,6 +289,18 @@ async def receive_event(request: Request, user_id: str = Depends(rate_limit)):
 async def root(request:Request):
     return templates.TemplateResponse("index.html",  {"request": request,})
 
+@app.get("/co2", response_class=HTMLResponse)
+async def co2(request:Request):
+    return templates.TemplateResponse("co2.html",  {"request": request,})
+
+@app.get("/energy", response_class=HTMLResponse)
+async def energy(request:Request):
+    return templates.TemplateResponse("energy.html",  {"request": request,})
+
+@app.get("/", response_class=HTMLResponse)
+async def water(request:Request):
+    return templates.TemplateResponse("water.html",  {"request": request,})
+
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
     import time
