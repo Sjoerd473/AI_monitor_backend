@@ -194,6 +194,15 @@ header.is-visible {
     color: var(--text-color);
     cursor: pointer;
     white-space: nowrap;
+
+    a {
+        display: inline-flex;
+        text-decoration: none;
+        color: inherit;
+        text-align: center;
+
+        align-items: center;
+    }
 }
 
 .logo img {
@@ -203,6 +212,7 @@ header.is-visible {
     object-fit: cover;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
+    margin-inline-end: 1em;
 }
 
 nav {
@@ -687,7 +697,6 @@ PROJECT SECTION
 DETAIL VIEW (Approfondimenti)
 ========================================== */
 #detail-view {
-    display: none;
     padding: 6rem 5% 4rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -1139,3 +1148,51 @@ RESPONSIVE (Aumentato breakpoint a 1150px per sicurezza estrema)
         margin-inline-start: 0;
     }
 }
+
+ /* --- IL TUO CSS --- */
+        /* Contenitore principale */
+        .line-divider-wrapper {
+            width: 100%;
+            height: 180px; 
+            background: transparent !important;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            position: relative; 
+            z-index: 10;
+            pointer-events: none; /* Evita che le linee blocchino i click sottostanti */
+        }
+        /* Adattamento SVG */
+        .line-divider-wrapper svg {
+            width: 400%;
+            height: 100%;
+            margin-left: -150%;
+            overflow: visible;
+            background: transparent !important;
+        }
+        /* Reset del riempimento (evita la macchia nera) */
+        .line-divider-wrapper path,
+        .line-divider-wrapper use {
+            fill: none !important;
+            stroke-linecap: round;
+            will-change: transform;
+        }
+        /* Colori e spessori delle 3 linee */
+        .line-divider-wrapper .linea { stroke-width: 1.5; fill: none !important; }
+        .line-divider-wrapper .bordo { stroke: #b31b1b; }
+        .line-divider-wrapper .arancio { stroke: #ff7e00; opacity: 0.9; }
+        .line-divider-wrapper .azzurro { stroke: #00b4ff; opacity: 0.8; }
+        
+        /* Responsive per schermi piccoli (Mobile) */
+        @media (max-width: 768px) {
+            .line-divider-wrapper { 
+                height: 120px; 
+            }
+            .line-divider-wrapper svg { 
+                width: 600%; 
+                margin-left: -250%; 
+            }
+            .line-divider-wrapper .linea { 
+                stroke-width: 1.2 !important; 
+            }
+        }

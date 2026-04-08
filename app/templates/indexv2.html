@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+
+{% include 'components/head.html' %}
+
+<body>
+
+    {% include 'components/header.html' %}
+
+    <div id="main-content">
+        <!-- SEZIONE 1 (HERO) -->
+        <div class="hero-wrapper" id="hero-section">
+
+            <section class="hero-container">
+
+                {% include 'components/svg-hero.html' %}
+                {% include 'components/svg-hero-mobile.html' %}
+
+
+                <div class="hero-text">
+                    <h1>Lorem ipsum dolor sit amet.</h1>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Esse eveniet accusantium, iste
+                        earum
+                        odio error consequatur adipisci in, dolore odit quibusdam, exercitationem dolorem rerum. Id.
+                    </p>
+                    <a class="btn">Click me</a>
+                </div>
+            </section>
+
+        </div>
+        <div class="line-divider-wrapper">
+            <svg viewBox="0 0 5000 120" preserveAspectRatio="none">
+                <defs>
+                    <path id="base-curve" fill="none"
+                        d="M0,60 Q150,30 300,60 T600,60 T900,60 T1200,60 T1500,60 T1800,60 T2100,60 T2400,60 T2700,60 T3000,60 T3300,60 T3600,60 T3900,60 T4200,60 T4500,60 T4800,60 T5000,60" />
+                </defs>
+                <g>
+                    <use href="#base-curve" class="linea azzurro line-1" x="0" y="16" />
+                    <use href="#base-curve" class="linea arancio line-2" x="200" y="-16" />
+                    <use href="#base-curve" class="linea bordo line-3" x="400" y="0" />
+                </g>
+            </svg>
+        </div>
+
+        <main>
+            <!-- NUOVA SEZIONE INTRO -->
+            <section class="intro-outro-section">
+                <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo Icona">
+                <h3>Il nostro approccio alla Sostenibilità IA</h3>
+                <p>Prima di analizzare i dati, crediamo fermamente che la trasparenza debba essere al centro
+                    dell'innovazione tecnologica. Abbiamo costruito questa piattaforma per rendere visibile
+                    l'impatto
+                    invisibile degli algoritmi.</p>
+            </section>
+
+            <!-- SEZIONE 2 (METRICHE) -->
+            <section class="cards-section" id="dati">
+                <div class="cards-section-header">
+                    <h2>Esplora le metriche</h2>
+                    <p>Analizza l'impatto e la struttura dei sistemi cognitivi moderni.</p>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card" id="card-co2">
+                        <img src="{{ url_for('static', path='images/co2_new.svg') }}" alt="Emissioni CO2"
+                            class="card-img">
+                        <div class="card-content">
+                            <h3>Emissioni di CO2</h3>
+                            <p>Scopri e monitora le emissioni di anidride carbonica generate dall'addestramento e
+                                dall'uso intensivo dei grandi modelli.</p>
+                            <a class="btn" href="https://ai-monitor.madebyshu.net/co2">Approfondisci</a>
+                        </div>
+                    </div>
+
+                    <div class="card" id="card-energy">
+                        <img src="{{ url_for('static', path='images/en_new.svg') }}" alt="Consumo Energetico"
+                            class="card-img">
+                        <div class="card-content">
+                            <h3>Consumo Energetico</h3>
+                            <p>Analizza l'impatto energetico dei data center e quanto pesa la potenza di calcolo
+                                richiesta dall'ecosistema.</p>
+                            <a class="btn" href="https://ai-monitor.madebyshu.net/energy">Approfondisci</a>
+                        </div>
+                    </div>
+
+                    <div class="card" id="card-water">
+                        <img src="{{ url_for('static', path='images/water_new.svg') }}" alt="Impronta Idrica"
+                            class="card-img">
+                        <div class="card-content">
+                            <h3>Impronta Idrica</h3>
+                            <p>Calcola e valuta il consumo di acqua dolce necessario ai sistemi di raffreddamento
+                                dei
+                                server IA.</p>
+                            <a class="btn" href="https://ai-monitor.madebyshu.net/water">Approfondisci</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NUOVO CAROSELLO 1 (Testo Sx, Immagini Dx) -->
+            <section class="split-carousel-section" id="soluzioni">
+                <div class="split-container">
+                    <div class="split-content">
+                        <h2>Analisi in tempo reale<br>sul tuo cruscotto</h2>
+                        <p>Ottieni un controllo completo e metriche azionabili sui consumi dei tuoi modelli
+                            preferiti,
+                            direttamente integrato nel tuo workflow quotidiano.</p>
+                    </div>
+                    <div class="split-visual" id="carousel-1">
+                        <div class="carousel-track">
+                            <div class="carousel-slide active"><img
+                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 1"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 2"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 3"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 4"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Dashboard 5"></div>
+                        </div>
+                        <button class="carousel-btn prev" aria-label="Precedente">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="carousel-btn next" aria-label="Successivo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                        <div class="carousel-dots"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEZIONE PROGETTO ORIGINALE -->
+            <section class="project-section" id="progetto">
+                <div class="project-container">
+                    <div class="project-header-row">
+                        <div class="project-hero-image">
+                            <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
+                                alt="Sviluppo dell'Estensione AI Monitor">
+                        </div>
+                        <div class="project-content">
+                            <h2>L'Estensione AI Monitor</h2>
+                            <p>Il nostro progetto si concretizza in un'<strong>estensione per browser</strong>
+                                innovativa. Mentre chatti con i tuoi modelli di IA preferiti, l'estensione calcola
+                                in
+                                tempo reale l'impatto ambientale delle tue interazioni.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-item-content">
+                                <h4>Token Consumati</h4>
+                                <p>Traccia in tempo reale la quantità di dati elaborati, tenendo conto sia
+                                    dell'input
+                                    che dell'output generato.</p>
+                            </div>
+                            <img src="https://images.pexels.com/photos/5473337/pexels-photo-5473337.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Token" class="feature-item-image">
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-item-content">
+                                <h4>Emissioni di CO2</h4>
+                                <p>Stima l'impronta di carbonio istantanea, calcolando i grammi di CO2 generati per
+                                    ogni
+                                    tua conversazione.</p>
+                            </div>
+                            <img src="https://images.pexels.com/photos/2565400/pexels-photo-2565400.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="CO2" class="feature-item-image">
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-item-content">
+                                <h4>Acqua Utilizzata</h4>
+                                <p>Monitora le frazioni di litro d'acqua necessarie per dissipare il calore dei
+                                    server
+                                    durante l'interrogazione.</p>
+                            </div>
+                            <img src="https://images.pexels.com/photos/40784/drops-of-water-water-nature-liquid-40784.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Acqua" class="feature-item-image">
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-item-content">
+                                <h4>Consumo di Energia</h4>
+                                <p>Misura l'elettricità (in kWh) richiesta dall'infrastruttura per elaborare la tua
+                                    singola richiesta.</p>
+                            </div>
+                            <img src="https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                alt="Energia" class="feature-item-image">
+                        </div>
+                    </div>
+
+                    <div class="download-cta" id="download">
+                        <p>Curioso di vedere queste metriche in azione? Prova l'estensione gratuitamente nel tuo
+                            browser.</p>
+                        <button class="btn btn-premium">Scarica Ora</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NUOVO CAROSELLO 2 (Immagini Sx, Testo Dx) -->
+            <section class="split-carousel-section" id="risorse">
+                <div class="split-container" style="flex-direction: row-reverse;">
+                    <div class="split-content">
+                        <h2>L'invisibile reso<br>finalmente tangibile</h2>
+                        <p>Ogni singola query processata lascia un segno. Attraverso grafiche chiare e immediate,
+                            traduciamo calcoli complessi in dati facili da interpretare, permettendoti di
+                            comprendere a
+                            colpo d'occhio il peso reale del tuo impiego dell'intelligenza artificiale giorno dopo
+                            giorno.</p>
+                    </div>
+                    <div class="split-visual" id="carousel-2">
+                        <div class="carousel-track">
+                            <div class="carousel-slide active"><img
+                                    src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=1200"
+                                    alt="UI Element 1"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.pexels.com/photos/7887859/pexels-photo-7887859.jpeg"
+                                    alt="UI Element 2"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
+                                    alt="UI Element 3"></div>
+                            <div class="carousel-slide"><img
+                                    src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=1200"
+                                    alt="UI Element 4"></div>
+                        </div>
+                        <button class="carousel-btn prev" aria-label="Precedente">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="carousel-btn next" aria-label="Successivo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                        <div class="carousel-dots"></div>
+                    </div>
+                </div>
+            </section>
+            <div class="line-divider-wrapper">
+                <svg viewBox="0 0 5000 120" preserveAspectRatio="none">
+                    <defs>
+                        <path id="base-curve" fill="none"
+                            d="M0,60 Q150,30 300,60 T600,60 T900,60 T1200,60 T1500,60 T1800,60 T2100,60 T2400,60 T2700,60 T3000,60 T3300,60 T3600,60 T3900,60 T4200,60 T4500,60 T4800,60 T5000,60" />
+                    </defs>
+                    <g>
+                        <use href="#base-curve" class="linea azzurro line-1" x="0" y="16" />
+                        <use href="#base-curve" class="linea arancio line-2" x="200" y="-16" />
+                        <use href="#base-curve" class="linea bordo line-3" x="400" y="0" />
+                    </g>
+                </svg>
+            </div>
+
+            <!-- NUOVA SEZIONE OUTRO -->
+            <section class="intro-outro-section">
+                <img src="{{ url_for('static', path='images/circle_new.svg') }}" alt="Logo Icona">
+                <h3>Unisciti al Cambiamento</h3>
+                <p>Misurare l'impatto è solo il primo passo verso un'Intelligenza Artificiale etica e sostenibile.
+                    Supportando progetti come il nostro, contribuisci a costruire un ecosistema tecnologico più
+                    consapevole del proprio ecosistema naturale.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- VISTA DETTAGLIO (Nasconde Main) -->
+    <div id="detail-view">
+        <div class="back-link" onclick="showMain(true)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Torna alla Home
+        </div>
+        <div id="detail-content"></div>
+    </div>
+
+    <!-- MICRO-BANNER EXTENSION -->
+    <div id="micro-banner" class="micro-banner">
+        <button id="close-banner" class="close-banner" aria-label="Chiudi">&times;</button>
+        <div class="banner-content">
+            <p id="banner-text-1" class="banner-text">Vedi le metriche in azione</p>
+            <p id="banner-text-2" class="banner-text">Prova l'estensione gratuita.</p>
+            <button class="btn btn-premium">Scarica Ora</button>
+        </div>
+    </div>
+
+    <footer id="contatti">
+        <p>&copy; 2026 AI Monitor. Progetto di analisi strutturale e sensibilizzazione tecnologica.</p>
+        <p><small>Design leggero e ottimizzato per ridurre l'impronta carbonica.</small></p>
+    </footer>
+
+
+</body>
+<script src="{{ url_for('static', path='/scriptsv3.js') }}"></script>
+
+</html>
