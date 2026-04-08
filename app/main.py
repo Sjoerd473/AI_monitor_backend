@@ -11,6 +11,7 @@ import os
 import zipfile
 import io
 from datetime import datetime, timezone
+import time
 
 from fastapi import FastAPI, Request, Header, HTTPException, Depends
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -49,6 +50,8 @@ app = FastAPI()
 scheduler = AsyncIOScheduler()
 
 templates = Jinja2Templates(directory="templates")
+
+templates.env.globals.update(version=int(time.time()))
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
