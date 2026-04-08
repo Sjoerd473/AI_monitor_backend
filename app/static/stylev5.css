@@ -555,6 +555,25 @@ SEZIONE CAROSELLO SPLIT
 
 }
 
+@media (max-width: 420px) {
+
+    .slide-text {
+        /* display: none; */
+        max-width: 100%;
+        padding: 0.25em 0.5em 0em;
+
+        h3 {
+            font-size: 1rem;
+        }
+
+        p {
+            font-size: 0.8rem;
+            margin-block-end: 0.25em;
+        }
+    }
+
+}
+
 .slide-text.alt-color {
     color: white;
 
