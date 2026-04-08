@@ -11,17 +11,21 @@ CREATE TABLE IF NOT EXISTS models (
 
 CREATE TABLE IF NOT EXISTS sessions (
   session_id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL REFERENCES users(user_id),
+  user_id TEXT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
   session_start TIMESTAMPTZ NOT NULL,
   session_prompt_count INTEGER NOT NULL,
   session_duration INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS conversations (
+  conversation_id TEXT PRIMARY KEY
+);
+
 CREATE TABLE IF NOT EXISTS prompts (
   prompt_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  user_id TEXT NOT NULL REFERENCES users(user_id),
+  user_id TEXT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
   session_id TEXT NOT NULL REFERENCES sessions(session_id),
-  model_id INTEGER NOT NULL REFERENCES models(model_id),
+  model_id INTEGER NOT NULL REFERENCES models(model_id) ON DELETE CASCADE,
   conversation_id TEXT NOT NULL REFERENCES conversations(conversation_id),
   characters_in INTEGER NOT NULL,
   tokens_in INTEGER NOT NULL,
@@ -37,7 +41,7 @@ CREATE TABLE IF NOT EXISTS prompts (
 
 CREATE TABLE IF NOT EXISTS responses (
   response_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  prompt_id INTEGER UNIQUE NOT NULL REFERENCES prompts(prompt_id),
+  prompt_id INTEGER UNIQUE NOT NULL REFERENCES prompts(prompt_id) ON DELETE CASCADE,
   character_out INTEGER NOT NULL,
   latency FLOAT NOT NULL,
   streaming_duration FLOAT NOT NULL
@@ -45,7 +49,7 @@ CREATE TABLE IF NOT EXISTS responses (
 
 CREATE TABLE IF NOT EXISTS environment (
   env_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  prompt_id INTEGER UNIQUE NOT NULL REFERENCES prompts(prompt_id),
+  prompt_id INTEGER UNIQUE NOT NULL REFERENCES prompts(prompt_id) ON DELETE CASCADE,
   browser TEXT NOT NULL,
   version INT NOT NULL,
   os TEXT NOT NULL,
@@ -57,7 +61,7 @@ CREATE TABLE IF NOT EXISTS environment (
 
 CREATE TABLE IF NOT EXISTS ui_interactions (
   interaction_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  prompt_id INTEGER UNIQUE NOT NULL REFERENCES prompts(prompt_id),
+  prompt_id INTEGER UNIQUE NOT NULL REFERENCES prompts(prompt_id) ON DELETE CASCADE,
   regenerate_used BOOL NOT NULL,
   suggested_prompt_used BOOL NOT NULL,
   image_attached BOOL NOT NULL,
@@ -66,13 +70,9 @@ CREATE TABLE IF NOT EXISTS ui_interactions (
   tool_active BOOL NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS conversations (
-  conversation_id TEXT PRIMARY KEY
-);
-
 CREATE TABLE IF NOT EXISTS api_tokens (
     id          SERIAL PRIMARY KEY,
-    user_id     TEXT NOT NULL UNIQUE REFERENCES users(user_id),   
+    user_id     TEXT NOT NULL UNIQUE REFERENCES users(user_id) ON DELETE CASCADE,   
     token_hash  TEXT NOT NULL UNIQUE, 
     created_at  TIMESTAMPTZ DEFAULT now(),
     last_used   TIMESTAMPTZ
@@ -80,16 +80,6 @@ CREATE TABLE IF NOT EXISTS api_tokens (
 
 CREATE TABLE IF NOT EXISTS download_log (
     id          SERIAL PRIMARY KEY,
-    user_id     TEXT NOT NULL REFERENCES users(user_id),
+    user_id     TEXT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
     downloaded_at TIMESTAMPTZ DEFAULT now()
 );
-
-CREATE INDEX IF NOT EXISTS idx_prompts_user_id ON prompts(user_id);
-CREATE INDEX IF NOT EXISTS idx_prompts_session_id ON prompts(session_id);
-CREATE INDEX IF NOT EXISTS idx_prompts_model_id ON prompts(model_id);
-
-CREATE INDEX IF NOT EXISTS idx_responses_prompt_id ON responses(prompt_id);
-CREATE INDEX IF NOT EXISTS idx_environment_prompt_id ON environment(prompt_id);
-CREATE INDEX IF NOT EXISTS idx_ui_prompt_id ON ui_interactions(prompt_id);
-
-CREATE INDEX IF NOT EXISTS idx_prompts_timestamp ON prompts(timestamp);
