@@ -294,15 +294,15 @@ async def root(request:Request):
 
 @app.get("/co2", response_class=HTMLResponse)
 async def co2(request:Request):
-    return templates.TemplateResponse("co2.html",  {"request": request,})
+    return templates.TemplateResponse("co22.html",  {"request": request,})
 
 @app.get("/energy", response_class=HTMLResponse)
 async def energy(request:Request):
-    return templates.TemplateResponse("energy.html",  {"request": request,})
+    return templates.TemplateResponse("energy2.html",  {"request": request,})
 
 @app.get("/water", response_class=HTMLResponse)
 async def water(request:Request):
-    return templates.TemplateResponse("water.html",  {"request": request,})
+    return templates.TemplateResponse("water2.html",  {"request": request,})
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
