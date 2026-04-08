@@ -15,6 +15,9 @@ services:
 
     expose:
       - "5000"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
     env_file:
       - .env
