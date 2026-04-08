@@ -2,19 +2,24 @@
 RESET & VARIABILI GLOBALI
 ========================================== */
 :root {
-    --bg-color: #f7fbf9;
-    --text-color: #1a2b22;
-    --text-muted: #4a6355;
-    --border-color: #f7fbf9;
-    --header-bg: rgba(247, 251, 249, 0.75);
-    --nav-hover: rgba(16, 185, 129, 0.1);
-    --accent-color: #10b981;
-    --accent-hover: #059669;
-    --card-bg: #ffffff;
-    --shadow-color: rgba(16, 185, 129, 0.08);
-    --header-shadow: rgba(0, 0, 0, 0.05);
-    --header-height: 85px;
-    --hero-overlay: rgba(247, 251, 249, 0.85);
+    --bg-color: #0b110e;
+    --text-color: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border-color: #0b110e;
+    --header-bg: rgba(11, 17, 14, 0.75);
+    --nav-hover: rgba(52, 211, 153, 0.15);
+    --accent-color: #34d399;
+    --accent-hover: #10b981;
+    --card-bg: #131e18;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --header-shadow: rgba(0, 0, 0, 0.3);
+    --hero-overlay: rgba(11, 17, 14, 0.85);
+    --theme-red: hsl(325, 63%, 52%);
+    --theme-blue: hsl(192, 78%, 46%);
+    --theme-yellow: hsl(29, 85%, 53%);
+
+
+
 }
 
 [data-theme="dark"] {
@@ -75,7 +80,7 @@ h2 {
 }
 
 h3 {
-    font-size: clamp(1.2rem, 3vw, 1.4rem);
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
     margin-bottom: 0.5rem;
 }
 
@@ -123,7 +128,7 @@ COMPONENTI UI
     z-index: 1;
 }
 
-.btn-premium::after {
+/* .btn-premium::after {
     content: '';
     position: absolute;
     top: 0;
@@ -149,7 +154,7 @@ COMPONENTI UI
     100% {
         left: 200%;
     }
-}
+} */
 
 /* ==========================================
 HEADER FIXED & DINAMICO
@@ -168,7 +173,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 5%;
+    padding: 0.5em 5%;
     gap: 1rem;
     opacity: 0;
     pointer-events: none;
@@ -454,7 +459,7 @@ CARDS SECTION (Metriche)
 
 .card .btn {
     width: 100%;
-    max-width: 180px;
+    /* max-width: 180px; */
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
@@ -471,7 +476,7 @@ SEZIONE CAROSELLO SPLIT
 }
 
 .split-container {
-    max-width: 1300px;
+    /* max-width: 1300px; */
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -525,6 +530,43 @@ SEZIONE CAROSELLO SPLIT
     transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 }
 
+.slide-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(12px) grayscale(100%);
+    max-width: 50%;
+    padding: 1.5em 1.25em;
+    border-radius: 10px;
+    color: black;
+    border: 2px solid currentColor;
+
+    h3 {
+        color: black;
+        text-align: center;
+    }
+
+    p {
+        color: black;
+        font-size: 1.25rem;
+    }
+
+
+}
+
+.slide-text.alt-color {
+    color: white;
+
+    h3 {
+        color: white;
+    }
+
+    p {
+        color: white;
+    }
+}
+
 .carousel-slide.active {
     opacity: 1;
     visibility: visible;
@@ -535,6 +577,9 @@ SEZIONE CAROSELLO SPLIT
     width: 100%;
     height: 100%;
     object-fit: cover;
+    position: relative;
+    z-index: -1;
+    filter: grayscale(0.1) blur(1px);
 }
 
 .carousel-btn {
@@ -701,7 +746,30 @@ DETAIL VIEW (Approfondimenti)
     max-width: 1200px;
     margin: 0 auto;
     min-height: 80vh;
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        color: var(--text-color);
+    }
+
+    p {
+        color: var(--text-muted);
+    }
+
 }
+
+.sub-page {
+    background-color: var(--bg-color);
+
+    header {
+        opacity: 1 !important;
+
+    }
+}
+
+
 
 .back-link {
     display: inline-flex;
@@ -723,8 +791,8 @@ DETAIL VIEW (Approfondimenti)
 }
 
 .detail-image {
-    width: 100px;
-    height: 100px;
+    width: 10rem;
+    aspect-ratio: 1;
     margin-bottom: 1.5rem;
     display: block;
 }
@@ -1101,14 +1169,14 @@ RESPONSIVE (Aumentato breakpoint a 1150px per sicurezza estrema)
     min-height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: center;
 }
 
 .hero-text {
     position: relative;
     z-index: 1;
     text-align: center;
-    margin-inline-start: 4em;
+    /* margin-inline-start: 4em; */
 }
 
 .hero-svg {
@@ -1144,55 +1212,81 @@ RESPONSIVE (Aumentato breakpoint a 1150px per sicurezza estrema)
     }
 
     .hero-container {
-        justify-items: center;
-        margin-inline-start: 0;
+        justify-content: start;
+    }
+
+    .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-inline-start: 4em;
     }
 }
 
- /* --- IL TUO CSS --- */
-        /* Contenitore principale */
-        .line-divider-wrapper {
-            width: 100%;
-            height: 180px; 
-            background: transparent !important;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            position: relative; 
-            z-index: 10;
-            pointer-events: none; /* Evita che le linee blocchino i click sottostanti */
-        }
-        /* Adattamento SVG */
-        .line-divider-wrapper svg {
-            width: 400%;
-            height: 100%;
-            margin-left: -150%;
-            overflow: visible;
-            background: transparent !important;
-        }
-        /* Reset del riempimento (evita la macchia nera) */
-        .line-divider-wrapper path,
-        .line-divider-wrapper use {
-            fill: none !important;
-            stroke-linecap: round;
-            will-change: transform;
-        }
-        /* Colori e spessori delle 3 linee */
-        .line-divider-wrapper .linea { stroke-width: 1.5; fill: none !important; }
-        .line-divider-wrapper .bordo { stroke: #b31b1b; }
-        .line-divider-wrapper .arancio { stroke: #ff7e00; opacity: 0.9; }
-        .line-divider-wrapper .azzurro { stroke: #00b4ff; opacity: 0.8; }
-        
-        /* Responsive per schermi piccoli (Mobile) */
-        @media (max-width: 768px) {
-            .line-divider-wrapper { 
-                height: 120px; 
-            }
-            .line-divider-wrapper svg { 
-                width: 600%; 
-                margin-left: -250%; 
-            }
-            .line-divider-wrapper .linea { 
-                stroke-width: 1.2 !important; 
-            }
-        }
+/* --- IL TUO CSS --- */
+/* Contenitore principale */
+.line-divider-wrapper {
+    width: 100%;
+    height: 180px;
+    background: transparent !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+    pointer-events: none;
+    /* Evita che le linee blocchino i click sottostanti */
+}
+
+/* Adattamento SVG */
+.line-divider-wrapper svg {
+    width: 400%;
+    height: 100%;
+    margin-left: -150%;
+    overflow: visible;
+    background: transparent !important;
+}
+
+/* Reset del riempimento (evita la macchia nera) */
+.line-divider-wrapper path,
+.line-divider-wrapper use {
+    fill: none !important;
+    stroke-linecap: round;
+    will-change: transform;
+}
+
+/* Colori e spessori delle 3 linee */
+.line-divider-wrapper .linea {
+    stroke-width: 1.5;
+    fill: none !important;
+}
+
+.line-divider-wrapper .bordo {
+    stroke: var(--theme-red);
+}
+
+.line-divider-wrapper .arancio {
+    stroke: var(--theme-yellow);
+    opacity: 0.9;
+}
+
+.line-divider-wrapper .azzurro {
+    stroke: var(--theme-blue);
+    opacity: 0.8;
+}
+
+/* Responsive per schermi piccoli (Mobile) */
+@media (max-width: 768px) {
+    .line-divider-wrapper {
+        height: 120px;
+    }
+
+    .line-divider-wrapper svg {
+        width: 600%;
+        margin-left: -250%;
+    }
+
+    .line-divider-wrapper .linea {
+        stroke-width: 1.2 !important;
+    }
+}

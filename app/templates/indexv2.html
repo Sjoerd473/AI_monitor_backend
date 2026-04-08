@@ -18,12 +18,17 @@
 
 
                 <div class="hero-text">
-                    <h1>Lorem ipsum dolor sit amet.</h1>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Esse eveniet accusantium, iste
-                        earum
-                        odio error consequatur adipisci in, dolore odit quibusdam, exercitationem dolorem rerum. Id.
+                    <h1>Scopri il peso invisibile della tua curiosità.</h1>
+                    <p>L'IA sembra magica, ma ogni prompt lascia un'impronta sul pianeta.
+                        AI Impact Monitor è l'estensione browser leggera che ti offre totale trasparenza sul consumo di
+                        energia, acqua e CO₂ generato dalle tue interazioni su ChatGPT, Claude, Gemini e Perplexity.
+
                     </p>
-                    <a class="btn">Click me</a>
+                    <p>
+                        Ottieni dati onesti sulla tua impronta digitale in tempo reale, senza mai rinunciare alla tua
+                        privacy.
+                    </p>
+                    <a class="btn">Aggiungi al browser</a>
                 </div>
             </section>
 
@@ -46,18 +51,29 @@
             <!-- NUOVA SEZIONE INTRO -->
             <section class="intro-outro-section">
                 <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo Icona">
-                <h3>Il nostro approccio alla Sostenibilità IA</h3>
-                <p>Prima di analizzare i dati, crediamo fermamente che la trasparenza debba essere al centro
-                    dell'innovazione tecnologica. Abbiamo costruito questa piattaforma per rendere visibile
-                    l'impatto
-                    invisibile degli algoritmi.</p>
+                <h2>Oltre la Magia: La Realtà Fisica dell'IA</h2>
+                <p>
+                    L'intelligenza artificiale oggi appare come uno strumento magico, capace di risolvere dubbi oscuri o
+                    complessi in un istante, ma questa comodità ha un prezzo ambientale che spesso ignoriamo. Ogni
+                    interazione con gli assistenti digitali poggia su un'infrastruttura globale di data center che, nel
+                    solo 2023, ha consumato circa 460 TWh di elettricità, incidendo pesantemente sulle risorse del
+                    nostro pianeta.
+                </p>
+
+                <p>
+                    Con la rapida diffusione dell'IA generativa, ci troviamo di fronte a una sfida
+                    climatica crescente in cui il consumo energetico e idrico aumenta più velocemente della nostra
+                    capacità di ottimizzare i server. AI Impact Monitor nasce per squarciare questo velo di
+                    invisibilità, offrendo una trasparenza totale sul costo ecologico delle tue ricerche e trasformando
+                    numeri astratti in dati concreti per aiutarti a comprendere meglio la tua impronta digitale.
+                </p>
             </section>
 
             <!-- SEZIONE 2 (METRICHE) -->
             <section class="cards-section" id="dati">
                 <div class="cards-section-header">
-                    <h2>Esplora le metriche</h2>
-                    <p>Analizza l'impatto e la struttura dei sistemi cognitivi moderni.</p>
+                    <h2>L’Impatto Ambientale dell’IA</h2>
+                    <p>Misura l'impronta ecologica generata da ogni tua interazione digitale.</p>
                 </div>
 
                 <div class="cards-grid">
@@ -66,9 +82,12 @@
                             class="card-img">
                         <div class="card-content">
                             <h3>Emissioni di CO2</h3>
-                            <p>Scopri e monitora le emissioni di anidride carbonica generate dall'addestramento e
-                                dall'uso intensivo dei grandi modelli.</p>
-                            <a class="btn" href="https://ai-monitor.madebyshu.net/co2">Approfondisci</a>
+                            <p>Le emissioni generate dai data center sono strettamente legate alla fonte energetica
+                                utilizzata e possono raggiungere volumi paragonabili a quelli dell'intero settore aereo
+                                commerciale di una grande nazione europea. Monitorare l'intensità carbonica dei tuoi
+                                prompt ti permette di visualizzare l'impatto diretto della tua attività sul
+                                riscaldamento globale.</p>
+                            <a class="btn" href="/co2">Scopri di più sulla CO₂</a>
                         </div>
                     </div>
 
@@ -77,9 +96,12 @@
                             class="card-img">
                         <div class="card-content">
                             <h3>Consumo Energetico</h3>
-                            <p>Analizza l'impatto energetico dei data center e quanto pesa la potenza di calcolo
-                                richiesta dall'ecosistema.</p>
-                            <a class="btn" href="https://ai-monitor.madebyshu.net/energy">Approfondisci</a>
+                            <p>L'addestramento e il funzionamento dei modelli linguistici richiedono una potenza
+                                computazionale immensa, con una domanda energetica che entro il 2026 potrebbe eguagliare
+                                il consumo di un intero paese come il Giappone. Comprendere quanta energia elettrica
+                                assorbe ogni singola query è fondamentale per valutare la sostenibilità a lungo termine
+                                delle nostre abitudini digitali.</p>
+                            <a class="btn" href="/energy">Scopri di più sull'Energia</a>
                         </div>
                     </div>
 
@@ -88,10 +110,11 @@
                             class="card-img">
                         <div class="card-content">
                             <h3>Impronta Idrica</h3>
-                            <p>Calcola e valuta il consumo di acqua dolce necessario ai sistemi di raffreddamento
-                                dei
-                                server IA.</p>
-                            <a class="btn" href="https://ai-monitor.madebyshu.net/water">Approfondisci</a>
+                            <p>L'acqua è una risorsa invisibile ma essenziale per raffreddare i server che elaborano le
+                                nostre richieste, con un consumo che può arrivare a mezzo litro d'acqua ogni poche
+                                decine di domande. Analizzare questo dato aiuta a comprendere come l'IA influenzi non
+                                solo il clima, ma anche le riserve idriche locali e globali.</p>
+                            <a class="btn" href="/water">Scopri di più sull'Acqua</a>
                         </div>
                     </div>
                 </div>
@@ -101,28 +124,73 @@
             <section class="split-carousel-section" id="soluzioni">
                 <div class="split-container">
                     <div class="split-content">
-                        <h2>Analisi in tempo reale<br>sul tuo cruscotto</h2>
-                        <p>Ottieni un controllo completo e metriche azionabili sui consumi dei tuoi modelli
-                            preferiti,
-                            direttamente integrato nel tuo workflow quotidiano.</p>
+                        <h2>L'IA come alleata per il pianeta</h2>
+                        <p>
+                            Nonostante le sfide energetiche, l’intelligenza artificiale non è solo un costo per
+                            l'ambiente, ma può diventare un motore decisivo per la transizione ecologica. Se guidata
+                            dalla consapevolezza, questa tecnologia è in grado di accelerare la sostenibilità attraverso
+                            l’ottimizzazione delle risorse e il monitoraggio climatico in tempo reale.
+                        </p>
+
+
+                        <p>
+                            AI Impact Monitor ti aiuta a navigare questo dualismo, permettendoti di utilizzare questi
+                            strumenti avanzati con la trasparenza necessaria per ridurne l'impronta negativa,
+                            valorizzandone al contempo il potenziale innovativo. Esplora come l'IA sta già trasformando
+                            il nostro approccio alla tutela del clima attraverso i casi d'uso riportati a lato.
+                        </p>
                     </div>
                     <div class="split-visual" id="carousel-1">
                         <div class="carousel-track">
-                            <div class="carousel-slide active"><img
-                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
-                                    alt="Dashboard 1"></div>
-                            <div class="carousel-slide"><img
-                                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200"
-                                    alt="Dashboard 2"></div>
-                            <div class="carousel-slide"><img
-                                    src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=1200"
-                                    alt="Dashboard 3"></div>
-                            <div class="carousel-slide"><img
-                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
-                                    alt="Dashboard 4"></div>
-                            <div class="carousel-slide"><img
-                                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200"
-                                    alt="Dashboard 5"></div>
+                            <div class="carousel-slide active">
+                                <div class="slide-text">
+                                    <h3>Ottimizzazione energetica</h3>
+                                    <p>L’AI migliora la gestione delle reti elettriche, ottimizza la produzione da fonti
+                                        rinnovabili e riduce gli
+                                        sprechi energetici nelle industrie.
+                                    </p>
+                                </div>
+                                <img src="{{ url_for('static', path='images/webp/ottimizzazione-energetica.webp') }}"
+                                    alt="Ottimizzazione energetica" loading="lazy" decoding="async">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-text">
+                                    <h3>Agricoltura di precisione</h3>
+                                    <p>L’AI consente di ridurre l’uso di acqua, fertilizzanti e pesticidi, migliorando
+                                        la resa agricola e la
+                                        sostenibilità delle coltivazioni.</p>
+                                </div> <img src="{{ url_for('static', path='images/webp/agricoltura.webp') }}"
+                                    alt="Agricoltura di precisione" loading="lazy" decoding="async">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-text">
+                                    <h3>Monitoraggio ambientale</h3>
+                                    <p>Algoritmi di machine learning analizzano dati satellitari e sensori per
+                                        monitorare deforestazione,
+                                        inquinamento e variazioni climatiche in tempo reale.</p>
+                                </div>
+                                <img src="{{ url_for('static', path='images/webp/monitoraggio-ambientale.webp') }}"
+                                    alt="Monitoraggio ambientale" loading="lazy" decoding="async">
+                            </div>
+
+                            <div class="carousel-slide">
+                                <div class="slide-text alt-color">
+                                    <h3>Industria e logistica sostenibili</h3>
+                                    <p>Sistemi intelligenti ottimizzano i processi produttivi e le catene di
+                                        approvvigionamento, riducendo
+                                        sprechi e consumi energetici.</p>
+                                </div> <img src="{{ url_for('static', path='images/webp/logistica-sostenibile.webp') }}"
+                                    alt="Industria e logistica sostenibile" loading="lazy" decoding="async">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-text">
+                                    <h3>Progettazione di materiali ecologici</h3>
+                                    <p>L’AI accelera la scoperta di nuovi materiali sostenibili, come batterie a basso
+                                        impatto o bioplastiche,
+                                        riducendo tempi e costi di ricerca.</p>
+                                </div> <img src="{{ url_for('static', path='images/webp/materiali-ecologici.webp') }}"
+                                    alt="Material ecologici" loading="lazy" decoding="async">
+                            </div>
                         </div>
                         <button class="carousel-btn prev" aria-label="Precedente">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -146,67 +214,75 @@
                 <div class="project-container">
                     <div class="project-header-row">
                         <div class="project-hero-image">
-                            <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
-                                alt="Sviluppo dell'Estensione AI Monitor">
+                            <img src="{{ url_for('static', path='images/webp/plugin.webp') }}"
+                                alt="Sviluppo dell'Estensione AI Impact Monitor" loading="lazy" decoding="async">
                         </div>
                         <div class="project-content">
-                            <h2>L'Estensione AI Monitor</h2>
-                            <p>Il nostro progetto si concretizza in un'<strong>estensione per browser</strong>
-                                innovativa. Mentre chatti con i tuoi modelli di IA preferiti, l'estensione calcola
-                                in
-                                tempo reale l'impatto ambientale delle tue interazioni.</p>
+                            <h2>AI Impact Monitor</h2>
+                            <p>La nostra estensione è progettata per offrirti <strong>totale trasparenza</strong> sulla
+                                tua impronta ecologica digitale. Mentre interagisci con le principali
+                                piattaforme di IA — <strong>Gemini, ChatGPT, Perplexity e Claude</strong> — il plugin
+                                analizza la complessità della conversazione per fornirti stime accurate in tempo
+                                reale. Tutto questo avviene con un approccio
+                                <strong>Privacy-First</strong>: nessun testo viene mai memorizzato e ogni calcolo viene
+                                eseguito localmente sul tuo dispositivo.
+                            </p>
                         </div>
                     </div>
 
                     <div class="feature-list">
                         <div class="feature-item">
                             <div class="feature-item-content">
-                                <h4>Token Consumati</h4>
-                                <p>Traccia in tempo reale la quantità di dati elaborati, tenendo conto sia
-                                    dell'input
-                                    che dell'output generato.</p>
+                                <h4>Monitoraggio Intelligente</h4>
+                                <p>L'estensione rileva automaticamente quando invii un prompt o ricevi una risposta,
+                                    analizzando la lunghezza e la complessità dell'interazione per calcolare l'impatto
+                                    ambientale.</p>
                             </div>
-                            <img src="https://images.pexels.com/photos/5473337/pexels-photo-5473337.jpeg?auto=compress&cs=tinysrgb&w=600"
-                                alt="Token" class="feature-item-image">
+                            <img class="feature-item-image"
+                                src="{{ url_for('static', path='images/webp/monitoraggio-intelligente.webp') }}"
+                                alt="Monitoraggio Intelligente" loading="lazy" decoding="async">
                         </div>
 
                         <div class="feature-item">
                             <div class="feature-item-content">
-                                <h4>Emissioni di CO2</h4>
-                                <p>Stima l'impronta di carbonio istantanea, calcolando i grammi di CO2 generati per
-                                    ogni
-                                    tua conversazione.</p>
+                                <h4>Metriche Ambientali</h4>
+                                <p>Visualizza stime istantanee di emissioni di CO₂ (g), consumo energetico (Wh) e acqua
+                                    (L) generate da ogni singola richiesta al chatbot.</p>
                             </div>
-                            <img src="https://images.pexels.com/photos/2565400/pexels-photo-2565400.jpeg?auto=compress&cs=tinysrgb&w=600"
-                                alt="CO2" class="feature-item-image">
+                            <img class="feature-item-image"
+                                src="{{ url_for('static', path='images/webp/metriche-ambientali.webp') }}"
+                                alt="Metriche ambientali" loading="lazy" decoding="async">
                         </div>
 
                         <div class="feature-item">
                             <div class="feature-item-content">
-                                <h4>Acqua Utilizzata</h4>
-                                <p>Monitora le frazioni di litro d'acqua necessarie per dissipare il calore dei
-                                    server
-                                    durante l'interrogazione.</p>
+                                <h4>Dashboard Personale</h4>
+                                <p>I dati vengono archiviati localmente per permetterti di analizzare i tuoi consumi
+                                    giornalieri, settimanali o mensili attraverso grafici chiari e contesti
+                                    comprensibili.</p>
                             </div>
-                            <img src="https://images.pexels.com/photos/40784/drops-of-water-water-nature-liquid-40784.jpeg?auto=compress&cs=tinysrgb&w=600"
-                                alt="Acqua" class="feature-item-image">
+                            <img class="feature-item-image"
+                                src="{{ url_for('static', path='images/webp/dashboard-personale.webp') }}"
+                                alt="Dashboard personale" loading="lazy" decoding="async">
                         </div>
 
                         <div class="feature-item">
                             <div class="feature-item-content">
-                                <h4>Consumo di Energia</h4>
-                                <p>Misura l'elettricità (in kWh) richiesta dall'infrastruttura per elaborare la tua
-                                    singola richiesta.</p>
+                                <h4>Ricerca Anonima</h4>
+                                <p>Hai la possibilità di contribuire alla ricerca scientifica globale condividendo dati
+                                    di utilizzo completamente anonimizzati, aiutandoci a studiare gli effetti a lungo
+                                    termine dell'IA sull'ambiente.</p>
                             </div>
-                            <img src="https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?auto=compress&cs=tinysrgb&w=600"
-                                alt="Energia" class="feature-item-image">
+                            <img class="feature-item-image"
+                                src="{{ url_for('static', path='images/webp/anonimita.webp') }}" alt="Anonimita"
+                                loading="lazy" decoding="async">
                         </div>
                     </div>
 
                     <div class="download-cta" id="download">
-                        <p>Curioso di vedere queste metriche in azione? Prova l'estensione gratuitamente nel tuo
-                            browser.</p>
-                        <button class="btn btn-premium">Scarica Ora</button>
+                        <p>Prendi il controllo del tuo impatto ambientale — un prompt alla volta. Installa AI
+                            Impact Monitor oggi stesso.</p>
+                        <button class="btn btn-premium">Aggiungi al Browser</button>
                     </div>
                 </div>
             </section>
@@ -215,27 +291,66 @@
             <section class="split-carousel-section" id="risorse">
                 <div class="split-container" style="flex-direction: row-reverse;">
                     <div class="split-content">
-                        <h2>L'invisibile reso<br>finalmente tangibile</h2>
-                        <p>Ogni singola query processata lascia un segno. Attraverso grafiche chiare e immediate,
-                            traduciamo calcoli complessi in dati facili da interpretare, permettendoti di
-                            comprendere a
-                            colpo d'occhio il peso reale del tuo impiego dell'intelligenza artificiale giorno dopo
-                            giorno.</p>
+                        <h2>Le sfide di domani: verso un'IA responsabile</h2>
+                        <p>
+                            Il percorso verso un'intelligenza artificiale che rispetti il pianeta è costellato di sfide
+                            strutturali che vanno oltre il singolo utente. Nonostante i progressi tecnologici, la
+                            crescita
+                            della domanda energetica rischia di compensare i guadagni di efficienza, rendendo necessari
+                            cambiamenti radicali nelle politiche aziendali e nello sviluppo algoritmico.
+                        </p>
+
+                        <p>
+                            AI Impact Monitor non è solo un contatore di consumi, ma un invito a guardare al futuro con
+                            consapevolezza. Crediamo che la trasparenza sui dati ambientali sia l'unico modo per
+                            spingere il
+                            settore verso una vera economia circolare e un'equità climatica globale. Attraverso le slide
+                            a
+                            lato, esploriamo i pilastri fondamentali su cui si giocherà la partita della sostenibilità
+                            digitale nei prossimi anni.
+                        </p>
                     </div>
                     <div class="split-visual" id="carousel-2">
                         <div class="carousel-track">
-                            <div class="carousel-slide active"><img
-                                    src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=1200"
-                                    alt="UI Element 1"></div>
-                            <div class="carousel-slide"><img
-                                    src="https://images.pexels.com/photos/7887859/pexels-photo-7887859.jpeg"
-                                    alt="UI Element 2"></div>
-                            <div class="carousel-slide"><img
-                                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200"
-                                    alt="UI Element 3"></div>
-                            <div class="carousel-slide"><img
-                                    src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=1200"
-                                    alt="UI Element 4"></div>
+                            <div class="carousel-slide active">
+                                <div class="slide-text">
+                                    <h3>Efficienza energetica dei modelli</h3>
+                                    <p>Sviluppare modelli più leggeri e algoritmi ottimizzati sarà essenziale per
+                                        ridurre il consumo energetico
+                                        e l’impatto climatico dell’AI.</p>
+                                </div> <img src="{{ url_for('static', path='images/webp/efficienza-energetica.webp') }}"
+                                    alt="Efficienza energetica" loading="lazy" decoding="async">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-text alt-color">
+                                    <h3>Trasparenza ambientale</h3>
+                                    <p>Le aziende dovranno rendere pubblici i dati su energia, acqua e emissioni legate
+                                        all’AI, favorendo
+                                        una maggiore responsabilità ambientale.
+                                    </p>
+                                </div><img src="{{ url_for('static', path='images/webp/trasparenza-ambientale.webp') }}"
+                                    alt="Trasparenza ambientale" loading="lazy" decoding="async">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-text alt-color">
+                                    <h3>Economia circolare</h3>
+                                    <p>L’AI può supportare la progettazione di sistemi di riciclo e riuso, ma deve anche
+                                        adottare pratiche
+                                        interne di economia circolare per ridurre rifiuti elettronici e materiali.
+                                    </p>
+                                </div><img src="{{ url_for('static', path='images/webp/economia-circolare.webp') }}"
+                                    alt="Economia circolare" loading="lazy" decoding="async">
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-text">
+                                    <h3>Equità climatica</h3>
+                                    <p>È necessario garantire che i benefici dell’AI per la sostenibilità siano
+                                        distribuiti equamente, evitando
+                                        che i costi ambientali ricadano sui paesi più vulnerabili.
+                                    </p>
+                                </div><img src="{{ url_for('static', path='images/webp/equita-climatica.webp') }}"
+                                    alt="Equita climatica" loading="lazy" decoding="async">
+                            </div>
                         </div>
                         <button class="carousel-btn prev" aria-label="Precedente">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -268,29 +383,28 @@
             </div>
 
             <!-- NUOVA SEZIONE OUTRO -->
-            <section class="intro-outro-section">
-                <img src="{{ url_for('static', path='images/circle_new.svg') }}" alt="Logo Icona">
-                <h3>Unisciti al Cambiamento</h3>
-                <p>Misurare l'impatto è solo il primo passo verso un'Intelligenza Artificiale etica e sostenibile.
-                    Supportando progetti come il nostro, contribuisci a costruire un ecosistema tecnologico più
-                    consapevole del proprio ecosistema naturale.</p>
+            <section id="unisciti" class="intro-outro-section">
+                <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo Icona">
+                <h2>Unisciti al Cambiamento</h2>
+                <p>
+                    La transizione verso un'Intelligenza Artificiale sostenibile inizia dalla consapevolezza
+                    individuale.
+                    Misurare l'impatto è il primo passo fondamentale per trasformare una tecnologia apparentemente
+                    astratta in una risorsa responsabile e trasparente.
+                </p>
+                <p>
+                    Supportando <strong>AI Impact Monitor</strong>, non solo ottieni il controllo della tua impronta
+                    digitale, ma contribuisci a una ricerca collettiva mirata a promuovere alternative tecnologiche più
+                    ecologiche.
+                    Insieme, possiamo costruire un ecosistema digitale che rispetti i limiti del nostro pianeta, un
+                    prompt alla volta.
+                </p>
             </section>
 
         </main>
     </div>
 
-    <!-- VISTA DETTAGLIO (Nasconde Main) -->
-    <div id="detail-view">
-        <div class="back-link" onclick="showMain(true)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            Torna alla Home
-        </div>
-        <div id="detail-content"></div>
-    </div>
+
 
     <!-- MICRO-BANNER EXTENSION -->
     <div id="micro-banner" class="micro-banner">
@@ -302,7 +416,7 @@
         </div>
     </div>
 
-    <footer id="contatti">
+    <footer>
         <p>&copy; 2026 AI Monitor. Progetto di analisi strutturale e sensibilizzazione tecnologica.</p>
         <p><small>Design leggero e ottimizzato per ridurre l'impronta carbonica.</small></p>
     </footer>
@@ -310,5 +424,6 @@
 
 </body>
 <script src="{{ url_for('static', path='/scriptsv3.js') }}"></script>
+<script src="{{ url_for('static', path='/main-ani.js') }}"></script>
 
 </html>

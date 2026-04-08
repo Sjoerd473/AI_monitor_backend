@@ -2,19 +2,14 @@
 <html lang="it">
 
 {% include 'components/head.html' %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-  
-</head>
+
+{% include 'components/header.html' %}
 
 <body>
     <div id="detail-view">
 
         <div class="detail-header">
-            <img src="{{ url_for('static', path='images/water_new.svg') }}" class="detail-image"
-                alt="Icona Metrica">
+            <img src="{{ url_for('static', path='images/water_new.svg') }}" class="detail-image" alt="Icona Metrica">
             <h2>Impronta Idrica</h2>
         </div>
 

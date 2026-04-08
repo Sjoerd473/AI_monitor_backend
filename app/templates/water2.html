@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+
+{% include 'components/head.html' %}
+
+{% include 'components/header.html' %}
+
+<body class="sub-page">
+    <div id="detail-view">
+
+        <div class="detail-header">
+            <img src="{{ url_for('static', path='images/water_new.svg') }}" class="detail-image" alt="Icona Metrica">
+            <h2>Impronta Idrica</h2>
+        </div>
+
+        <div class="detail-body">
+
+            <div class="detail-row">
+                <div class="detail-row-img">
+                    <img src="{{ url_for('static', path='images/webp/water-past.webp') }}" alt="Passato dell'acqua">
+                </div>
+                <div class="detail-row-text">
+                    <h3>Le radici del consumo</h3>
+                    <p>Storicamente, i data center hanno fatto affidamento su sistemi di raffreddamento a evaporazione
+                        per gestire il calore dei server. Nel 2023, questo ha portato a un consumo globale di circa 1,7
+                        miliardi di metri cubi d'acqua, una risorsa vitale sottratta a ecosistemi già sotto stress
+                        idrico.</p>
+                </div>
+            </div>
+
+            <div class="detail-row reverse">
+                <div class="detail-row-img">
+                    <img src="{{ url_for('static', path='images/webp/water-present.webp') }}" alt="Presente dell'acqua">
+                </div>
+                <div class="detail-row-text">
+                    <h3>L'impatto di ogni prompt</h3>
+                    <p>Oggi, l'esplosione dell'IA generativa ha reso l'impronta idrica un'emergenza quotidiana.
+                        L'addestramento di un singolo modello può richiedere fino a 700.000 litri d'acqua. A livello
+                        individuale, ogni sessione di 20-50 domande a un chatbot equivale indirettamente al consumo di
+                        mezzo litro d'acqua dolce.</p>
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-row-img">
+                    <img src="{{ url_for('static', path='images/webp/water-future.webp') }}" alt="Futura dell'acqua"
+                        loading="lazy" decoding="async">
+                </div>
+                <div class="detail-row-text">
+                    <h3>Verso data center "water-free"</h3>
+                    <p>Il futuro punta all'adozione di circuiti di raffreddamento chiusi e fluidi dielettrici per
+                        eliminare lo spreco idrico. La sfida cruciale sarà garantire un'equità climatica, assicurando
+                        che i benefici dell'IA non gravino sulle riserve idriche delle popolazioni più vulnerabili.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <section class="intro-outro-section" style="padding: 4rem 0 2rem;">
+            <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo Icona">
+            <h3>Preserva l'Acqua</h3>
+            <p>Comprendere il costo idrico della tecnologia è essenziale per promuovere una gestione efficiente delle
+                risorse. Con AI Impact Monitor, rendiamo visibile l'invisibile, aiutandoti a monitorare il consumo
+                idrico dei tuoi prompt per favorire una trasparenza ambientale necessaria a proteggere il nostro
+                pianeta.</p>
+
+            <a href="/#dati" class="filter-btn active-tempo btn" style="margin-top: 2rem;">
+                Torna alla home
+            </a>
+        </section>
+    </div>
+</body>
+<script src="{{ url_for('static', path='/scriptsv3.js') }}"></script>
+
+</html>

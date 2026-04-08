@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+
+{% include 'components/head.html' %}
+
+{% include 'components/header.html' %}
+
+<body class="sub-page">
+    <div id="detail-view">
+
+        <div class="detail-header">
+            <img src="{{ url_for('static', path='images/co2_new.svg') }}" class="detail-image" alt="Icona Metrica CO2">
+            <h2>Emissioni di CO₂</h2>
+        </div>
+
+        <div class="detail-body">
+
+            <div class="detail-row">
+                <div class="detail-row-img">
+                    <img src="{{ url_for('static', path='images/webp/co2-past.webp') }}" alt="Passato del co2">
+                </div>
+                <div class="detail-row-text">
+                    <h3>L'eredità dei Data Center</h3>
+                    <p>Storicamente, l'espansione del cloud ha viaggiato di pari passo con un aumento delle emissioni.
+                        Nel 2023, i data center globali hanno prodotto circa 100 milioni di tonnellate di CO₂, un
+                        impatto paragonabile a quello dell'intero settore aereo commerciale di una grande nazione
+                        europea.</p>
+                </div>
+            </div>
+
+            <div class="detail-row reverse">
+                <div class="detail-row-img">
+                    <img src="{{ url_for('static', path='images/webp/co2-present.webp') }}" alt="Presente del co2">
+                </div>
+                <div class="detail-row-text">
+                    <h3>Il costo dell'Intelligenza</h3>
+                    <p>Oggi, l'addestramento di un singolo modello linguistico di grandi dimensioni (LLM) può generare
+                        fino a 300 tonnellate di CO₂. Sebbene l'uso di energie rinnovabili stia riducendo l'intensità
+                        carbonica del 10-15% annuo, la crescita esplosiva dell'IA generativa rischia di annullare questi
+                        progressi.</p>
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-row-img">
+                    <img src="{{ url_for('static', path='images/webp/co2-future.webp') }}" alt="Futuro del co2"
+                        loading="lazy" decoding="async">
+                </div>
+                <div class="detail-row-text">
+                    <h3>Obiettivo Net-Zero</h3>
+                    <p>Il futuro dell'IA dipende dalla capacità delle aziende di raggiungere la neutralità carbonica
+                        entro il 2030. La sfida sarà sviluppare algoritmi più leggeri e trasparenti, permettendo agli
+                        utenti di scegliere modelli a basse emissioni senza rinunciare alla potenza del calcolo.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <section class="intro-outro-section" style="padding: 4rem 0 2rem;">
+            <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo Icona">
+            <h3>Respira Tecnologia Pulita</h3>
+            <p>Monitorare i grammi di CO₂ emessi per ogni tua conversazione non è solo un esercizio statistico, ma un
+                atto di responsabilità climatica. AI Impact Monitor trasforma calcoli complessi in dati tangibili,
+                aiutandoti a comprendere come le tue scelte digitali influenzano direttamente il riscaldamento globale.
+            </p>
+
+           <a href="/#dati" class="filter-btn active-tempo btn" style="margin-top: 2rem;">
+                Torna alla home
+            </a>
+        </section>
+    </div>
+</body>
+<script src="{{ url_for('static', path='/scriptsv3.js') }}"></script>
+
+</html>
