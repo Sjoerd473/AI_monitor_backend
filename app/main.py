@@ -45,7 +45,7 @@ logging.basicConfig(level=logging.INFO)
 
 # FastAPI app
 app = FastAPI()
-# app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 
 scheduler = AsyncIOScheduler()
 
