@@ -125,7 +125,11 @@ function buildDynamicUI(data) {
     categories.forEach(cat => {
         const style = catStyles[cat];
         const btn = document.createElement('button');
-        btn.className = 'filter-btn category-toggle active-category px-4 py-1.5 rounded-full text-sm font-medium transition-all';
+        if (cat === 'general') {
+            btn.className = 'filter-btn active-category category-toggle';
+        } else {
+            btn.className = 'filter-btn category-toggle';
+        }
         btn.setAttribute('data-cat', cat);
         btn.textContent = style.display;
         btn.addEventListener('click', () => {
@@ -213,11 +217,9 @@ function applyFilterClasses() {
     });
     const catFilterBlock = document.getElementById('category-filters');
     if (state.tipo === 'categorie') {
-        catFilterBlock.classList.remove('hidden');
-        catFilterBlock.classList.add('flex');
+        catFilterBlock.classList.add('visible');
     } else {
-        catFilterBlock.classList.add('hidden');
-        catFilterBlock.classList.remove('flex');
+        catFilterBlock.classList.remove('visible');
     }
 }
 
@@ -236,11 +238,9 @@ function setupFilters(containerId, stateKey, activeClass) {
             if (stateKey === 'tipo') {
                 const catFilterBlock = document.getElementById('category-filters');
                 if (state.tipo === 'categorie') {
-                    catFilterBlock.classList.remove('hidden');
-                    catFilterBlock.classList.add('flex');
+                    catFilterBlock.classList.add('visible');
                 } else {
-                    catFilterBlock.classList.add('hidden');
-                    catFilterBlock.classList.remove('flex');
+                    catFilterBlock.classList.remove('visible');
                 }
             }
 
@@ -462,27 +462,26 @@ function renderChart() {
 
     if (diffPercent > 0) {
         trendEl.innerText = `+${diffPercent.toFixed(1)}%`;
-        trendEl.className = 'text-2xl font-bold text-red-500';
-        trendIconContainer.className = 'w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 transition-colors';
+        trendEl.className = 'stat-value stat-value--red';
+        trendIconContainer.className = 'stat-icon stat-icon--red';
         trendIconContainer.innerHTML = `<i data-lucide="trending-up"></i>`;
     } else if (diffPercent < 0) {
         trendEl.innerText = `${diffPercent.toFixed(1)}%`;
-        trendEl.className = 'text-2xl font-bold text-green-500';
-        trendIconContainer.className = 'w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600 transition-colors';
+        trendEl.className = 'stat-value stat-value--green';
+        trendIconContainer.className = 'stat-icon stat-icon--green';
         trendIconContainer.innerHTML = `<i data-lucide="trending-down"></i>`;
     } else {
         trendEl.innerText = `--%`;
-        trendEl.className = 'text-2xl font-bold text-gray-500';
-        trendIconContainer.className = 'w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 transition-colors';
+        trendEl.className = 'stat-value stat-value--gray';
+        trendIconContainer.className = 'stat-icon stat-icon--gray';
         trendIconContainer.innerHTML = `<i data-lucide="minus"></i>`;
     }
 
     const iconContainer = document.getElementById('stat-icon-1');
     iconContainer.innerHTML = `<i data-lucide="${config.icon}"></i>`;
-    iconContainer.className = `w-12 h-12 rounded-full flex items-center justify-center transition-colors ${state.output === 'acqua' ? (isDark ? 'bg-blue-900/40 text-blue-400' : 'bg-blue-100 text-blue-600') :
-        state.output === 'co2' ? (isDark ? 'bg-slate-700/50 text-slate-300' : 'bg-slate-200 text-slate-700') :
-            (isDark ? 'bg-yellow-900/40 text-yellow-400' : 'bg-yellow-100 text-yellow-600')
-        }`;
+    const outputIconClass = state.output === 'acqua' ? 'stat-icon--blue' :
+        state.output === 'co2' ? 'stat-icon--slate' : 'stat-icon--yellow';
+    iconContainer.className = `stat-icon ${outputIconClass}`;
     lucide.createIcons();
 
     // Render Chart.js

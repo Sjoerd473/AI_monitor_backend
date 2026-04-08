@@ -541,6 +541,8 @@ SEZIONE CAROSELLO SPLIT
     border-radius: 10px;
     color: black;
     border: 2px solid currentColor;
+    opacity: 0;
+    transition: opacity 500ms 750ms;
 
     h3 {
         color: black;
@@ -590,6 +592,10 @@ SEZIONE CAROSELLO SPLIT
     opacity: 1;
     visibility: visible;
     z-index: 2;
+
+    .slide-text {
+        opacity: 1;
+    }
 }
 
 .carousel-slide img {
