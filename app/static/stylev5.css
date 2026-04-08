@@ -942,8 +942,13 @@ FOOTER
 footer {
     background-color: var(--bg-color);
     border-top: 1px solid var(--border-color);
-    padding: 3rem 5%;
+  
     text-align: center;
+
+    a {
+      
+        color: inherit;
+    }
 }
 
 /* ==========================================
@@ -1315,3 +1320,4 @@ RESPONSIVE (Aumentato breakpoint a 1150px per sicurezza estrema)
         stroke-width: 1.2 !important;
     }
 }
+
