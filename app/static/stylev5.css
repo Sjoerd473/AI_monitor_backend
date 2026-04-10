@@ -15,7 +15,7 @@ RESET & VARIABILI GLOBALI
     --header-shadow: rgba(0, 0, 0, 0.05);
     --header-height: 85px;
     --hero-overlay: rgba(247, 251, 249, 0.85);
-    --circuit-color: gray;
+    --circuit-color: oklch(69.987% 0.00007 271.152);
     --theme-red: hsl(325, 63%, 52%);
     --theme-blue: hsl(192, 78%, 46%);
     --theme-yellow: hsl(29, 85%, 53%);
@@ -25,16 +25,16 @@ RESET & VARIABILI GLOBALI
 }
 
 [data-theme="dark"] {
-    --bg-color: #0f1713;
+    --bg-color: oklch(25% 0.01443 163.105);
     --text-color: #e2e8f0;
     --text-muted: #94a3b8;
-    --border-color: #0f1713;
+    --border-color: oklch(25% 0.01443 163.105);
     --header-bg: rgba(11, 17, 14, 0.75);
     --nav-hover: rgba(52, 211, 153, 0.15);
     --accent-color: #34d399;
     --accent-hover: #10b981;
     --card-bg: #131e18;
-    --circuit-color: black;
+    --circuit-color: oklch(0% 0 0);
     --shadow-color: rgba(0, 0, 0, 0.5);
     --header-shadow: rgba(0, 0, 0, 0.3);
     --hero-overlay: rgba(11, 17, 14, 0.85);
@@ -1195,7 +1195,9 @@ RESPONSIVE (Aumentato breakpoint a 1150px per sicurezza estrema)
     }
 
     #dots {
-        fill: var(--circuit-color);
+        * {
+            fill: var(--circuit-color);
+        }
     }
 }
 
