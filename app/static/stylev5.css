@@ -2,18 +2,20 @@
 RESET & VARIABILI GLOBALI
 ========================================== */
 :root {
-    --bg-color: #0b110e;
-    --text-color: #e2e8f0;
-    --text-muted: #94a3b8;
-    --border-color: #0b110e;
-    --header-bg: rgba(11, 17, 14, 0.75);
-    --nav-hover: rgba(52, 211, 153, 0.15);
-    --accent-color: #34d399;
-    --accent-hover: #10b981;
-    --card-bg: #131e18;
-    --shadow-color: rgba(0, 0, 0, 0.5);
-    --header-shadow: rgba(0, 0, 0, 0.3);
-    --hero-overlay: rgba(11, 17, 14, 0.85);
+    --bg-color: #f7fbf9;
+    --text-color: #1a2b22;
+    --text-muted: #4a6355;
+    --border-color: #f7fbf9;
+    --header-bg: rgba(247, 251, 249, 0.75);
+    --nav-hover: rgba(16, 185, 129, 0.1);
+    --accent-color: #10b981;
+    --accent-hover: #059669;
+    --card-bg: #ffffff;
+    --shadow-color: rgba(16, 185, 129, 0.08);
+    --header-shadow: rgba(0, 0, 0, 0.05);
+    --header-height: 85px;
+    --hero-overlay: rgba(247, 251, 249, 0.85);
+    --circuit-color: gray;
     --theme-red: hsl(325, 63%, 52%);
     --theme-blue: hsl(192, 78%, 46%);
     --theme-yellow: hsl(29, 85%, 53%);
@@ -23,15 +25,16 @@ RESET & VARIABILI GLOBALI
 }
 
 [data-theme="dark"] {
-    --bg-color: #0b110e;
+    --bg-color: #0f1713;
     --text-color: #e2e8f0;
     --text-muted: #94a3b8;
-    --border-color: #0b110e;
+    --border-color: #0f1713;
     --header-bg: rgba(11, 17, 14, 0.75);
     --nav-hover: rgba(52, 211, 153, 0.15);
     --accent-color: #34d399;
     --accent-hover: #10b981;
     --card-bg: #131e18;
+    --circuit-color: black;
     --shadow-color: rgba(0, 0, 0, 0.5);
     --header-shadow: rgba(0, 0, 0, 0.3);
     --hero-overlay: rgba(11, 17, 14, 0.85);
@@ -540,7 +543,6 @@ SEZIONE CAROSELLO SPLIT
     padding: 1.5em 1.25em;
     border-radius: 10px;
     color: black;
-    border: 2px solid currentColor;
     opacity: 0;
     transition: opacity 500ms 750ms;
 
@@ -942,11 +944,11 @@ FOOTER
 footer {
     background-color: var(--bg-color);
     border-top: 1px solid var(--border-color);
-  
+
     text-align: center;
 
     a {
-      
+
         color: inherit;
     }
 }
@@ -1187,9 +1189,13 @@ RESPONSIVE (Aumentato breakpoint a 1150px per sicurezza estrema)
 #Background {
 
     * {
-        stroke: black;
+        stroke: var(--circuit-color);
         stroke-width: 3px;
         fill: none;
+    }
+
+    #dots {
+        fill: var(--circuit-color);
     }
 }
 
@@ -1320,4 +1326,3 @@ RESPONSIVE (Aumentato breakpoint a 1150px per sicurezza estrema)
         stroke-width: 1.2 !important;
     }
 }
-
