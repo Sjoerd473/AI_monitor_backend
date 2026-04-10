@@ -180,6 +180,7 @@ async function fetchAndRenderData() {
     try {
         // You can change this endpoint to your actual JSON path
         const data = await fetchData('/data/dashboard.json');
+        console.log(data);
 
         if (data) {
             dashboardData = data;
