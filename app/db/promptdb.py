@@ -224,22 +224,33 @@ class PromptDB:
             dim_cfg = self.DIMENSIONS[dimension]
             col = dim_cfg["col"]
             table = dim_cfg["table"]
-            dim_join = dim_cfg["join"] or ""
 
-            join_clause = f"""
+            if dimension == "model":
+                # Subquery pre-filters prompts to only the rows matching this model
+                join_clause = f"""
+                    LEFT JOIN (
+                        SELECT p.*
+                        FROM prompts p
+                        LEFT JOIN models ON models.model_id = p.model_id
+                        WHERE models.model_name = p_outer.model_name
+                    ) p
+                        ON p.timestamp >= g.bucket 
+                        AND p.timestamp < g.bucket + {interval}
+                """
+            else:
+                # Category: filter directly on the prompts column
+                join_clause = f"""
                     LEFT JOIN prompts p 
                         ON p.timestamp >= g.bucket 
                         AND p.timestamp < g.bucket + {interval}
-                    {dim_join}
-                    AND {table}.{col} = p_outer.{col}
+                        AND p.{col} = p_outer.{col}
                 """
         else:
             join_clause = f"""
-                    LEFT JOIN prompts p 
-                        ON p.timestamp >= g.bucket 
-                        AND p.timestamp < g.bucket + {interval}
-                """
-
+                LEFT JOIN prompts p 
+                    ON p.timestamp >= g.bucket 
+                    AND p.timestamp < g.bucket + {interval}
+            """
         
 
 
