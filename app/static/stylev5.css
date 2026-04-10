@@ -25,10 +25,10 @@ RESET & VARIABILI GLOBALI
 }
 
 [data-theme="dark"] {
-    --bg-color: oklch(25% 0.01443 163.105);
+    --bg-color: oklch(17.491% 0.01895 151.385);
     --text-color: #e2e8f0;
     --text-muted: #94a3b8;
-    --border-color: oklch(25% 0.01443 163.105);
+    --border-color: oklch(17.491% 0.01895 151.385);
     --header-bg: rgba(11, 17, 14, 0.75);
     --nav-hover: rgba(52, 211, 153, 0.15);
     --accent-color: #34d399;
