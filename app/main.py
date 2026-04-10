@@ -12,6 +12,7 @@ import zipfile
 import io
 from datetime import datetime, timezone
 import time
+import mimetypes
 
 from fastapi import FastAPI, Request, Header, HTTPException, Depends
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -52,6 +53,8 @@ scheduler = AsyncIOScheduler()
 templates = Jinja2Templates(directory="templates")
 
 templates.env.globals.update(version=int(time.time()))
+
+mimetypes.add_type('image/webp', '.webp')
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
