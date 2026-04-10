@@ -196,27 +196,45 @@ class PromptDB:
 
         # these are instantiated here to ensure they are declared in all control-flow branches
         # and so their default is 'no extra SQL', not None 
-        dim_join = ""
-        where_clause = ""
+        # dim_join = ""
+        # where_clause = ""
 
-        # this is True when we are pulling categories and models
+        # # this is True when we are pulling categories and models
+        # if dimension:
+        #     # it gets the category or model object from DIMENSIONS
+        #     # and then configures each variable with the right data from said object
+        #     dim_cfg = self.DIMENSIONS[dimension]
+        #     col = dim_cfg["col"]
+        #     table = dim_cfg["table"]
+        #     dim_join   = dim_cfg["join"] or ""
+        #     where_clause = f"WHERE {table}.{col} = p_outer.{col}"
+        #     # and then composes the correct SQL query
+       
+        # join_clause = f"""
+        #         LEFT JOIN prompts p 
+        #             ON p.timestamp >= g.bucket 
+        #             AND p.timestamp < g.bucket + {interval}
+        #         {dim_join}
+        #     """
+        
+        dim_join = ""
+        dim_filter = ""
+
         if dimension:
-            # it gets the category or model object from DIMENSIONS
-            # and then configures each variable with the right data from said object
             dim_cfg = self.DIMENSIONS[dimension]
             col = dim_cfg["col"]
             table = dim_cfg["table"]
             dim_join   = dim_cfg["join"] or ""
-            where_clause = f"WHERE {table}.{col} = p_outer.{col}"
-            # and then composes the correct SQL query
-       
+            dim_filter = f"AND {table}.{col} = p_outer.{col}"
+
         join_clause = f"""
                 LEFT JOIN prompts p 
                     ON p.timestamp >= g.bucket 
                     AND p.timestamp < g.bucket + {interval}
+                    {dim_filter}
                 {dim_join}
             """
-      
+
 
         return f"""
             '{key}',
@@ -231,7 +249,6 @@ class PromptDB:
                         COALESCE(SUM(p.{column}), 0) AS value
                     FROM generate_series({start}, {end}, {interval}) g(bucket)
                     {join_clause}
-                    {where_clause}  -- Apply filtering here
                     GROUP BY g.bucket
                     ORDER BY g.bucket
                 ) s
