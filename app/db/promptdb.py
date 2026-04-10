@@ -218,22 +218,29 @@ class PromptDB:
         #     """
         
         dim_join = ""
-        dim_filter = ""
+   
 
         if dimension:
             dim_cfg = self.DIMENSIONS[dimension]
             col = dim_cfg["col"]
             table = dim_cfg["table"]
-            dim_join   = dim_cfg["join"] or ""
-            dim_filter = f"AND {table}.{col} = p_outer.{col}"
+            dim_join = dim_cfg["join"] or ""
 
-        join_clause = f"""
-                LEFT JOIN prompts p 
-                    ON p.timestamp >= g.bucket 
-                    AND p.timestamp < g.bucket + {interval}
-                    {dim_filter}
-                {dim_join}
-            """
+            join_clause = f"""
+                    LEFT JOIN prompts p 
+                        ON p.timestamp >= g.bucket 
+                        AND p.timestamp < g.bucket + {interval}
+                    {dim_join}
+                    AND {table}.{col} = p_outer.{col}
+                """
+        else:
+            join_clause = f"""
+                    LEFT JOIN prompts p 
+                        ON p.timestamp >= g.bucket 
+                        AND p.timestamp < g.bucket + {interval}
+                """
+
+        
 
 
         return f"""
