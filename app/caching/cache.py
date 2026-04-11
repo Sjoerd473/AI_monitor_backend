@@ -8,4 +8,3 @@ redis_client = redis.Redis(
     decode_responses=True
 )
 
-# CHANGE THE REDIS HOST IN .ENV FOR CONTAINER, NEEDS TO BE redis

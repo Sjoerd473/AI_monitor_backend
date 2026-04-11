@@ -25,7 +25,7 @@ RESET & VARIABILI GLOBALI
 }
 
 [data-theme="dark"] {
-    --bg-color: oklch(17.491% 0.01895 151.385);
+    --bg-color: hsl(133, 31%, 6%);
     --text-color: #e2e8f0;
     --text-muted: #94a3b8;
     --border-color: oklch(17.491% 0.01895 151.385);
