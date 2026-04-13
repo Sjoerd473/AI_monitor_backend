@@ -776,13 +776,17 @@ PROJECT SECTION
     display: none;
 }
 
-@media (max-width < 768px) {
+.btn-disabled {
+    filter: grayscale(100%);
+}
+
+@media (width < 768px) {
     .download-cta-mobile {
-        display: inline-flex;
+        display: flex !important;
     }
 
     .download-cta-desktop {
-        display: none;
+        display: none !important;
     }
 }
 
@@ -961,7 +965,7 @@ MICRO-BANNER EXTENSION
     max-width: 180px;
 }
 
-@media (max-width < 768px) {
+@media (width < 768px) {
     .micro-banner {
         display: none !important;
     }
