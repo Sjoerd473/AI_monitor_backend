@@ -131,6 +131,13 @@ COMPONENTI UI
     z-index: 1;
 }
 
+@media (max-width < 768px) {
+    .desktop-btn {
+        display: none;
+    }
+
+}
+
 /* .btn-premium::after {
     content: '';
     position: absolute;
@@ -765,6 +772,22 @@ PROJECT SECTION
     align-items: center;
 }
 
+.download-cta-mobile {
+    display: none;
+}
+
+@media (max-width < 768px) {
+    .download-cta-mobile {
+        display: inline-flex;
+    }
+
+    .download-cta-desktop {
+        display: none;
+    }
+}
+
+
+
 /* ==========================================
 DETAIL VIEW (Approfondimenti)
 ========================================== */
@@ -936,6 +959,12 @@ MICRO-BANNER EXTENSION
     margin-top: 1.2rem;
     width: 100%;
     max-width: 180px;
+}
+
+@media (max-width < 768px) {
+    .micro-banner {
+        display: none !important;
+    }
 }
 
 /* ==========================================

@@ -28,8 +28,10 @@
                         Ottieni dati onesti sulla tua impronta digitale in tempo reale, senza mai rinunciare alla tua
                         privacy.
                     </p>
-                     <a class="btn btn-premium" href="https://chromewebstore.google.com/detail/bnjbeaepfpofdichajgbhickpmcachfl">Aggiungi al Browser</a>
-             
+                    <a class="btn btn-premium desktop-btn"
+                        href="https://chromewebstore.google.com/detail/bnjbeaepfpofdichajgbhickpmcachfl">Aggiungi al
+                        Browser</a>
+
                 </div>
             </section>
 
@@ -280,10 +282,23 @@
                         </div>
                     </div>
 
-                    <div class="download-cta" id="download">
+                    <div class="download-cta download-cta-desktop" id="download">
                         <p>Prendi il controllo del tuo impatto ambientale — un prompt alla volta. Installa AI
                             Impact Monitor oggi stesso.</p>
-                        <a class="btn btn-premium" href="https://chromewebstore.google.com/detail/bnjbeaepfpofdichajgbhickpmcachfl">Aggiungi al Browser</a>
+                        <a class="btn btn-premium"
+                            href="https://chromewebstore.google.com/detail/bnjbeaepfpofdichajgbhickpmcachfl">Aggiungi al
+                            Browser</a>
+                    </div>
+                    <div class="download-cta download-cta-mobile" id="download-mobile">
+                        <p>
+                            <strong>Per misurare grandi impatti serve uno schermo più grande. 💻</strong><br>
+                            L'estensione AI Impact Monitor è progettata per accompagnarti durante il lavoro su desktop.
+                            Torna a trovarci dal tuo browser preferito per iniziare a tracciare i consumi di acqua,
+                            energia e CO₂.
+                        </p>
+                        <span class="btn btn-disabled" style="opacity: 0.7; cursor: not-allowed;">
+                            Disponibile su Desktop
+                        </span>
                     </div>
                 </div>
             </section>
@@ -413,13 +428,14 @@
         <div class="banner-content">
             <p id="banner-text-1" class="banner-text">Vedi le metriche in azione</p>
             <p id="banner-text-2" class="banner-text">Prova l'estensione gratuita.</p>
-            <a class="btn btn-premium" href="https://chromewebstore.google.com/detail/bnjbeaepfpofdichajgbhickpmcachfl">Scarica</a>
-             
+            <a class="btn btn-premium"
+                href="https://chromewebstore.google.com/detail/bnjbeaepfpofdichajgbhickpmcachfl">Scarica</a>
+
         </div>
     </div>
 
-  
- {% include 'components/footer.html' %}
+
+    {% include 'components/footer.html' %}
 
 </body>
 <script src="{{ url_for('static', path='/scriptsv3.js') }}"></script>
