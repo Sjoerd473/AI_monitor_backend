@@ -131,7 +131,7 @@ COMPONENTI UI
     z-index: 1;
 }
 
-@media (max-width < 768px) {
+@media (width < 768px) {
     .desktop-btn {
         display: none;
     }
@@ -778,6 +778,8 @@ PROJECT SECTION
 
 .btn-disabled {
     filter: grayscale(100%);
+    color: black;
+    padding-inline: 0.25em;
 }
 
 @media (width < 768px) {
