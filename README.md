@@ -113,6 +113,9 @@ POSTGRES_PASSWORD=your_secure_password
 | `GET`  | `/dashboard`                 | Dashboard UI with interactive charts. |
 | `GET`  | `/data/dashboard.json`       | JSON‑based metrics for charts (CO₂, energy, water over time and by category/model). |
 | `GET`  | `/privacy`                   | Privacy policy page. |
+| `GET`  | `/water`                     | Deep dive into water impact. |
+| `GET`  | `/energy`                    | Deep dive into energy impact. |
+| `GET`  | `/co2`                       | Deep dive into co2 impact. |
 
 
 ## Privacy & Data Policy
@@ -154,5 +157,5 @@ Contributions are welcome! Please:
 
 This project is licensed under the **Apache 2.0 License** – see the [LICENSE](LICENSE) file for details.
 
-Developed by **[Your Name / Studio Name]**  
+Developed by **Tommaso, Sanji, Sjoerd**  
 AI Impact Monitor: `ai-monitor.madebyshu.net`
