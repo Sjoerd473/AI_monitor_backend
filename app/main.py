@@ -235,8 +235,8 @@ async def lifespan(app: FastAPI):
 
         logger.info("Generating prompt dump...")
         asyncio.create_task(generate_prompt_data())
-        # we add a cronjob to dump the prompt data every hour one minute after the hour.
-        scheduler.add_job(generate_prompt_data, "cron", minute=1)
+        # we add a cronjob to dump the prompt data every 15 minutes.
+        scheduler.add_job(generate_prompt_data, "cron", minute="*/15")
         # scheduler.add_job(generate_db_dump, "cron", hour=0, minute=0)
 
         scheduler.start()

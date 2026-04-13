@@ -68,9 +68,9 @@ function animateValue(obj, start, end, duration, formatter) {
 }
 
 const outputConfig = {
-    acqua: { label: 'Consumo Acqua', key: 'water', unit: 'Litri', color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.2)', icon: 'droplet' },
-    co2: { label: 'Emissioni CO2', key: 'co2', unit: 'g', color: '#64748b', bgColor: 'rgba(100, 116, 139, 0.2)', icon: 'cloud' },
-    energia: { label: 'Consumo Energia', key: 'energy', unit: 'Wh', color: '#eab308', bgColor: 'rgba(234, 179, 8, 0.2)', icon: 'zap' }
+    acqua: { label: 'Consumo Acqua', key: 'water', unit: 'Litri', color: '#1aacd1', bgColor: 'rgba(59, 130, 246, 0.2)', icon: 'droplet' },
+    co2: { label: 'Emissioni CO2', key: 'co2', unit: 'g', color: '#d23791', bgColor: 'rgba(100, 116, 139, 0.2)', icon: 'cloud' },
+    energia: { label: 'Consumo Energia', key: 'energy', unit: 'Wh', color: '#ed8421', bgColor: 'rgba(234, 179, 8, 0.2)', icon: 'zap' }
 };
 
 const tempoConfig = {
