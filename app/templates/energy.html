@@ -2,47 +2,57 @@
 <html lang="it">
 
 {% include 'components/head.html' %}
-  {% include 'components/header.html' %}
-<body>
+
+{% include 'components/header.html' %}
+
+<body class="sub-page">
     <div id="detail-view">
 
         <div class="detail-header">
             <img src="{{ url_for('static', path='images/en_new.svg') }}" class="detail-image"
-                alt="Icona Metrica">
-            <h2>Impronta Idrica</h2>
+                alt="Icona Metrica Energia">
+            <h2>Consumo Energetico</h2>
         </div>
 
         <div class="detail-body">
 
             <div class="detail-row">
                 <div class="detail-row-img">
-                    <img src="https://images.pexels.com/photos/40784/drops-of-water-water-nature-liquid-40784.jpeg"
-                        alt="Gocce d'acqua">
+                    <img src="{{ url_for('static', path='images/webp/energy-past.webp') }}" alt="Passato dell'energia">
                 </div>
                 <div class="detail-row-text">
-                    <p>I sistemi di raffreddamento ad acqua sono essenziali per evitare il surriscaldamento dei server,
-                        ma richiedono miliardi di litri di acqua dolce ogni anno.</p>
+                    <h3>Le fondamenta del Cloud</h3>
+                    <p>Nel 2023, i data center mondiali consumavano già circa 460 TWh di elettricità, rappresentando
+                        quasi il 2% della domanda globale. Era l'inizio di un'era in cui il digitale ha smesso di essere
+                        "etereo" per diventare una delle voci di spesa energetica più significative del pianeta.</p>
                 </div>
             </div>
 
             <div class="detail-row reverse">
                 <div class="detail-row-img">
-                    <img src="https://images.pexels.com/photos/11489544/pexels-photo-11489544.jpeg"
-                        alt="Server cooling">
+                    <img src="{{ url_for('static', path='images/webp/energy-present.webp') }}"
+                        alt="Presente dell'energia">
                 </div>
                 <div class="detail-row-text">
-                    <p>Gran parte dell'acqua utilizzata evapora durante il processo, sottraendo risorse preziose agli
-                        ecosistemi locali, spesso in zone già soggette a stress idrico.</p>
+                    <h3>La fame di Watt dell'IA</h3>
+                    <p>Oggi, l'addestramento di un singolo modello linguistico può richiedere 1.300 MWh, pari al consumo
+                        annuo di 130 famiglie europee. Con miliardi di query giornaliere, ogni interazione contribuisce
+                        a una domanda energetica che entro il 2026 supererà quella di nazioni industrializzate come il
+                        Giappone.</p>
                 </div>
             </div>
 
             <div class="detail-row">
                 <div class="detail-row-img">
-                    <img src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg" alt="Comunità locale">
+                    <img src="{{ url_for('static', path='images/webp/energy-future.webp') }}" alt="Futuro dell'energia"
+                        loading="lazy" decoding="async">
                 </div>
                 <div class="detail-row-text">
-                    <p>La trasparenza sui dati idrici permette alle comunità locali di valutare meglio l'impatto
-                        territoriale delle infrastrutture tecnologiche.</p>
+                    <h3>Efficienza e Algoritmi Green</h3>
+                    <p>Il futuro risiede nello sviluppo di modelli "lightweight" e algoritmi ottimizzati che riducano
+                        drasticamente il calcolo necessario. La sfida sarà far sì che l'efficienza cresca più
+                        velocemente della domanda, integrando l'IA in reti elettriche intelligenti alimentate al 100% da
+                        fonti rinnovabili.</p>
                 </div>
             </div>
 
@@ -50,15 +60,18 @@
 
         <section class="intro-outro-section" style="padding: 4rem 0 2rem;">
             <img src="{{ url_for('static', path='images/circle-new.svg') }}" alt="Logo Icona">
-            <h3>Preserva l'Acqua</h3>
-            <p>Unisciti alla nostra missione per rendere l'IA più sostenibile per il pianeta e per le sue risorse
-                vitali.</p>
+            <h3>Alimenta un Futuro Sostenibile</h3>
+            <p>Conoscere quanti Watt-ora consuma ogni tua ricerca è il primo passo per ottimizzare l'uso
+                dell'intelligenza artificiale. AI Impact Monitor trasforma questi dati tecnici in una consapevolezza
+                attiva, permettendoti di essere parte della soluzione nella transizione energetica globale.</p>
 
-            <button class="filter-btn active-tempo" style="margin-top: 2rem;">
-                Torna alla Dashboard
-            </button>
+            <a href="/#dati" class="filter-btn active-tempo btn" style="margin-top: 2rem;">
+                Torna alla home
+            </a>
         </section>
     </div>
+     {% include 'components/footer.html' %}
 </body>
+<script src="{{ url_for('static', path='/scripts.js') }}"></script>
 
 </html>
