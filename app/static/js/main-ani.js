@@ -29,7 +29,9 @@ setInterval(() => {
     // Use Math.max/min or modulo to stay within array bounds
     animatePath(paths[index]);
     animatePath(paths[(index + 2) % pathsLength]);
+    animatePath(paths[(index + 20) % pathsLength]);
     animatePath(paths[Math.abs(index - 2)]);
+    animatePath(paths[Math.abs(index - 20)]);
 }, 1000);
 
 document.addEventListener('DOMContentLoaded', () => {
