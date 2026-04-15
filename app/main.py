@@ -135,7 +135,7 @@ async def generate_prompt_data():
 #     loop = asyncio.get_event_loop()
 #     await loop.run_in_executor(None, db_dump)
 
-def verify_token(authorization: str = Header(...)):
+async def verify_token(authorization: str = Header(...)):
     # This matches how we send the API key from the plugin, the message, per standard
     # practice starts with 'Bearer'
     # if it does not match, return an error
@@ -146,15 +146,27 @@ def verify_token(authorization: str = Header(...)):
     raw_token = authorization.removeprefix("Bearer ")
     token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
 
+    # check redis for the user_id (fast)
+    redis_key = f"token:{token_hash}"
+    user_id = await redis_client.get(redis_key)
+
+    # this triggers if the user_id is present in redis
+    if user_id:
+        return user_id
+
     # We look for the exact hash in the DB, and throw an error
     # if it is not found
-    row = retrieval.get_token(token_hash)
+    row = await asyncio.to_thread(retrieval.get_token,token_hash)
     if not row:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+    user_id = row["user_id"]
+
+    # we warm up the Redis cache
+    await redis_client.setex(redis_key, 3600, user_id)
     # We then update when the token was last used, and return
     # the connected user_id
-    ingestion.update_token_last_used(token_hash)
+    await asyncio.to_thread(ingestion.update_token_last_used, token_hash)
     return row["user_id"]
 
 # This is a sliding window rate limiter, using redis. Thus the 60 seconds are relative
@@ -343,6 +355,9 @@ async def register(request: Request,  _: None = Depends(rate_limit_ip)):
     
     ingestion.insert_user(user_id)
     ingestion.insert_token(user_id, token_hash) # type: ignore
+
+    # prewarm the cache on new account creation
+    await redis_client.setex(f"token:{token_hash}", 3600, user_id)
     
     # this is sent back to the plugin user
     return {"token": raw_token}
