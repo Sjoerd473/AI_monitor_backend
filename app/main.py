@@ -120,6 +120,13 @@ async def flush_worker():
                 await asyncio.to_thread(ingestion.batch_insert, batch_to_insert)
                 logger.info(f"{datetime.now()} [FlushWorker] Inserted {len(batch_to_insert)} events")
 
+            tokens_to_update = await redis_client.spop("active_tokens", count=100)
+            if tokens_to_update:
+                # We update the DB in a single thread
+                # You'll need to ensure ingestion.batch_update_last_used exists (see below)
+                await asyncio.to_thread(ingestion.batch_update_last_used, tokens_to_update)
+                logger.info(f"[FlushWorker] Updated last_used for {len(tokens_to_update)} tokens")
+
         except Exception as e:
             logger.error(f"[FlushWorker] Error: {e}", exc_info=True)
             # Optional: Sleep briefly on error to avoid rapid-fire failure loops
@@ -152,6 +159,7 @@ async def verify_token(authorization: str = Header(...)):
 
     # this triggers if the user_id is present in redis
     if user_id:
+        await redis_client.sadd("active_tokens", token_hash)
         return user_id
 
     # We look for the exact hash in the DB, and throw an error
@@ -167,6 +175,7 @@ async def verify_token(authorization: str = Header(...)):
     # We then update when the token was last used, and return
     # the connected user_id
     await asyncio.to_thread(ingestion.update_token_last_used, token_hash)
+    await redis_client.sadd("active_tokens", token_hash)
     return row["user_id"]
 
 # This is a sliding window rate limiter, using redis. Thus the 60 seconds are relative
@@ -353,8 +362,11 @@ async def register(request: Request,  _: None = Depends(rate_limit_ip)):
     raw_token = secrets.token_hex(32)
     token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
     
-    ingestion.insert_user(user_id)
-    ingestion.insert_token(user_id, token_hash) # type: ignore
+    # ingestion.insert_user(user_id)
+    # ingestion.insert_token(user_id, token_hash) # type: ignore
+
+    await asyncio.to_thread(ingestion.insert_user, user_id)
+    await asyncio.to_thread(ingestion.insert_token, user_id, token_hash)
 
     # prewarm the cache on new account creation
     await redis_client.setex(f"token:{token_hash}", 3600, user_id)

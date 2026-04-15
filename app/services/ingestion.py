@@ -28,4 +28,9 @@ class Ingestion(BaseService):
         self.db.insert_user(user_id)
 
 
+    @db_logging
+    def batch_update_last_used(self, token_hashes: list):
+        self.db.batch_update_last_used(token_hashes)
+
+
 
