@@ -374,13 +374,16 @@ class PromptDB:
         query = "UPDATE api_tokens SET last_used = now() WHERE token_hash = %s"
         self._write(query, (token_hash,))
 
-    def batch_update_last_used(self, token_hashes:list):
+    def batch_update_last_used(self, token_hashes: list):
         query = """
         UPDATE tokens 
         SET last_used = CURRENT_TIMESTAMP 
         WHERE token_hash = ANY(%s)
         """
-        self._write_many(query, token_hashes)
+        # Note: We pass (token_hashes,) as a tuple containing the list.
+        # We use _execute (NOT _write_many) because this is ONE query 
+        # that happens to take a list as a parameter.
+        self._execute(query, (token_hashes,))
  
     def insert_token(self,user_id, token_hash):
 

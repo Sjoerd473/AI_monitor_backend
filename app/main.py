@@ -174,7 +174,7 @@ async def verify_token(authorization: str = Header(...)):
     await redis_client.setex(redis_key, 3600, user_id)
     # We then update when the token was last used, and return
     # the connected user_id
-    await asyncio.to_thread(ingestion.update_token_last_used, token_hash)
+    # await asyncio.to_thread(ingestion.update_token_last_used, token_hash)
     await redis_client.sadd("active_tokens", token_hash)
     return row["user_id"]
 
