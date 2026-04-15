@@ -375,20 +375,22 @@ class PromptDB:
         self._write(query, (token_hash,))
 
     def batch_update_last_used(self, token_hashes: list):
+        # 1. We use 'api_tokens' to match your CREATE TABLE statement
+        # 2. We use ANY(%s) which expects a single list/tuple containing the array
         query = """
-        UPDATE tokens 
+        UPDATE api_tokens 
         SET last_used = CURRENT_TIMESTAMP 
         WHERE token_hash = ANY(%s)
         """
-        # Note: We pass (token_hashes,) as a tuple containing the list.
-        # We use _execute (NOT _write_many) because this is ONE query 
-        # that happens to take a list as a parameter.
+        
+        # We use self._execute (not _write_many) because we are sending 
+        # ONE command to the DB with ONE parameter (the list of hashes).
         self._execute(query, (token_hashes,))
  
     def insert_token(self,user_id, token_hash):
 
         query = """
-             INSERT INTO api_tokens (user_id, token_hash)
+             INSERT INTO tokens (user_id, token_hash)
              VALUES (%s, %s)
              ON CONFLICT (user_id) DO UPDATE SET
                  token_hash = EXCLUDED.token_hash,
