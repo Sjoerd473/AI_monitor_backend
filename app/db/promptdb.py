@@ -390,7 +390,7 @@ class PromptDB:
     def insert_token(self,user_id, token_hash):
 
         query = """
-             INSERT INTO tokens (user_id, token_hash)
+             INSERT INTO api_tokens (user_id, token_hash)
              VALUES (%s, %s)
              ON CONFLICT (user_id) DO UPDATE SET
                  token_hash = EXCLUDED.token_hash,
